@@ -16,4 +16,4 @@ Seed-basierte Rätselbox — 5 Rätseltypen, deterministisch generiert aus einem
 - **Drucken / PDF**: Sauberes DIN-A4-Print-Layout ohne Lösungen
 
 ## Live
-https://xxxn3m3s1sxxx.github.io/riddler/
+https://xxxn3m3s1sxxx.github.io/riddler-pages/
