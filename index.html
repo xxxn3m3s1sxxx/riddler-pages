@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Riddler — Seed-basierte Rätselbox</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0f0f1a;
+            color: #e0e0e0;
+            max-width: 680px;
+            margin: 0 auto;
+            padding: 24px 16px 80px;
+        }
+        h1 { text-align: center; font-size: 2rem; margin-bottom: 4px; }
+        h2 { text-align: center; font-size: 1.15rem; color: #aaa; font-weight: 400; margin-top: 0; }
+        .box {
+            background: #1a1a2e;
+            padding: 24px;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(0,0,0,.4);
+            margin-bottom: 24px;
+        }
+        .center { text-align: center; }
+        input, button, select {
+            padding: 10px 16px;
+            font-size: 15px;
+            border-radius: 8px;
+            border: none;
+            margin: 4px;
+            vertical-align: middle;
+        }
+        input[type="number"] { width: 110px; text-align: center; background: #12121f; color: #fff; border: 1px solid #333; }
+        input[type="text"] { width: 200px; text-align: center; background: #12121f; color: #fff; border: 1px solid #333; }
+        select { background: #12121f; color: #fff; border: 1px solid #333; cursor: pointer; }
+        button { background: #5c6bc0; color: #fff; cursor: pointer; font-weight: 600; }
+        button:hover { background: #7986cb; }
+        button.green { background: #2e7d32; }
+        button.green:hover { background: #43a047; }
+        .daily-info { text-align: center; color: #66bb6a; font-size: .9rem; margin: -10px 0 18px; }
+        .display { font-size: 28px; color: #ffca28; margin: 16px 0; font-weight: 700; text-align: center; line-height: 1.7; }
+        .result { margin-top: 10px; font-weight: 700; font-size: 16px; text-align: center; min-height: 24px; }
+        .print-line { display: none; }
+
+        /* Crossword */
+        .cw-grid { display: grid; gap: 3px; margin: 16px auto; width: max-content; }
+        .cw-cell { width: 42px; height: 42px; text-align: center; font-size: 19px; font-weight: 700; text-transform: uppercase; border: none; border-radius: 3px; }
+        .cw-letter { background: #fff; color: #111; border: 1px solid #888; }
+        .cw-block { background: #0f0f1a; }
+
+        /* Maze */
+        #mazeCanvas { display: block; margin: 16px auto; border: 3px solid #555; border-radius: 4px; background: #0a0a14; max-width: 100%; }
+
+        /* Sudoku */
+        .sdk-grid { display: grid; grid-template-columns: repeat(9, 36px); gap: 0; margin: 16px auto; width: max-content; border: 3px solid #888; background: #888; }
+        .sdk-cell {
+            width: 36px; height: 36px; text-align: center; font-size: 18px; font-weight: 700;
+            border: 1px solid #ccc; background: #fff; color: #111; padding: 0; box-sizing: border-box;
+        }
+        .sdk-cell:disabled { background: #e8e8e8; color: #333; }
+        .sdk-cell.s3 { border-right: 3px solid #333; }
+        .sdk-cell.s6 { border-bottom: 3px solid #333; }
+
+        /* Print */
+        @media print {
+            body { background: #fff; color: #000; margin: 0; padding: 16px; }
+            .box { background: #fff; border: 1px solid #ccc; box-shadow: none; page-break-inside: avoid; }
+            input, button, select, .result, .daily-info, .print-line + .result { display: none !important; }
+            .display { color: #000; }
+            .print-line { display: block !important; margin-top: 14px; border-bottom: 1px solid #000; width: 260px; height: 32px; font-size: 13px; color: #666; }
+            h1 { color: #000; }
+            h2 { color: #444; }
+            .cw-letter { border: 2px solid #000 !important; background: #fff !important; color: transparent !important; }
+            .cw-block { background: #000 !important; }
+            #mazeCanvas { border-color: #000 !important; background: #fff !important; }
+            .sdk-grid { border-color: #000 !important; background: #000 !important; }
+            .sdk-cell { background: #fff !important; color: #000 !important; }
+            .sdk-cell:not(:disabled) { color: transparent !important; }
+        }
+    </style>
+</head>
+<body>
+
+<h1>Riddler</h1>
+<h2>Seed-basierte Rätselbox</h2>
+
+<div class="box center">
+    <label for="seedInput"><strong>Seed:</strong></label>
+    <input type="number" id="seedInput" value="">
+    <label for="diffInput" style="margin-left:12px;"><strong>Stufe:</strong></label>
+    <select id="diffInput" onchange="generate()">
+        <option value="easy">Easy</option>
+        <option value="medium" selected>Medium</option>
+        <option value="hard">Hard</option>
+        <option value="extreme">Extreme</option>
+    </select>
+    <button onclick="generate()">Würfeln</button>
+    <br>
+    <button class="green" style="margin-top:10px;" onclick="window.print()">Drucken / PDF</button>
+</div>
+
+<!-- MATH -->
+<div class="box">
+    <h2>#1 Symbol-Arithmetik</h2>
+    <p class="center">Finde den Wert jedes Symbols und löse die letzte Zeile:</p>
+    <div class="display" id="mathDisplay">---</div>
+    <div class="center">
+        <input type="number" id="mathInput" placeholder="Ergebnis">
+        <button onclick="checkMath()">Prüfen</button>
+    </div>
+    <div class="print-line">Ergebnis:</div>
+    <div class="result" id="mathResult"></div>
+</div>
+
+<!-- WORD -->
+<div class="box">
+    <h2>#2 Buchstabensalat</h2>
+    <p class="center">Bringe die Buchstaben in die richtige Reihenfolge:</p>
+    <div class="display" id="wordDisplay" style="letter-spacing:6px">---</div>
+    <div class="center">
+        <input type="text" id="wordInput" placeholder="Lösung">
+        <button onclick="checkWord()">Prüfen</button>
+    </div>
+    <div class="print-line">Lösung:</div>
+    <div class="result" id="wordResult"></div>
+</div>
+
+<!-- CROSSWORD -->
+<div class="box">
+    <h2>#3 Kreuzworträtsel</h2>
+    <div id="cwClues" class="center" style="margin-bottom:12px"></div>
+    <div class="cw-grid" id="cwGrid"></div>
+</div>
+
+<!-- MAZE -->
+<div class="box">
+    <h2>#4 Labyrinth</h2>
+    <p class="center">Finde den Weg von <b>S</b> nach <b>Z</b>. Klick auf das Labyrinth, dann Pfeiltasten nutzen.</p>
+    <canvas id="mazeCanvas" width="300" height="300" tabindex="1"></canvas>
+    <div class="result" id="mazeResult"></div>
+</div>
+
+<!-- SUDOKU -->
+<div class="box">
+    <h2>#5 Sudoku</h2>
+    <p class="center">Jede Ziffer 1-9 genau einmal pro Zeile, Spalte und 3×3-Block.</p>
+    <div class="sdk-grid" id="sudokuGrid"></div>
+</div>
+
+<script>
+// ============================================================
+//  MULBERRY32 — deterministic PRNG from a single integer seed
+// ============================================================
+function mulberry32(seed) {
+    return function() {
+        seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+        var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+        t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+        return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+}
+function randInt(rng, lo, hi) { return Math.floor(rng() * (hi - lo + 1)) + lo; }
+function shuffle(arr, rng) {
+    for (var i = arr.length - 1; i > 0; i--) {
+        var j = randInt(rng, 0, i);
+        var t = arr[i]; arr[i] = arr[j]; arr[j] = t;
+    }
+    return arr;
+}
+
+// ============================================================
+//  DAILY SEED
+// ============================================================
+function todaySeed() {
+    var d = new Date();
+    return d.getFullYear() * 10000 + (d.getMonth() + 1) * 100 + d.getDate();
+}
+function todayStr() {
+    return new Date().toLocaleDateString('de-DE', { day: '2-digit', month: 'long', year: 'numeric' });
+}
+
+// ============================================================
+//  GLOBALS
+// ============================================================
+var mathSolution = 0;
+var wordSolution = '';
+var mazeGrid = [], mazeW = 10, mazeH = 10, mazeCell = 30;
+var playerX = 0, playerY = 0, printing = false;
+
+window.onbeforeprint = function() { printing = true; drawMaze(); };
+window.onafterprint  = function() { printing = false; drawMaze(); };
+
+// ============================================================
+//  GENERATE
+// ============================================================
+function generate() {
+    var seed = parseInt(document.getElementById('seedInput').value);
+    if (isNaN(seed)) { seed = todaySeed(); document.getElementById('seedInput').value = seed; }
+    var diff = document.getElementById('diffInput').value;
+
+    genMath(mulberry32(seed + 100), diff);
+    genWord(mulberry32(seed + 200), diff);
+    genCrossword(mulberry32(seed + 300));
+    genMaze(mulberry32(seed + 400));
+    genSudoku(mulberry32(seed + 500), diff);
+}
+
+// ============================================================
+//  #1 MATH PUZZLE
+// ============================================================
+function genMath(rng, diff) {
+    var emojis = ['🍎','🍌','🍒','💎','⭐','🍀','🔮','🦊','🎭','🔥'];
+    var s1 = emojis[randInt(rng, 0, 4)];
+    var s2 = emojis[randInt(rng, 5, 9)];
+    var maxV = diff === 'easy' ? 10 : diff === 'medium' ? 20 : diff === 'hard' ? 50 : 100;
+    var v1 = randInt(rng, 2, maxV);
+    var v2 = randInt(rng, 2, maxV);
+    mathSolution = v1 + v2;
+    document.getElementById('mathDisplay').innerHTML =
+        s1 + ' + ' + s1 + ' = ' + (v1 + v1) + '<br>' +
+        s1 + ' × ' + s2 + ' = ' + (v1 * v2) + '<br>' +
+        s1 + ' + ' + s2 + ' = ?';
+    document.getElementById('mathResult').textContent = '';
+    document.getElementById('mathInput').value = '';
+}
+function checkMath() {
+    var v = parseInt(document.getElementById('mathInput').value);
+    var el = document.getElementById('mathResult');
+    if (v === mathSolution) { el.textContent = 'Richtig!'; el.style.color = '#66bb6a'; }
+    else { el.textContent = 'Falsch — versuch es nochmal.'; el.style.color = '#ef5350'; }
+}
+
+// ============================================================
+//  #2 WORD SCRAMBLE
+// ============================================================
+var WORD_POOLS = {
+    easy:    ['CODE','MAUS','BAUM','BROT','HAUS','Spiel','LAMPE','TIGER'],
+    medium:  ['DOTNET','GITHUB','ZUFALL','REGEN','COMPUTER','LASER'],
+    hard:    ['PROGRAMMIEREN','ALGORITHMUS','COMPILER','SPEICHER'],
+    extreme: ['QUANTENCOMPUTER','KRYPTOGRAPHIE','SYNCHRONISATION']
+};
+function genWord(rng, diff) {
+    var pool = WORD_POOLS[diff] || WORD_POOLS.medium;
+    wordSolution = pool[randInt(rng, 0, pool.length - 1)];
+    var chars = wordSolution.split('');
+    shuffle(chars, rng);
+    document.getElementById('wordDisplay').textContent = chars.join('');
+    document.getElementById('wordResult').textContent = '';
+    document.getElementById('wordInput').value = '';
+}
+function checkWord() {
+    var v = document.getElementById('wordInput').value.trim().toUpperCase();
+    var el = document.getElementById('wordResult');
+    if (v === wordSolution.toUpperCase()) { el.textContent = 'Richtig!'; el.style.color = '#66bb6a'; }
+    else { el.textContent = 'Falsch — versuch es nochmal.'; el.style.color = '#ef5350'; }
+}
+
+// ============================================================
+//  #3 CROSSWORD (template-based)
+// ============================================================
+var CW_TEMPLATES = [
+    {
+        w: 5, h: 5,
+        clues: [
+            '1. Waagerecht: Beliebtes MS-Framework (5)',
+            '2. Senkrecht: Daten-behalten (5)',
+            '3. Waagerecht: Counter (5)'
+        ],
+        grid: [
+            ['D','O','T','N','E'],
+            ['C',' ',' ',' ','A'],
+            ['O',' ',' ',' ','C'],
+            ['D',' ',' ',' ','H'],
+            ['E',' ',' ',' ','T']
+        ]
+    },
+    {
+        w: 5, h: 5,
+        clues: [
+            '1. Waagerecht: Web-Protokoll (4)',
+            '2. Senkrecht: Speicherort im Web (2)',
+            '3. Waagerecht: Wartezeit (5)'
+        ],
+        grid: [
+            ['H','T','T','P',' '],
+            ['T',' ',' ',' ','P'],
+            ['T',' ',' ',' ','A'],
+            ['P',' ',' ',' ','U'],
+            [' ',' ',' ',' ','S']
+        ]
+    },
+    {
+        w: 6, h: 6,
+        clues: [
+            '1. Waagerecht: Compiler-Ziel (4)',
+            '2. Senkrecht: Netzwerk-Knoten (4)',
+            '3. Waagerecht: Speicher (6)'
+        ],
+        grid: [
+            ['C','O','D','E',' ',' '],
+            ['O',' ',' ','A',' ',' '],
+            ['D',' ',' ','T','A',' '],
+            ['E',' ',' ','A','P','I'],
+            [' ',' ',' ',' ',' ',' '],
+            [' ',' ',' ',' ',' ',' ']
+        ]
+    }
+];
+function genCrossword(rng) {
+    var t = CW_TEMPLATES[randInt(rng, 0, CW_TEMPLATES.length - 1)];
+    var el = document.getElementById('cwGrid');
+    el.innerHTML = '';
+    el.style.gridTemplateColumns = 'repeat(' + t.w + ', 42px)';
+
+    document.getElementById('cwClues').innerHTML = '<b>Hinweise:</b><br>' + t.clues.join('<br>');
+
+    for (var y = 0; y < t.h; y++) {
+        for (var x = 0; x < t.w; x++) {
+            var ch = t.grid[y][x];
+            var inp = document.createElement('input');
+            inp.maxLength = 1;
+            if (ch === ' ') {
+                inp.className = 'cw-cell cw-block';
+                inp.disabled = true;
+            } else {
+                inp.className = 'cw-cell cw-letter';
+                inp.dataset.solution = ch;
+                inp.addEventListener('input', function() {
+                    if (this.value.toUpperCase() === this.dataset.solution) this.style.background = '#c8e6c9';
+                    else if (this.value) this.style.background = '#ffcdd2';
+                    else this.style.background = '#fff';
+                });
+            }
+            el.appendChild(inp);
+        }
+    }
+}
+
+// ============================================================
+//  #4 MAZE (Recursive Backtracker)
+// ============================================================
+function genMaze(rng) {
+    mazeGrid = [];
+    for (var y = 0; y < mazeH; y++) {
+        mazeGrid[y] = [];
+        for (var x = 0; x < mazeW; x++) {
+            mazeGrid[y][x] = { visited: false, walls: { t: true, r: true, b: true, l: true } };
+        }
+    }
+    var stack = [], cur = mazeGrid[0][0];
+    cur.visited = true;
+
+    while (true) {
+        var nb = [];
+        var cx = 0, cy = 0;
+        // find position of cur
+        for (var yy = 0; yy < mazeH; yy++)
+            for (var xx = 0; xx < mazeW; xx++)
+                if (mazeGrid[yy][xx] === cur) { cx = xx; cy = yy; }
+
+        if (cy > 0 && !mazeGrid[cy-1][cx].visited) nb.push({ c: mazeGrid[cy-1][cx], d: 't' });
+        if (cx < mazeW-1 && !mazeGrid[cy][cx+1].visited) nb.push({ c: mazeGrid[cy][cx+1], d: 'r' });
+        if (cy < mazeH-1 && !mazeGrid[cy+1][cx].visited) nb.push({ c: mazeGrid[cy+1][cx], d: 'b' });
+        if (cx > 0 && !mazeGrid[cy][cx-1].visited) nb.push({ c: mazeGrid[cy][cx-1], d: 'l' });
+
+        if (nb.length > 0) {
+            var next = nb[randInt(rng, 0, nb.length - 1)];
+            var opp = { t: 'b', r: 'l', b: 't', l: 'r' };
+            cur.walls[next.d] = false;
+            next.c.walls[opp[next.d]] = false;
+            next.c.visited = true;
+            stack.push(cur);
+            cur = next.c;
+        } else if (stack.length > 0) {
+            cur = stack.pop();
+        } else break;
+    }
+    playerX = 0; playerY = 0;
+    document.getElementById('mazeResult').textContent = '';
+    drawMaze();
+}
+function drawMaze() {
+    var cvs = document.getElementById('mazeCanvas');
+    var ctx = cvs.getContext('2d');
+    ctx.clearRect(0, 0, cvs.width, cvs.height);
+    var wc = printing ? '#000' : '#556';
+    var tc = printing ? '#000' : '#ffca28';
+
+    for (var y = 0; y < mazeH; y++) {
+        for (var x = 0; x < mazeW; x++) {
+            var c = mazeGrid[y][x], px = x * mazeCell, py = y * mazeCell;
+            ctx.strokeStyle = wc; ctx.lineWidth = 2;
+            if (c.walls.t) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + mazeCell, py); ctx.stroke(); }
+            if (c.walls.r) { ctx.beginPath(); ctx.moveTo(px + mazeCell, py); ctx.lineTo(px + mazeCell, py + mazeCell); ctx.stroke(); }
+            if (c.walls.b) { ctx.beginPath(); ctx.moveTo(px, py + mazeCell); ctx.lineTo(px + mazeCell, py + mazeCell); ctx.stroke(); }
+            if (c.walls.l) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py + mazeCell); ctx.stroke(); }
+        }
+    }
+    ctx.fillStyle = tc; ctx.font = 'bold 14px Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText('S', mazeCell / 2, mazeCell / 2);
+    ctx.fillText('Z', (mazeW - 1) * mazeCell + mazeCell / 2, (mazeH - 1) * mazeCell + mazeCell / 2);
+
+    if (!printing) {
+        ctx.fillStyle = '#5c6bc0';
+        ctx.beginPath();
+        ctx.arc(playerX * mazeCell + mazeCell / 2, playerY * mazeCell + mazeCell / 2, mazeCell / 3.5, 0, Math.PI * 2);
+        ctx.fill();
+    }
+}
+document.getElementById('mazeCanvas').addEventListener('keydown', function(e) {
+    var c = mazeGrid[playerY][playerX], moved = false;
+    if (e.key === 'ArrowUp' && !c.walls.t) { playerY--; moved = true; }
+    if (e.key === 'ArrowRight' && !c.walls.r) { playerX++; moved = true; }
+    if (e.key === 'ArrowDown' && !c.walls.b) { playerY++; moved = true; }
+    if (e.key === 'ArrowLeft' && !c.walls.l) { playerX--; moved = true; }
+    if (moved) {
+        e.preventDefault();
+        drawMaze();
+        if (playerX === mazeW - 1 && playerY === mazeH - 1) {
+            document.getElementById('mazeResult').textContent = 'Ziel erreicht!';
+            document.getElementById('mazeResult').style.color = '#66bb6a';
+        }
+    }
+});
+
+// ============================================================
+//  #5 SUDOKU (template + seed-driven rotation / erasure)
+// ============================================================
+var SDK_BASE = [
+    [1,2,3, 4,5,6, 7,8,9],
+    [4,5,6, 7,8,9, 1,2,3],
+    [7,8,9, 1,2,3, 4,5,6],
+    [2,3,1, 5,6,4, 8,9,7],
+    [5,6,4, 8,9,7, 2,3,1],
+    [8,9,7, 2,3,1, 5,6,4],
+    [3,1,2, 6,4,5, 9,7,8],
+    [6,4,5, 9,7,8, 3,1,2],
+    [9,7,8, 3,1,2, 6,4,5]
+];
+function genSudoku(rng, diff) {
+    var el = document.getElementById('sudokuGrid');
+    el.innerHTML = '';
+    var shift = randInt(rng, 1, 8);
+
+    var visChance = diff === 'easy' ? 0.68 : diff === 'medium' ? 0.52 : diff === 'hard' ? 0.38 : 0.26;
+
+    for (var y = 0; y < 9; y++) {
+        for (var x = 0; x < 9; x++) {
+            var v = (SDK_BASE[y][x] + shift - 1) % 9 + 1;
+            var inp = document.createElement('input');
+            inp.type = 'text'; inp.maxLength = 1;
+            inp.className = 'sdk-cell';
+            if ((x + 1) % 3 === 0 && x < 8) inp.classList.add('s3');
+            if ((y + 1) % 3 === 0 && y < 8) inp.classList.add('s6');
+            inp.dataset.solution = v;
+
+            if (rng() < visChance) {
+                inp.value = v;
+                inp.disabled = true;
+            } else {
+                inp.addEventListener('input', function() {
+                    if (this.value === this.dataset.solution) this.style.background = '#c8e6c9';
+                    else if (this.value) this.style.background = '#ffcdd2';
+                    else this.style.background = '#fff';
+                });
+            }
+            el.appendChild(inp);
+        }
+    }
+}
+
+// ============================================================
+//  INIT
+// ============================================================
+window.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('seedInput').value = todaySeed();
+    var info = document.createElement('div');
+    info.className = 'daily-info';
+    info.textContent = 'Rätsel des Tages — ' + todayStr();
+    document.querySelector('h2').after(info);
+    generate();
+});
+</script>
+<!-- Riddler v1.0 | github.com/your-username/riddler -->
+</body>
+</html>
