@@ -278,7 +278,7 @@
             .clues { background: #fff; }
             .clue { border: 1px solid #999; color: #111; background: #fff; }
             .clue .n { background: #000; }
-            .cw-scroll, .cw-bar, #cwActive { display: none !important; }
+            .cw-bar, #cwActive { display: none !important; }
             .cw-grid { --cw: 26px; }
             .cw-w { width: var(--cw); height: var(--cw); }
             .cw-cell { background: #fff; border: 2px solid #000; border-radius: 0; color: transparent; }
@@ -429,6 +429,60 @@
 <script src="data/cw-lex-en.js"></script>
 <script>
 // ============================================================
+//  SFX — WebAudio-FX (generiert, offline, keine Assets)
+//  Tick (richtig) / Buzz (falsch) / Chime (gelöst)
+// ============================================================
+if (!document.addEventListener) document.addEventListener = function(){};
+var SFX = (function() {
+    var ctx = null;
+    function ac() {
+        if (ctx) { if (ctx.state === 'suspended') ctx.resume(); return ctx; }
+        var AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return null;
+        ctx = new AC();
+        return ctx;
+    }
+    function env(g, t, a, peak, rel) {
+        g.gain.cancelScheduledValues(t);
+        g.gain.setValueAtTime(0.0001, t);
+        g.gain.exponentialRampToValueAtTime(peak, t + a);
+        g.gain.exponentialRampToValueAtTime(0.0001, t + a + rel);
+    }
+    function tone(type, freq, peak, attack, release) {
+        var c = ac(); if (!c) return;
+        var o = c.createOscillator(), g = c.createGain();
+        o.type = type; o.frequency.value = freq;
+        o.connect(g); g.connect(c.destination);
+        var t = c.currentTime;
+        env(g, t, attack, peak, release);
+        o.onended = function() { o.disconnect(); g.disconnect(); };
+        o.start(t); o.stop(t + attack + release + 0.02);
+    }
+    function chord(freqs, peak, attack, release) {
+        var c = ac(); if (!c) return;
+        freqs.forEach(function(f, i) {
+            var o = c.createOscillator(), g = c.createGain();
+            o.type = 'sine'; o.frequency.value = f;
+            o.connect(g); g.connect(c.destination);
+            var t = c.currentTime + i * 0.06;
+            env(g, t, attack, peak / (i + 1), release);
+            o.onended = function() { o.disconnect(); g.disconnect(); };
+            o.start(t); o.stop(t + attack + release + 0.02);
+        });
+    }
+    function unlockOnce() { ac(); }
+    document.addEventListener('pointerdown', unlockOnce, { once: true });
+    document.addEventListener('keydown', unlockOnce, { once: true });
+    return {
+        tick:  function() { tone('square', 880, 0.08, 0.004, 0.09); },
+        buzz:  function() { tone('sawtooth', 110, 0.10, 0.005, 0.14); },
+        chime: function() { chord([523.25, 659.25, 783.99, 1046.5], 0.12, 0.01, 0.5); },
+        unlock: function() { ac(); }
+    };
+})();
+// U2thcCBTb3VuZCBTeXN0ZW0gK1JpZGRsZXIgMjAyNg==
+
+// ============================================================
 //  MULBERRY32 — deterministischer PRNG aus einem Integer-Seed
 // ============================================================
 function mulberry32(seed) {
@@ -489,6 +543,7 @@ function markSolved(seed, diff, p) {
     try { localStorage.setItem('riddler-progress', JSON.stringify(storage)); } catch (e) {}
     var el = document.getElementById('solved-' + p);
     if (el) el.classList.remove('hidden');
+    SFX.chime();
 }
 function unmarkSolved(seed, diff, p) {
     var k = solKey(seed, diff);
@@ -563,10 +618,12 @@ function checkMath() {
     if (v === mathSolution) {
         res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
         flash(document.getElementById('p-math'), 'pop');
+        SFX.tick();
         markSolved(curSeed, curDiff, 'math');
     } else {
         res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
         flash(document.getElementById('p-math'), 'shake');
+        SFX.buzz();
     }
 }
 
@@ -610,10 +667,12 @@ function checkWord() {
     if (v === wordSolution) {
         res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
         flash(document.getElementById('p-word'), 'pop');
+        SFX.tick();
         markSolved(curSeed, curDiff, 'word');
     } else {
         res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
         flash(document.getElementById('p-word'), 'shake');
+        SFX.buzz();
     }
 }
 
@@ -1245,8 +1304,8 @@ function cwType(inp) {
     var v = inp.value.toUpperCase().replace(/[^A-Z]/g, '');
     inp.value = v;
     var wasBad = inp.classList.contains('bad');
-    if (v === inp.dataset.solution) { inp.classList.add('ok'); inp.classList.remove('bad'); }
-    else if (v) { inp.classList.remove('ok'); inp.classList.add('bad'); if (!wasBad) flash(inp, 'shake'); }
+    if (v === inp.dataset.solution) { inp.classList.add('ok'); inp.classList.remove('bad'); SFX.tick(); }
+    else if (v) { inp.classList.remove('ok'); inp.classList.add('bad'); if (!wasBad) { flash(inp, 'shake'); SFX.buzz(); } }
     else { inp.classList.remove('ok', 'bad'); }
     var a = cwState.active;
     var ridx = cwCellEntry(a.r, a.c, a.dir);
@@ -1518,8 +1577,8 @@ function genSudoku(rng, diff) {
 }
 function numeric(inp) {
     inp.value = inp.value.replace(/[^1-9]/g, '');
-    if (inp.value === inp.dataset.solution) inp.classList.add('ok');
-    else if (inp.value) { inp.classList.add('bad'); flash(inp, 'shake'); }
+    if (inp.value === inp.dataset.solution) { inp.classList.add('ok'); SFX.tick(); }
+    else if (inp.value) { inp.classList.add('bad'); flash(inp, 'shake'); SFX.buzz(); }
     else inp.classList.remove('ok', 'bad');
 }
 function sdkSolved() {
