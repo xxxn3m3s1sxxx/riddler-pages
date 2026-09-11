@@ -5,7 +5,7 @@ Seed-basierte Rätselbox — 5 Rätseltypen, deterministisch generiert aus einem
 ## Features
 - **Symbol-Arithmetik** — Symbole → Zahlen
 - **Buchstabensalat** — Anagramm entschlüsseln
-- **Kreuzworträtsel** — Template-basiert
+- **Kreuzworträtsel** — deterministischer Lexikon-Fill (CSP) mit DE/EN-Umschalter und NYT-Nummerierung
 - **Labyrinth** — Recursive-Backtracker, per Pfeiltasten spielbar
 - **Sudoku** — Rotation + seed-gesteuertes Löschen
 

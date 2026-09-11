@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#0B0D14">
-    <meta name="riddler:payload" content="UmlkZGxlciB2Mi4wIHwgUHJlbWl1bSBEYWlseSBFbmdpbmU=">
+    <meta name="riddler:payload" content="UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ==">
     <title>Riddler — Seed-basierte Rätselbox</title>
     <style>
         :root {
@@ -64,6 +64,10 @@
         .puzzle:hover { border-color: var(--line2); }
         .card-head { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 6px; }
         .card-head h3 { font-size: 16px; font-weight: 650; letter-spacing: -.2px; }
+        .cw-langs { display: inline-flex; gap: 3px; margin: 1px 0 0 2px; }
+        .cw-lang { font: 700 11px var(--mono); padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line2); background: transparent; color: var(--txt3); cursor: pointer; }
+        .cw-lang:hover { border-color: var(--indigo2); color: var(--txt); }
+        .cw-lang.active { background: var(--indigo2); border-color: var(--indigo2); color: #fff; }
         .idx {
             font: 700 10px var(--mono); letter-spacing: 1.5px; color: var(--indigo2);
             background: var(--indigo-dim); border: 1px solid rgba(99,102,241,.35);
@@ -166,28 +170,52 @@
         .topic-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
 
         /* ---------- #3 Crossword ---------- */
-        .clues { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 14px; }
+        .clues { display: flex; flex-wrap: wrap; gap: 6px; margin: 12px 0 6px; }
+        .clues .group-heading { flex-basis: 100%; font: 750 12px var(--mono); letter-spacing: .05em; color: var(--txt3); text-transform: uppercase; margin: 2px 0 -2px; }
+        .clues .group-heading.d { margin-top: 10px; }
+        @media print {
+            .clues .group-heading { color: #000; }
+        }
         .clue {
             display: inline-flex; align-items: center; gap: 7px; font-size: 12px; color: var(--txt2);
             background: var(--card2); border: 1px solid var(--line); border-radius: 999px;
-            padding: 4px 11px 4px 5px;
+            padding: 4px 11px 4px 5px; cursor: pointer;
+            transition: border-color .15s ease, background .15s ease, color .15s ease;
         }
+        .clue:hover { border-color: var(--line2); color: var(--txt); }
         .clue .n {
             min-width: 19px; height: 19px; display: grid; place-items: center;
             background: var(--indigo); color: #fff; border-radius: 999px; font-size: 10px; font-weight: 750;
         }
         .clue .d { color: var(--txt3); font-size: 11px; font-weight: 750; }
-        .cw-grid { display: grid; gap: 4px; width: max-content; margin: 0 auto; }
+        .clue.hot { border-color: var(--indigo2); color: var(--txt); background: var(--indigo-dim); }
+        .cw-scroll { overflow-x: auto; margin-top: 10px; padding: 4px 2px 8px; }
+        .cw-grid {
+            --cw: clamp(29px, 6.4vw, 42px);
+            display: grid; grid-template-columns: repeat(var(--n), var(--cw)); gap: 4px;
+            width: max-content; margin: 0 auto;
+        }
+        .cw-w { position: relative; width: var(--cw); height: var(--cw); }
         .cw-cell {
-            position: relative; width: 40px; height: 40px; min-width: 0; min-height: 0; padding: 0;
-            border-radius: 6px; text-align: center; font: 700 17px var(--mono); text-transform: uppercase;
+            width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 0;
+            border-radius: 6px; text-align: center; font: 700 calc(var(--cw) * .44) var(--mono); text-transform: uppercase;
             color: #0F172A; background: #F8FAFC; border: 1px solid #C7CDDB; cursor: pointer;
         }
-        .cw-letter:focus { outline: 2px solid var(--indigo); outline-offset: -2px; }
-        .cw-num { position: absolute; top: 1px; left: 4px; font: 700 8px var(--sans); color: var(--txt3); pointer-events: none; }
-        .cw-block { background: var(--bg); border-color: var(--bg); cursor: default; }
+        input.cw-letter:focus { outline: 2px solid var(--indigo2); outline-offset: -2px; }
+        .current { outline: 2px solid var(--indigo2); outline-offset: -1px; box-shadow: 0 0 0 4px var(--indigo-dim); }
+        .cw-num { position: absolute; top: 0; left: 4px; z-index: 2; font: 750 calc(var(--cw) * .26) var(--sans); color: var(--txt3); pointer-events: none; line-height: 1.1; }
+        .cw-block { background: var(--bg); border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
         .cw-cell.ok { background: #D1FAE5; border-color: #6EE7B7; }
         .cw-cell.bad { background: #FEE2E2; border-color: #FCA5A5; }
+        .cw-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
+        .cw-active {
+            display: inline-block; max-width: 100%; vertical-align: middle;
+            font: 600 12px var(--sans); color: var(--txt2); background: var(--card2);
+            border: 1px solid var(--line); border-radius: 12px; padding: 6px 12px;
+            white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+        }
+        .cw-active b { color: var(--indigo2); font-weight: 750; }
+        .cw-hint { font: 700 12px var(--mono); color: var(--amber); }
 
         /* ---------- #4 Maze ---------- */
         #mazeCanvas {
@@ -250,8 +278,12 @@
             .clues { background: #fff; }
             .clue { border: 1px solid #999; color: #111; background: #fff; }
             .clue .n { background: #000; }
+            .cw-scroll, .cw-bar, #cwActive { display: none !important; }
+            .cw-grid { --cw: 26px; }
+            .cw-w { width: var(--cw); height: var(--cw); }
             .cw-cell { background: #fff; border: 2px solid #000; border-radius: 0; color: transparent; }
-            .cw-block { background: #000; border-color: #000; }
+            .cw-num { color: #000 !important; }
+            .cw-block { background: #000; border-radius: 0; }
             .cw-cell.ok, .cw-cell.bad { background: #fff; }
             .sdk-grid { border-color: #000; }
             .sdk-cell { background: #fff; border: 1px solid #999; }
@@ -340,10 +372,21 @@
     <section class="card puzzle" id="p-crossword">
         <div class="card-head">
             <h3><span class="idx">03</span>&nbsp; Kreuzworträtsel</h3>
+            <span class="cw-langs">
+                <button class="cw-lang active" type="button" data-lang="DE" title="Deutsch">DE</button>
+                <button class="cw-lang" type="button" data-lang="EN" title="English">EN</button>
+            </span>
             <span class="pill hidden" id="solved-crossword">Gelöst ✓</span>
         </div>
+        <div class="cw-bar"><span class="cw-active" id="cwActive">Tippe eine Zelle an, um zu starten</span></div>
+        <div class="cw-scroll">
+            <div class="cw-grid" id="cwGrid"></div>
+        </div>
+        <div class="cw-bar">
+            <button class="btn small" id="cwHintBtn" type="button">💡 Hinweis <span class="cw-hint" id="cwHintsLeft">3</span></button>
+            <span class="keystroke">Eingabe = Auto-Sprung · Backspace = zurück · Pfeile = bewegen · Leertaste = Richtung</span>
+        </div>
         <div class="clues" id="cwClues"></div>
-        <div class="cw-grid" id="cwGrid"></div>
         <div class="print-line">Hinweise und Lösung: siehe Legende</div>
     </section>
 
@@ -376,10 +419,14 @@
 
     <footer class="foot">
         Deterministisch via <code>Mulberry32</code> · gleicher Seed = gleiche Rätsel für alle<br>
+        Kreuzwort-Lexika: <code>OpenThesaurus</code> (LGPL, <code>openthesaurus.de</code>) · <code>WordNet 3.1</code> (Princeton, <code>wordnet.princeton.edu</code>); Themen-Deck aus <code>davidak/wortliste</code> (offen lizenziert)<br>
         Kein Tracking, keine Cookies · Mach dir die Vorlage als PDF und spiel offline
     </footer>
 </div>
 
+<script src="data/cw-layouts.js"></script>
+<script src="data/cw-lex-de.js"></script>
+<script src="data/cw-lex-en.js"></script>
 <script>
 // ============================================================
 //  MULBERRY32 — deterministischer PRNG aus einem Integer-Seed
@@ -443,6 +490,15 @@ function markSolved(seed, diff, p) {
     var el = document.getElementById('solved-' + p);
     if (el) el.classList.remove('hidden');
 }
+function unmarkSolved(seed, diff, p) {
+    var k = solKey(seed, diff);
+    if (storage[k]) {
+        delete storage[k][p];
+        try { localStorage.setItem('riddler-progress', JSON.stringify(storage)); } catch (e) {}
+    }
+    var el = document.getElementById('solved-' + p);
+    if (el) el.classList.add('hidden');
+}
 function updateSolvedPills(seed, diff) {
     ['math', 'word', 'crossword', 'maze', 'sudoku'].forEach(function(p) {
         var el = document.getElementById('solved-' + p);
@@ -458,7 +514,7 @@ function generate() {
     var diff = currentDiff;
     genMath(mulberry32(seed + 100), diff, seed);
     genWord(mulberry32(seed + 200), diff);
-    genCrossword(mulberry32(seed + 300));
+    genCrossword(seed);
     genMaze(mulberry32(seed + 400));
     genSudoku(mulberry32(seed + 500), diff);
     updateSolvedPills(seed, diff);
@@ -564,106 +620,740 @@ function checkWord() {
 // ============================================================
 //  #3 CROSSWORD
 // ============================================================
-var CW_TEMPLATES = [
-    { w: 4, h: 4,
-      grid: [['H','T','M','L'], ['O','.','.','.'], ['S','.','.','.'], ['T','.','.','.']],
-      entries: [
-          { r: 0, c: 0, len: 4, dir: 'a', clue: 'Grundgerüst einer Webseite' },
-          { r: 0, c: 0, len: 4, dir: 'd', clue: 'Netzwerk-Knoten' }
-      ] },
-    { w: 4, h: 4,
-      grid: [['C','O','D','E'], ['A','.','.','.'], ['S','.','.','.'], ['E','.','.','.']],
-      entries: [
-          { r: 0, c: 0, len: 4, dir: 'a', clue: 'Anweisungen für den Computer' },
-          { r: 0, c: 0, len: 4, dir: 'd', clue: 'Gehäuse (engl.)' }
-      ] },
-    { w: 4, h: 4,
-      grid: [['P','I','N','G'], ['A','.','.','.'], ['T','.','.','.'], ['H','.','.','.']],
-      entries: [
-          { r: 0, c: 0, len: 4, dir: 'a', clue: 'Netzwerk-Testbefehl' },
-          { r: 0, c: 0, len: 4, dir: 'd', clue: 'Dateipfad (engl.)' }
-      ] },
-    { w: 6, h: 6,
-      grid: [['C','L','O','U','D','B'], ['.','E','.','.','.','R'], ['.','G','.','.','.','A'],
-             ['.','O','.','.','.','N'], ['.','.','.','.','.','C'], ['.','.','.','.','.','H']],
-      entries: [
-          { r: 0, c: 0, len: 5, dir: 'a', clue: 'Wolkenspeicher' },
-          { r: 0, c: 5, len: 6, dir: 'd', clue: 'Abspaltung im Git-Repo' }
-      ] },
-    { w: 5, h: 5,
-      grid: [['C','A','C','H','E'], ['H','.','.','.','.'], ['I','.','.','.','.'],
-             ['P','.','.','.','.'], ['S','.','.','.','.']],
-      entries: [
-          { r: 0, c: 0, len: 5, dir: 'a', clue: 'Puffer-Speicher (engl.)' },
-          { r: 0, c: 0, len: 5, dir: 'd', clue: 'Halbleiter-Bausteine' }
-      ] },
-    { w: 6, h: 6,
-      grid: [['M','O','U','S','E','.'], ['O','.','.','.','.','.'], ['D','.','.','.','.','.'],
-             ['E','.','.','.','.','.'], ['M','.','.','.','.','.'], ['.','.','.','.','.','.']],
-      entries: [
-          { r: 0, c: 0, len: 5, dir: 'a', clue: 'Eingabegerät (engl.)' },
-          { r: 0, c: 0, len: 5, dir: 'd', clue: 'Einwahl-Gerät (engl., alt)' }
-      ] }
+var CW_DECK = [
+    { w: 'CODE', clue: 'Anweisungen für den Computer' },
+    { w: 'DATEN', clue: 'Rohstoff der digitalen Welt' },
+    { w: 'SERVER', clue: 'Rechner im Netz für andere' },
+    { w: 'PIXEL', clue: 'Kleinstes Element eines Bildschirms' },
+    { w: 'CLOUD', clue: 'Speicher im Internet' },
+    { w: 'ROUTER', clue: 'Leitet Datenpakete im Netz weiter' },
+    { w: 'CACHE', clue: 'Schneller Zwischenspeicher' },
+    { w: 'PUFFER', clue: 'Zwischenspeicher zum Ausgleich von Datenstau' },
+    { w: 'TOKEN', clue: 'Kennzeichnungselement in der Informatik' },
+    { w: 'ALIAS', clue: 'Zweiter Name für eine Ressource' },
+    { w: 'LASER', clue: 'Gerichteter gebündelter Lichtstrahl' },
+    { w: 'RADAR', clue: 'Ortungsverfahren mit Wellen' },
+    { w: 'SONAR', clue: 'Unterwasserortung mit Schall' },
+    { w: 'DATEI', clue: 'Abgelegte Information auf dem Rechner' },
+    { w: 'MAUS', clue: 'Zeigegerät am Computer' },
+    { w: 'MOND', clue: 'Helle Nachtleuchte am Himmel' },
+    { w: 'BAUM', clue: 'Hohe Pflanze mit Stamm und Krone' },
+    { w: 'FLUSS', clue: 'Fließendes Gewässer' },
+    { w: 'NEBEL', clue: 'Dichter Dunst am Boden' },
+    { w: 'REGEN', clue: 'Wassertropfen aus der Wolke' },
+    { w: 'SONNE', clue: 'Strahlender Stern am Taghimmel' },
+    { w: 'STEIN', clue: 'Harter Bestandteil des Bodens' },
+    { w: 'BLUME', clue: 'Bunte Blüte einer Pflanze' },
+    { w: 'WALD', clue: 'Dichter Baumbestand' },
+    { w: 'WOLKE', clue: 'Schwebende Wassermasse am Himmel' },
+    { w: 'EICHE', clue: 'Laubbaum mit Eicheln' },
+    { w: 'MOOS', clue: 'Weicher Bewuchs auf Steinen' },
+    { w: 'KIES', clue: 'Kleine runde Gesteinsstücke' },
+    { w: 'AMEISE', clue: 'Kleines staatenbildendes Insekt' },
+    { w: 'NELKE', clue: 'Duftende Blume oder Gewürz' },
+    { w: 'STUHL', clue: 'Sitzmöbel mit Rücken' },
+    { w: 'TISCH', clue: 'Möbelfläche zum Essen und Arbeiten' },
+    { w: 'BRILLE', clue: 'Sehhilfe für die Augen' },
+    { w: 'HEIZUNG', clue: 'Wärmequelle im Raum' },
+    { w: 'GELENK', clue: 'Bewegliche Verbindung zweier Knochen' },
+    { w: 'TASCHE', clue: 'Behältnis aus Stoff oder Leder' },
+    { w: 'SCHLOSS', clue: 'Verschluss von Türen oder Burgen' },
+    { w: 'ZANGE', clue: 'Werkzeug zum Greifen und Halten' },
+    { w: 'BOHRER', clue: 'Werkzeug zum Herstellen von Löchern' },
+    { w: 'FEILE', clue: 'Werkzeug zum Abtragen von Material' },
+    { w: 'LAMPE', clue: 'Lichtspender auf dem Tisch' },
+    { w: 'SCHUHE', clue: 'Fußbekleidung zum Schutz' },
+    { w: 'TEPPICH', clue: 'Weicher Bodenbelag im Zimmer' },
+    { w: 'DRAHT', clue: 'Dünnes Metall zum Verbinden' },
+    { w: 'FEDER', clue: 'Schreib- oder Bauteil zum Biegen' },
+    { w: 'GLUECK', clue: 'Zustand großer Zufriedenheit' },
+    { w: 'ANGST', clue: 'Unangenehmes Gefühl der Furcht' },
+    { w: 'STOLZ', clue: 'Befriedigung über eigene Leistung' },
+    { w: 'TRAUM', clue: 'Bild im Kopf während des Schlafs' },
+    { w: 'RUHE', clue: 'Zustand der Stille und des Friedens' },
+    { w: 'KRAFT', clue: 'Vermögen, etwas zu bewirken' },
+    { w: 'ORDNUNG', clue: 'Systematische Anordnung' },
+    { w: 'THEMA', clue: 'Gegenstand einer Betrachtung' },
+    { w: 'ZIEL', clue: 'Angestrebter Endpunkt' },
+    { w: 'GRUND', clue: 'Ursache oder Begründung' },
+    { w: 'INSEL', clue: 'Von Wasser umschlossenes Landstück' },
+    { w: 'REGEL', clue: 'Festgelegte Richtlinie' },
+    { w: 'GEIST', clue: 'Unstoffliches Wesen oder Denkvermögen' },
+    { w: 'MORAL', clue: 'Sittlicher Maßstab' },
+    { w: 'FORMEL', clue: 'Mathematische Gleichung' }
 ];
-var cwLetterInputs = [];
-function genCrossword(rng) {
-    var t = CW_TEMPLATES[randInt(rng, 0, CW_TEMPLATES.length - 1)];
-    var nums = {}, n = 1;
-    t.entries.forEach(function(e) {
-        var key = e.r + ',' + e.c;
-        if (nums[key] === undefined) { nums[key] = n; n++; }
-    });
+var CW_DECK_MAP = {};
+CW_DECK.forEach(function(d) { CW_DECK_MAP[d.w] = d.clue; });
+// ---- language toggle (DE/EN) ---------------------------------------------
+var cwLang = 'DE';
+try { if (localStorage.getItem('riddler-lang') === 'EN') cwLang = 'EN'; } catch (e) {}
+function cwSyncLangUI() {
+    var els = document.querySelectorAll('#p-crossword .cw-lang');
+    for (var i = 0; i < els.length; i++) els[i].classList.toggle('active', els[i].getAttribute('data-lang') === cwLang);
+}
+function cwToggleLang(l) {
+    if ((l !== 'DE' && l !== 'EN') || l === cwLang) return;
+    cwLang = l;
+    try { localStorage.setItem('riddler-lang', cwLang); } catch (e) {}
+    cwSyncLangUI();
+    unmarkSolved(curSeed, curDiff, 'crossword');
+    genCrossword(curSeed);
+}
+function cwBindLangButtons() {
+    var els = document.querySelectorAll('#p-crossword .cw-lang');
+    for (var i = 0; i < els.length; i++) {
+        els[i].addEventListener('click', (function (l) { return function () { cwToggleLang(l); }; })(els[i].getAttribute('data-lang')));
+    }
+}
 
+// cw-engine-core.js — Riddler crossword fill engine (ES5, DOM-free, deterministic).
+//
+// Globals consumed (provided by the embedding page / bundle):
+//   CW_LAYOUTS  : array of { n, g } grid templates (' ' = white, '#' = block, '.' = block)
+//   CW_LEX_DE   : { DE_WORD: clue, ... }   (UPPERCASE keys)
+//   CW_LEX_EN   : { en_word: clue, ... }   (lowercase keys)
+//
+// Exported: window.cwGenTest = { generate(lang, seed) -> plan, render(plan, dom) }
+//   plan = { n, grid: string[], across: [], down: [] }  (across/down entries:
+//   { num, dir, r, c, len, word, clue })
+//
+// Deterministic RNG streams:
+//   - seed+300 (mulberry32) -> first draws: base (layout offset), seedBase
+//   - sizes shuffled from that same stream (Fisher-Yates)
+//   - each fill attempt draws its own attempt seed from the SAME stream (variant B:
+//     each attempt gets an independent global draw -> de-correlated rotations)
+//   - fill uses mulberry32(attemptSeed); candidate lists are rotated by a random
+//     offset drawn from the attempt stream
+// No Math.random, no Date, no host I/O. fill is a consensus CSP with MRV-lite run
+// ordering, per-size node budgets and randomized restarts (size-first roster).
+
+// ---- RNG helpers ---------------------------------------------------------------
+function cwMulberry32(seed) {
+  return function () {
+    seed |= 0; seed = seed + 0x6D2B79F5 | 0;
+    var t = Math.imul(seed ^ seed >>> 15, 1 | seed);
+    t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+    return ((t ^ t >>> 14) >>> 0) / 4294967296;
+  };
+}
+function cwRandInt(rng, lo, hi) { return Math.floor(rng() * (hi - lo + 1)) + lo; }
+
+// ---- lexicon index --------------------------------------------------------------
+var cwWordsIdxCache = {};
+function cwWordsByLen(lang) {
+  if (cwWordsIdxCache[lang]) return cwWordsIdxCache[lang];
+  var lex = lang === 'EN' ? CW_LEX_EN : CW_LEX_DE;
+  var by = {};
+  for (var k in lex) {
+    if (!Object.prototype.hasOwnProperty.call(lex, k)) continue;
+    var L = k.length;
+    if (L < 3 || L > 13) continue;
+    (by[L] = by[L] || []).push(k);
+  }
+  return (cwWordsIdxCache[lang] = by);
+}
+function cwLexClue(lang, word) {
+  var lex = lang === 'EN' ? CW_LEX_EN : CW_LEX_DE;
+  if (!Object.prototype.hasOwnProperty.call(lex, word)) return '';
+  // DE: curated theme-deck clue overrides the generic lexicon description
+  // (CW_DECK_MAP may be absent in the headless bundle — guard defensively).
+  if (lang === 'DE' && typeof CW_DECK_MAP !== 'undefined' && CW_DECK_MAP &&
+      Object.prototype.hasOwnProperty.call(CW_DECK_MAP, word)) {
+    return CW_DECK_MAP[word];
+  }
+  return lex[word];
+}
+
+// ---- layout precomputation -------------------------------------------------------
+var cwLayoutCache = {}; // layoutId -> { n, runs: [{dir,r,c,len,cells:[{r,c}]}], cellOwners, crosses }
+function cwGetLayout(layoutId) {
+  if (cwLayoutCache[layoutId]) return cwLayoutCache[layoutId];
+  var L = CW_LAYOUTS[layoutId], n = L.n, g = L.g;
+  var runs = [];
+  var r, c, c0, r0, j;
+  for (r = 0; r < n; r++) { c = 0;
+    while (c < n) {
+      if (g.charAt(r * n + c) === ' ') {
+        c0 = c; while (c < n && g.charAt(r * n + c) === ' ') c++;
+        if (c - c0 >= 3) { var cells = []; for (j = c0; j < c; j++) cells.push({ r: r, c: j }); runs.push({ dir: 'a', r: r, c: c0, len: c - c0, cells: cells }); }
+      } else c++;
+    } }
+  for (c = 0; c < n; c++) { r = 0;
+    while (r < n) {
+      if (g.charAt(r * n + c) === ' ') {
+        r0 = r; while (r < n && g.charAt(r * n + c) === ' ') r++;
+        if (r - r0 >= 3) { var cells2 = []; for (j = r0; j < r; j++) cells2.push({ r: j, c: c }); runs.push({ dir: 'd', r: r0, c: c, len: r - r0, cells: cells2 }); }
+      } else r++;
+    } }
+  var cellOwners = {};
+  for (var i = 0; i < runs.length; i++) {
+    var cl = runs[i].cells;
+    for (var q = 0; q < cl.length; q++) {
+      var key = cl[q].r + ',' + cl[q].c;
+      (cellOwners[key] = cellOwners[key] || []).push({ ri: i, off: q });
+    }
+  }
+  var crosses = [];
+  for (i = 0; i < runs.length; i++) crosses.push([]);
+  for (var kk in cellOwners) {
+    var o = cellOwners[kk];
+    if (o.length === 2) { crosses[o[0].ri].push(o[1].ri); crosses[o[1].ri].push(o[0].ri); }
+  }
+  return (cwLayoutCache[layoutId] = { n: n, runs: runs, cellOwners: cellOwners, crosses: crosses });
+}
+
+// ---- the CSP fill (validated: fixed unassign restores crossing owners) ----------
+// Returns { words: [word,...], grid: {} key->letter } or null (budget exhausted).
+function cwFillLayout(layoutId, lang, budget, rng) {
+  var L = cwGetLayout(layoutId);
+  var n = L.n, runs = L.runs, cellOwners = L.cellOwners, crosses = L.crosses;
+  var byLen = cwWordsByLen(lang);
+  var grid = {}, words = [], assigned = [], used = {};
+  var i, q;
+  for (i = 0; i < runs.length; i++) { words.push(null); assigned.push(false); }
+  var nodes = 0;
+  var candCache = {};
+  function fixedPattern(ri) {
+    var cl = runs[ri].cells, pat = [];
+    for (var qq = 0; qq < cl.length; qq++) {
+      var ch = grid[cl[qq].r + ',' + cl[qq].c];
+      pat.push(ch || null);
+    }
+    return pat;
+  }
+  function computeCands(ri) {
+    var cl = runs[ri].cells, Ln = cl.length, base = byLen[Ln];
+    if (!base) return [];
+    var pat = fixedPattern(ri), key = '' + ri + '|';
+    for (var pp = 0; pp < pat.length; pp++) key += pat[pp] || '.';
+    if (candCache[key]) return candCache[key];
+    var cands = [];
+    for (var w = 0; w < base.length; w++) {
+      var word = base[w], ok = true;
+      for (var qq2 = 0; qq2 < pat.length; qq2++) {
+        if (pat[qq2] && word.charAt(qq2) !== pat[qq2]) { ok = false; break; }
+      }
+      if (ok) cands.push(word);
+    }
+    if (cands.length > 1) {
+      var s2 = cwRandInt(rng, 0, cands.length - 1), out2 = [];
+      for (var m = s2; m < cands.length; m++) out2.push(cands[m]);
+      for (var m2 = 0; m2 < s2; m2++) out2.push(cands[m2]);
+      cands = out2;
+    }
+    return (candCache[key] = cands);
+  }
+  function chooseRun() {
+    var best = -1, bestScore = -Infinity;
+    for (var i2 = 0; i2 < runs.length; i2++) {
+      if (assigned[i2]) continue;
+      var cl2 = runs[i2].cells, fixed = 0;
+      for (var qq3 = 0; qq3 < cl2.length; qq3++) if (grid[cl2[qq3].r + ',' + cl2[qq3].c]) fixed++;
+      var baseLen = byLen[cl2.length] ? byLen[cl2.length].length : 0;
+      var score = fixed * 1000000 + crosses[i2].length * 1000 - baseLen;
+      if (score > bestScore) { bestScore = score; best = i2; }
+    }
+    return best;
+  }
+  function assignWord(ri, word) {
+    var cl = runs[ri].cells;
+    for (var qq4 = 0; qq4 < cl.length; qq4++) grid[cl[qq4].r + ',' + cl[qq4].c] = word.charAt(qq4);
+    words[ri] = word; assigned[ri] = true; used[word] = true;
+  }
+  function unassign(ri) {
+    var cl = runs[ri].cells;
+    for (var qq5 = 0; qq5 < cl.length; qq5++) {
+      var k5 = cl[qq5].r + ',' + cl[qq5].c, owners = cellOwners[k5];
+      if (owners && owners.length === 2) {
+        var other = owners[0].ri === ri ? owners[1] : owners[0];
+        if (assigned[other.ri] && words[other.ri]) grid[k5] = words[other.ri].charAt(other.off);
+        else delete grid[k5];
+      } else delete grid[k5];
+    }
+    used[words[ri]] = false; words[ri] = null; assigned[ri] = false;
+  }
+  function solve() {
+    nodes++;
+    if (nodes > budget) return null;
+    var ri = chooseRun();
+    if (ri < 0) return words.slice();
+    var candsList = computeCands(ri), cl3 = runs[ri].cells;
+    for (var cdx = 0; cdx < candsList.length; cdx++) {
+      var w2 = candsList[cdx], okAssign = true;
+      for (var qq6 = 0; qq6 < cl3.length; qq6++) {
+        var ch6 = grid[cl3[qq6].r + ',' + cl3[qq6].c];
+        if (ch6 && ch6 !== w2.charAt(qq6)) { okAssign = false; break; }
+      }
+      if (!okAssign || used[w2]) continue;
+      assignWord(ri, w2);
+      var res = solve();
+      if (res) return res;
+      unassign(ri);
+    }
+    return null;
+  }
+  return solve(); // words or null
+}
+
+// ---- plan assembly ----------------------------------------------------------------
+// Per-size config: layout preference order (best success rate first), node budget,
+// restart count per layout. Sizes are roistered per seed (shuffled) so that over a
+// sweep of seeds every size produces plans (layout-size coverage for the suite).
+var CWS = {
+  7:  { layouts: [1, 0],        budget: 20000, restarts: 6 },
+  9:  { layouts: [3, 4, 2],     budget: 3000,  restarts: 2 },
+  11: { layouts: [6, 7, 5],     budget: 6000,  restarts: 2 },
+  13: { layouts: [8, 9, 10],    budget: 12000, restarts: 1 }
+};
+function cwPlanOnce(lang, seed) {
+  var rng = cwMulberry32(seed + 300);
+  var base = cwRandInt(rng, 0, 10);
+  cwRandInt(rng, 0, 2147483646); // seedBase draw (kept for stream stability)
+  var sizes = [7, 9, 11, 13];
+  for (var i = sizes.length - 1; i > 0; i--) {
+    var j = cwRandInt(rng, 0, i), t = sizes[i]; sizes[i] = sizes[j]; sizes[j] = t;
+  }
+  var attemptCounter = 0;
+  for (var si = 0; si < sizes.length; si++) {
+    var size = sizes[si], cfg = CWS[size], layoutIds = cfg.layouts;
+    for (var li = 0; li < layoutIds.length; li++) {
+      var layoutId = layoutIds[li];
+      for (var r = 0; r < cfg.restarts; r++) {
+        attemptCounter++;
+        var attSeed = cwRandInt(rng, 0, 2147483646); // variant B: independent global draw
+        var attRng = cwMulberry32(attSeed);
+        var words = cwFillLayout(layoutId, lang, cfg.budget, attRng);
+        if (words) return { size: size, layoutId: layoutId, words: words, n: CW_LAYOUTS[layoutId].n };
+      }
+    }
+  }
+  return null; // all sizes failed (should not happen with sizes 9/11 roistered early)
+}
+
+// NYT-standard numbering: shared number at branch start cells, ascending reading order.
+function cwNyNumber(runs) {
+  var seen = {}, distinct = [], startNum = {};
+  for (var i = 0; i < runs.length; i++) {
+    var key = runs[i].r + ',' + runs[i].c;
+    if (!seen[key]) { seen[key] = true; distinct.push(key); }
+  }
+  distinct.sort(function (a, b) {
+    var ra = a.split(','), rb = b.split(',');
+    return (ra[0] - rb[0]) || (ra[1] - rb[1]);
+  });
+  for (var d = 0; d < distinct.length; d++) startNum[distinct[d]] = d + 1;
+  var out = [];
+  for (var i2 = 0; i2 < runs.length; i2++) {
+    out.push({ num: startNum[runs[i2].r + ',' + runs[i2].c], ru: runs[i2] });
+  }
+  return out;
+}
+
+// ---- the public contract -------------------------------------------------------------
+// generate(lang, seed): deterministic, DOM-free. lang: 'de'|'en' (also 'DE'/'EN');
+// unknown langs deterministically fall back to DE.
+function cwGenerate(lang, seed) {
+  var L = (typeof lang === 'string' ? lang.toLowerCase() : 'de') === 'en' ? 'EN' : 'DE';
+  var seedNum = typeof seed === 'number' ? seed : 0;
+  var res = cwPlanOnce(L, seedNum);
+  if (!res) res = { size: 9, layoutId: 2, words: cwFillLayout(2, L, 12000, cwMulberry32(12345)), n: 9 }; // ultra fallback
+  var lays = cwGetLayout(res.layoutId);
+  var n = res.n, words = res.words;
+  var grid2 = [], big = {};
+  var r, c;
+  // fill letters from words
+  for (var wi = 0; wi < lays.runs.length; wi++) {
+    var ru = lays.runs[wi], w = words[wi];
+    for (var jw = 0; jw < ru.cells.length; jw++) {
+      big[ru.cells[jw].r + ',' + ru.cells[jw].c] = w.charAt(jw);
+    }
+  }
+  for (r = 0; r < n; r++) {
+    var row2 = '';
+    for (c = 0; c < n; c++) {
+      var cellCh = CW_LAYOUTS[res.layoutId].g.charAt(r * n + c);
+      row2 += cellCh === ' ' ? big[r + ',' + c] : cellCh;
+    }
+    grid2.push(row2);
+  }
+  // derived runs on the filled grid (validate + cross-check)
+  var derived = [];
+  for (r = 0; r < n; r++) { var s = -1;
+    for (c = 0; c <= n; c++) {
+      var white = c < n && grid2[r].charAt(c) !== '#' && grid2[r].charAt(c) !== '.';
+      if (white && s < 0) s = c;
+      if (!white && s >= 0) { if (c - s >= 3) derived.push({ dir: 'a', r: r, c: s, len: c - s }); s = -1; }
+    } }
+  for (c = 0; c < n; c++) { var s2 = -1;
+    for (r = 0; r <= n; r++) {
+      var white2 = r < n && grid2[r].charAt(c) !== '#' && grid2[r].charAt(c) !== '.';
+      if (white2 && s2 < 0) s2 = r;
+      if (!white2 && s2 >= 0) { if (r - s2 >= 3) derived.push({ dir: 'd', r: s2, c: c, len: r - s2 }); s2 = -1; }
+    } }
+  var numed = cwNyNumber(derived);
+  var across = [], down = [];
+  for (var di = 0; di < numed.length; di++) {
+    var e = numed[di], ww = '';
+    for (var jj = 0; jj < e.ru.len; jj++) {
+      ww += e.ru.dir === 'a'
+        ? grid2[e.ru.r].charAt(e.ru.c + jj)
+        : grid2[e.ru.r + jj].charAt(e.ru.c);
+    }
+    var entry = { num: e.num, dir: e.ru.dir, r: e.ru.r, c: e.ru.c, len: e.ru.len, word: ww, clue: cwLexClue(L, ww) };
+    if (e.ru.dir === 'a') across.push(entry); else down.push(entry);
+  }
+  return { n: n, grid: grid2, across: across, down: down, lang: L };
+}
+
+// render(plan, dom) — L1 view: grouped clue pills (across/down), NYT numbers.
+function cwRender(plan, dom) {
+  if (!plan || !dom || typeof dom !== 'object') return;
+  var groups = cwGroupRuns(plan);
+  var lang = groups.lang;
+  var h2a = dom.createElement('DIV'); h2a.className = 'group-heading a';
+  h2a.textContent = lang === 'EN' ? 'Across' : 'Waagerecht';
+  var h2d = dom.createElement('DIV'); h2d.className = 'group-heading d';
+  h2d.textContent = lang === 'EN' ? 'Down' : 'Senkrecht';
+  dom.body.appendChild(h2a);
+  appendPills(dom, h2a, groups.across, lang);
+  dom.body.appendChild(h2d);
+  appendPills(dom, h2d, groups.down, lang);
+}
+function appendPills(dom, parent, items, lang) {
+  for (var i = 0; i < items.length; i++) {
+    var pill = dom.createElement('SPAN');
+    pill.className = 'clue';
+    pill.dataset.run = String(items[i].num);
+    pill.dataset.num = String(items[i].num);
+    pill.dataset.dir = String(items[i].dir);
+    pill.setAttribute('data-run', String(items[i].num));
+    pill.setAttribute('data-num', String(items[i].num));
+    pill.setAttribute('data-dir', String(items[i].dir));
+    // L1 contract: pill text ends with "(len)" — "NUM. clue (len)"
+    pill.textContent = items[i].num + '. ' + (items[i].clue || items[i].word) + ' (' + items[i].len + ')';
+    parent.appendChild(pill);
+  }
+}
+function cwGroupRuns(plan) {
+  // group across/down preserving each list's order (num ascending in reading order)
+  return { lang: (plan && plan.lang) || 'DE', across: plan.across || [], down: plan.down || [] };
+}
+
+window.cwGenTest = { generate: cwGenerate, render: cwRender };
+var cwLetterInputs = [];
+var cwState = { runs: [], cellWords: {}, inputMap: {}, active: { r: -1, c: -1, dir: 'a' }, hints: 3 };
+var cwWasActive = false;
+function cwKey(r, c) { return r + ',' + c; }
+function cwStateFromPlan(plan) {
+    var runs = [];
+    plan.across.forEach(function(e) {
+        runs.push({ dir: 'a', r: e.r, c: e.c, len: e.len, word: e.word, clue: e.clue, num: e.num });
+    });
+    plan.down.forEach(function(e) {
+        runs.push({ dir: 'd', r: e.r, c: e.c, len: e.len, word: e.word, clue: e.clue, num: e.num });
+    });
+    return runs;
+}
+function renderCrossword(plan) {
     var gridEl = document.getElementById('cwGrid');
     gridEl.innerHTML = '';
-    gridEl.style.gridTemplateColumns = 'repeat(' + t.w + ', 40px)';
     cwLetterInputs = [];
+    cwState.inputMap = {};
+    cwState.active = { r: -1, c: -1, dir: 'a' };
+    cwWasActive = false;
+    updateActiveChip();
+    if (!plan) {
+        cwState.runs = [];
+        cwState.cellWords = {};
+        document.getElementById('cwClues').innerHTML = '';
+        return;
+    }
+    var n = plan.n, cells = plan.grid;
+    var runs = cwStateFromPlan(plan);
+    cwState.runs = runs;
+    var cellWords = {};
+    runs.forEach(function(ru, ri) {
+        for (var j = 0; j < ru.len; j++) {
+            var kc = cwKey(ru.r + (ru.dir === 'd' ? j : 0), ru.c + (ru.dir === 'a' ? j : 0));
+            if (!cellWords[kc]) cellWords[kc] = { a: null, d: null };
+            if (ru.dir === 'a') cellWords[kc].a = ri; else cellWords[kc].d = ri;
+        }
+    });
+    cwState.cellWords = cellWords;
+    var numAt = {};
+    runs.forEach(function(ru) { numAt[cwKey(ru.r, ru.c)] = ru.num; });
+
+    gridEl.style.setProperty('--n', n);
+    for (var y = 0; y < n; y++) {
+        for (var x = 0; x < n; x++) {
+            var ch = cells[y].charAt(x);
+            var wr = document.createElement('div');
+            if (ch === '#' || ch === '.') {
+                wr.className = 'cw-w cw-block';
+                gridEl.appendChild(wr);
+                continue;
+            }
+            wr.className = 'cw-w';
+            if (numAt[cwKey(y, x)] !== undefined) {
+                var num = document.createElement('span');
+                num.className = 'cw-num';
+                num.textContent = numAt[cwKey(y, x)];
+                wr.appendChild(num);
+            }
+            var inp = document.createElement('input');
+            inp.className = 'cw-cell cw-letter';
+            inp.maxLength = 1;
+            inp.autocomplete = 'off';
+            inp.dataset.solution = ch.toUpperCase();
+            inp.dataset.r = y;
+            inp.dataset.c = x;
+            inp.dataset.k = cwKey(y, x);
+            inp.addEventListener('focus', function() { cwFocus(this); });
+            inp.addEventListener('click', function() { cwClick(this); });
+            inp.addEventListener('input', function() { cwType(this); });
+            inp.addEventListener('keydown', function(e) { cwKeyDown(this, e); });
+            wr.appendChild(inp);
+            gridEl.appendChild(wr);
+            cwState.inputMap[inp.dataset.k] = inp;
+            cwLetterInputs.push(inp);
+        }
+    }
 
     var cluesEl = document.getElementById('cwClues');
     cluesEl.innerHTML = '';
-    t.entries.forEach(function(e) {
+    cwAppendClueGroup(cluesEl, runs, 'a');
+    cwAppendClueGroup(cluesEl, runs, 'd');
+    cwSyncLangUI();
+}
+function cwAppendClueGroup(cluesEl, runs, dir) {
+    var head = document.createElement('div');
+    head.className = 'group-heading ' + dir;
+    head.textContent = cwLang === 'EN' ? (dir === 'a' ? 'Across' : 'Down') : (dir === 'a' ? 'Waagerecht' : 'Senkrecht');
+    cluesEl.appendChild(head);
+    runs.forEach(function(ru, ri) {
+        if (ru.dir !== dir) return;
         var pill = document.createElement('span');
         pill.className = 'clue';
-        pill.innerHTML = '<span class="n">' + nums[e.r + ',' + e.c] + '</span>' +
-            '<span class="d">' + (e.dir === 'a' ? '→' : '↓') + '</span>' + e.clue + ' (' + e.len + ')';
+        pill.dataset.run = ri;
+        var pb = document.createElement('span');
+        pb.className = 'n';
+        pb.textContent = ru.num;
+        pill.appendChild(pb);
+        var pc = document.createElement('span');
+        pc.className = 'd';
+        pc.textContent = ru.dir === 'a' ? '→' : '↓';
+        pill.appendChild(pc);
+        pill.appendChild(document.createTextNode(ru.clue + ' (' + ru.len + ')'));
+        pill.addEventListener('click', function() { cwPickRun(+this.dataset.run); });
         cluesEl.appendChild(pill);
     });
-
-    for (var y = 0; y < t.h; y++) {
-        for (var x = 0; x < t.w; x++) {
-            var ch = t.grid[y][x];
-            var cell = document.createElement('div');
-            if (ch === '.') {
-                cell.className = 'cw-cell cw-block';
-            } else {
-                var inp = document.createElement('input');
-                inp.className = 'cw-cell cw-letter';
-                if (nums[y + ',' + x] !== undefined) {
-                    var num = document.createElement('span');
-                    num.className = 'cw-num';
-                    num.textContent = nums[y + ',' + x];
-                    inp.appendChild(num);
-                }
-                inp.maxLength = 1;
-                inp.dataset.solution = ch;
-                inp.addEventListener('input', function() {
-                    this.value = this.value.toUpperCase().replace(/[^A-Z]/g, '');
-                    if (this.value === this.dataset.solution) this.classList.add('ok');
-                    else if (this.value) { this.classList.add('bad'); flash(this, 'shake'); }
-                    else this.classList.remove('ok', 'bad');
-                    cwSolved();
-                });
-                cwLetterInputs.push(inp);
-                cell = inp;
-            }
-            gridEl.appendChild(cell);
+}
+function cwCellEntry(r, c, dir) {
+    var cw = cwState.cellWords[cwKey(r, c)];
+    if (!cw) return -1;
+    var prim = dir === 'a' ? cw.a : cw.d;
+    if (prim === null || prim === undefined) {
+        if (cw.a !== null && cw.a !== undefined) return cw.a;
+        return cw.d;
+    }
+    return prim;
+}
+function cwFocus(inp) {
+    var r = +inp.dataset.r, c = +inp.dataset.c;
+    if (cwState.active.r !== r || cwState.active.c !== c) {
+        cwWasActive = false;
+        cwState.active = { r: r, c: c, dir: 'a' };
+        syncActive();
+        updateActiveChip();
+    }
+}
+function cwClick(inp) {
+    var r = +inp.dataset.r, c = +inp.dataset.c;
+    if (cwState.active.r === r && cwState.active.c === c) {
+        if (cwWasActive) toggleDir();
+        cwWasActive = true;
+    }
+    else {
+        cwWasActive = true;
+        cwState.active = { r: r, c: c, dir: 'a' };
+        syncActive();
+        updateActiveChip();
+    }
+}
+function toggleDir() {
+    var a = cwState.active;
+    var cw = cwState.cellWords[cwKey(a.r, a.c)];
+    if (!cw) return;
+    if (cw.a !== null && cw.a !== undefined && cw.d !== null && cw.d !== undefined) {
+        a.dir = a.dir === 'a' ? 'd' : 'a';
+        syncActive();
+        updateActiveChip();
+    }
+}
+function runCells(ru) {
+    var out = [];
+    for (var j = 0; j < ru.len; j++) out.push({ r: ru.r + (ru.dir === 'd' ? j : 0), c: ru.c + (ru.dir === 'a' ? j : 0) });
+    return out;
+}
+function inpAt(r, c) { return cwState.inputMap[cwKey(r, c)] || null; }
+function focusCell(r, c) {
+    var inp = inpAt(r, c);
+    if (!inp) return;
+    cwState.active = { r: r, c: c, dir: cwState.active.dir };
+    syncActive();
+    updateActiveChip();
+    inp.focus();
+}
+function syncActive() {
+    var a = cwState.active, k = cwKey(a.r, a.c);
+    cwLetterInputs.forEach(function(i) { i.classList.toggle('current', i.dataset.k === k); });
+    var ridx = cwCellEntry(a.r, a.c, a.dir);
+    var pills = document.querySelectorAll('#cwClues .clue');
+    for (var p = 0; p < pills.length; p++) pills[p].classList.toggle('hot', +pills[p].dataset.run === ridx);
+}
+function updateActiveChip() {
+    var el = document.getElementById('cwActive');
+    if (!el) return;
+    var a = cwState.active;
+    if (a.r < 0) { el.textContent = 'Tippe eine Zelle an, um zu starten'; return; }
+    var ridx = cwCellEntry(a.r, a.c, a.dir);
+    if (ridx < 0) { el.textContent = '—'; return; }
+    var ru = cwState.runs[ridx];
+    el.innerHTML = '';
+    var b = document.createElement('b');
+    b.textContent = ru.num + (ru.dir === 'a' ? ' → ' : ' ↓ ');
+    el.appendChild(b);
+    el.appendChild(document.createTextNode(ru.clue + ' (' + ru.len + ')'));
+}
+function cwPickRun(ri) {
+    var ru = cwState.runs[ri];
+    if (!ru) return;
+    cwState.active = { r: ru.r, c: ru.c, dir: ru.dir };
+    syncActive();
+    updateActiveChip();
+    focusFirstEmpty(ri);
+}
+function focusFirstEmpty(ri) {
+    var cellsL = runCells(cwState.runs[ri]);
+    for (var j = 0; j < cellsL.length; j++) {
+        var inp = inpAt(cellsL[j].r, cellsL[j].c);
+        if (inp && !inp.classList.contains('ok')) { focusCell(cellsL[j].r, cellsL[j].c); return; }
+    }
+    focusCell(cellsL[0].r, cellsL[0].c);
+}
+function cwType(inp) {
+    var v = inp.value.toUpperCase().replace(/[^A-Z]/g, '');
+    inp.value = v;
+    var wasBad = inp.classList.contains('bad');
+    if (v === inp.dataset.solution) { inp.classList.add('ok'); inp.classList.remove('bad'); }
+    else if (v) { inp.classList.remove('ok'); inp.classList.add('bad'); if (!wasBad) flash(inp, 'shake'); }
+    else { inp.classList.remove('ok', 'bad'); }
+    var a = cwState.active;
+    var ridx = cwCellEntry(a.r, a.c, a.dir);
+    if (v && ridx >= 0) {
+        var next = nextEmpty(ridx, a.r, a.c);
+        if (next) {
+            cwState.active = { r: next.r, c: next.c, dir: a.dir };
+            syncActive();
+            updateActiveChip();
+            inpAt(next.r, next.c).focus();
         }
     }
+    cwSolved();
+}
+function nextEmpty(ridx, r, c) {
+    var cellsL = runCells(cwState.runs[ridx]);
+    var pos = -1;
+    for (var j = 0; j < cellsL.length; j++) if (cellsL[j].r === r && cellsL[j].c === c) { pos = j; break; }
+    for (var m = pos + 1; m < cellsL.length; m++) {
+        var inp = inpAt(cellsL[m].r, cellsL[m].c);
+        if (inp && !inp.classList.contains('ok')) return cellsL[m];
+    }
+    return null;
+}
+function cwKeyDown(inp, e) {
+    var a = cwState.active;
+    var ridx = cwCellEntry(a.r, a.c, a.dir);
+    var ru = ridx >= 0 ? cwState.runs[ridx] : null;
+    if (e.key === 'Backspace') {
+        if (inp.value === '' && ru) {
+            e.preventDefault();
+            var cellsL = runCells(ru);
+            var pos = -1;
+            for (var j = 0; j < cellsL.length; j++) if (cellsL[j].r === a.r && cellsL[j].c === a.c) { pos = j; break; }
+            for (var m = pos - 1; m >= 0; m--) {
+                var bk = inpAt(cellsL[m].r, cellsL[m].c);
+                if (bk && !bk.classList.contains('ok')) { focusCell(cellsL[m].r, cellsL[m].c); return; }
+            }
+        }
+        return;
+    }
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowRight' || e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+        e.preventDefault();
+        if (ru && ((ru.dir === 'a' && (e.key === 'ArrowLeft' || e.key === 'ArrowRight')) ||
+            (ru.dir === 'd' && (e.key === 'ArrowUp' || e.key === 'ArrowDown')))) {
+            var runL = runCells(ru);
+            var pos2 = -1;
+            for (var j2 = 0; j2 < runL.length; j2++) if (runL[j2].r === a.r && runL[j2].c === a.c) { pos2 = j2; break; }
+            var np = pos2 + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1);
+            if (np >= 0 && np < runL.length) { focusCell(runL[np].r, runL[np].c); return; }
+        }
+        var nr = a.r + (e.key === 'ArrowDown' ? 1 : e.key === 'ArrowUp' ? -1 : 0);
+        var nc = a.c + (e.key === 'ArrowRight' ? 1 : e.key === 'ArrowLeft' ? -1 : 0);
+        if (nr >= 0 && nc >= 0 && cwState.cellWords[cwKey(nr, nc)]) focusCell(nr, nc);
+        return;
+    }
+    if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); toggleDir(); }
+}
+function cwHint() {
+    if (cwState.hints <= 0) return;
+    var a = cwState.active;
+    var ridx = cwCellEntry(a.r, a.c, a.dir);
+    var targets = [];
+    if (a.r >= 0 && ridx >= 0) {
+        runCells(cwState.runs[ridx]).forEach(function(cl) {
+            var ip = inpAt(cl.r, cl.c);
+            if (ip && !ip.classList.contains('ok')) targets.push(ip);
+        });
+    }
+    if (!targets.length) {
+        cwLetterInputs.forEach(function(i) { if (!i.classList.contains('ok')) targets.push(i); });
+    }
+    var inp2 = targets[0];
+    if (!inp2) return;
+    inp2.value = inp2.dataset.solution;
+    inp2.classList.add('ok');
+    inp2.classList.remove('bad');
+    cwState.hints--;
+    var hintEl = document.getElementById('cwHintsLeft');
+    if (hintEl) hintEl.textContent = cwState.hints;
+    var btn = document.getElementById('cwHintBtn');
+    if (btn && cwState.hints <= 0) { btn.disabled = true; btn.style.opacity = '.5'; }
+    flash(inp2, 'pop');
+    syncActive();
+    updateActiveChip();
+    cwSolved();
+}
+function genCrossword(seed) {
+    var plan = null;
+    if (typeof window.cwGenTest !== 'undefined' && window.cwGenTest.generate) {
+        plan = window.cwGenTest.generate(cwLang, seed);
+    }
+    renderCrossword(plan);
+    cwState.hints = 3;
+    var hintEl = document.getElementById('cwHintsLeft');
+    if (hintEl) hintEl.textContent = cwState.hints;
+    var btn = document.getElementById('cwHintBtn');
+    if (btn) { btn.disabled = false; btn.style.opacity = ''; }
 }
 function cwSolved() {
     var all = cwLetterInputs.length > 0 && cwLetterInputs.every(function(i) { return i.classList.contains('ok'); });
     if (all) { flash(document.getElementById('p-crossword'), 'pop'); markSolved(curSeed, curDiff, 'crossword'); }
 }
+(function() {
+    var hb = document.getElementById('cwHintBtn');
+    if (hb) hb.addEventListener('click', cwHint);
+})();
 
 // ============================================================
 //  #4 MAZE (Recursive Backtracker)
@@ -914,9 +1604,11 @@ window.addEventListener('DOMContentLoaded', function() {
     var m = location.search.match(/[?&]seed=(\d+)/);
     if (m) document.getElementById('seedInput').value = m[1];
     document.getElementById('dailyDate').textContent = todayStr();
+    cwBindLangButtons();
+    cwSyncLangUI();
     generate();
 });
 </script>
-<!-- UmlkZGxlciB2Mi4wIHwgUHJlbWl1bSBEYWlseSBFbmdpbmU= -->
+<!-- UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ== -->
 </body>
 </html>
