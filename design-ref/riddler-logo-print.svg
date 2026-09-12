@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 170">
+  <g fill="none" stroke="#000" stroke-linejoin="round">
+    <text x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
+          font-size="82" font-weight="900" font-stretch="condensed" letter-spacing="-1.0"
+          stroke-width="4">RIDDLER</text>
+    <g transform="rotate(7 400 118)">
+      <text x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+            font-size="158" font-weight="900" stroke-width="5">?</text>
+    </g>
+    <g transform="translate(370, 151) scale(1.05) rotate(7)">
+      <path d="M0 0 L16 -9.242 L32 0 L16 9.242 Z" stroke-width="2.6"/>
+      <path d="M0 0 L16 9.242 L16 27.728 L0 18.485 Z" stroke-width="2.6"/>
+      <path d="M16 9.242 L32 0 L32 18.485 L16 27.728 Z" stroke-width="2.6"/>
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="300" height="620" viewBox="0 0 300 620">
+  <!-- Mockup-Signatur links: 4 gestapelte Drahtgitter-Fragezeichen, nur Outline + dezente Glow -->
+  <g fill="none" stroke="#7CFF2A" stroke-linejoin="round">
+    <text x="150" y="120" font-family="Arial Black, Impact, sans-serif" font-size="120" font-weight="900"
+          text-anchor="middle" stroke-width="3" opacity="0.34"
+          filter="url(#g1)">?</text>
+    <text x="150" y="230" font-family="Arial Black, Impact, sans-serif" font-size="150" font-weight="900"
+          text-anchor="middle" stroke-width="3" opacity="0.26"
+          filter="url(#g2)">?</text>
+    <text x="150" y="360" font-family="Arial Black, Impact, sans-serif" font-size="190" font-weight="900"
+          text-anchor="middle" stroke-width="3" opacity="0.18"
+          filter="url(#g3)">?</text>
+    <text x="150" y="515" font-family="Arial Black, Impact, sans-serif" font-size="230" font-weight="900"
+          text-anchor="middle" stroke-width="3.5" opacity="0.13"
+          filter="url(#g4)">?</text>
+  </g>
+  <!-- Kugel unter dem letzten ? (Mockup-Detail) -->
+  <circle cx="150" cy="585" r="16" fill="none" stroke="#7CFF2A" stroke-width="2.5" opacity="0.22"/>
+  <circle cx="150" cy="585" r="8" fill="none" stroke="#7CFF2A" stroke-width="1.5" opacity="0.30"/>
+  <defs>
+    <filter id="g1" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="g2" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="4"/></filter>
+    <filter id="g3" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="5"/></filter>
+    <filter id="g4" x="-60%" y="-60%" width="220%" height="220%"><feGaussianBlur stdDeviation="6"/></filter>
+  </defs>
+</svg>

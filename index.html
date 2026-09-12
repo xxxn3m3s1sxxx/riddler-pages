@@ -344,11 +344,19 @@
         /* Reversible: delete this block + restore :root baseline values. */
         /* circuit optional: body::before inline SVG, pointer-events:none, low opacity */
 
-        /* body: near-black with subtle purple radial tint */
+        /* body layered CRT-stage: Vignette (viewport-fixed) + Bat-Watermark rechts
+           (viewport-fixed, svg-opacity .07) + statische Scanlines + Lila-Aura */
         body {
-            background:
-                radial-gradient(900px 380px at 50% -140px, rgba(176, 38, 255, .10), transparent 70%),
-                #070A0F;
+            background-color: #070A0F;
+            background-image:
+                radial-gradient(120% 120% at 50% 42%, transparent 55%, rgba(0, 0, 0, .48) 100%),
+                url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20160%22%3E%3Cg%20fill%3D%22%237CFF2A%22%20opacity%3D%220.07%22%3E%3Cpath%20d%3D%22M110%2014%20C98%208%2082%2014%2082%2030%20C70%2026%2056%2033%2044%2042%20C28%2052%2018%2063%2015%2076%20C13%2086%2024%2087%2030%2081%20C38%2073%2041%2066%2049%2072%20C57%2078%2061%2088%2071%2084%20C81%2080%2082%2073%2090%2078%20C97%2081%20101%2086%20110%2084%20C119%2086%20123%2081%20130%2078%20C138%2073%20139%2080%20149%2084%20C159%2088%20163%2078%20171%2072%20C179%2066%20182%2073%20190%2081%20C196%2087%20207%2086%20205%2076%20C202%2063%20192%2052%20176%2042%20C164%2033%20150%2026%20138%2030%20C138%2014%20122%208%20110%2014%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
+                repeating-linear-gradient(0deg, rgba(0, 0, 0, .28) 0 1.5px, transparent 1.5px 4px),
+                radial-gradient(900px 380px at 50% -140px, rgba(176, 38, 255, .10), transparent 70%);
+            background-attachment: fixed, fixed, scroll, scroll;
+            background-size: cover, 280px 204px, auto, auto;
+            background-position: center, right 24px center, left top, center;
+            background-repeat: no-repeat, no-repeat, repeat, no-repeat;
         }
 
         /* h1 + .mark: neon-green with layered glow */
@@ -361,6 +369,33 @@
         .brand .mark {
             color: var(--neon-green);
             filter: drop-shadow(0 0 10px rgba(110, 255, 58, .65)) drop-shadow(0 0 20px rgba(176, 38, 255, .35));
+        }
+
+        /* Hero-Wortmarke (seher Logo v5, inline SVG) — responsive, zentriert */
+        .hero-logo {
+            display: block;
+            width: min(600px, 94vw);
+            height: auto;
+            margin: 0 auto 4px;
+            filter:
+                drop-shadow(0 0 8px rgba(110, 255, 58, .35))
+                drop-shadow(0 0 18px rgba(176, 38, 255, .25));
+        }
+
+        /* Print-Kontur-Logo: nur via @media print sichtbar (data-uri, monochrom, kein Glow) */
+        .print-logo {
+            display: none;
+        }
+
+        /* A11y: h1 bleibt im DOM fuer Screenreader, optisch nicht sichtbar */
+        .sr-only {
+            position: absolute;
+            width: 1px; height: 1px;
+            padding: 0; margin: -1px;
+            overflow: hidden;
+            clip: rect(0 0 0 0);
+            white-space: nowrap;
+            border: 0;
         }
 
         /* .pill + .idx: neon-green accent */
@@ -410,15 +445,92 @@
             color: #8A94A8;
         }
 
-        /* body::before: inline circuit pattern, very subtle, behind content (optional circuit motif) */
+        /* DAILY-SEED-Pill: Terminal-Readout — lime dot + purple rim + glow (Mockup-Anlehnung) */
+        .daily-pill {
+            background: linear-gradient(180deg, rgba(176, 38, 255, .14), rgba(176, 38, 255, .06));
+            border: 1px solid rgba(110, 255, 58, .45);
+            color: #C9FFB0;
+            box-shadow:
+                0 0 0 1px rgba(176, 38, 255, .25),
+                0 0 12px rgba(110, 255, 58, .22);
+            text-shadow: 0 0 8px rgba(110, 255, 58, .4);
+        }
+        .dot {
+            background: var(--neon-green);
+            box-shadow: 0 0 9px var(--neon-green);
+        }
+
+        /* Kicker: Terminal-Prompt (mono, lime, dezenter Unterstrich-Look) */
+        .kicker {
+            font-family: var(--mono);
+            letter-spacing: .4px;
+            color: rgba(201, 255, 176, .75);
+        }
+        .kicker::before {
+            content: "> ";
+            color: var(--neon-green);
+            text-shadow: 0 0 6px rgba(110, 255, 58, .6);
+        }
+
+        /* .idx ("01"): bekommt Lime-Glow-Kante statt Indigo (Batch mode) */
+        .idx {
+            color: var(--neon-green);
+            border-color: rgba(110, 255, 58, .40);
+            text-shadow: 0 0 8px rgba(110, 255, 58, .4);
+        }
+        .card .idx {
+            background: rgba(110, 255, 58, .07);
+        }
+
+        /* cards: neon double-rim + outer glow (Batcomputer frame, static) */
+        .card {
+            border-color: rgba(176, 38, 255, .65);
+            box-shadow:
+                0 0 0 2px rgba(176, 38, 255, .18),
+                0 0 22px rgba(176, 38, 255, .32),
+                0 12px 34px -20px rgba(0, 0, 0, .7);
+        }
+        .card:hover {
+            border-color: rgba(176, 38, 255, .95);
+            box-shadow:
+                0 0 0 2px rgba(176, 38, 255, .30),
+                0 0 34px rgba(176, 38, 255, .45),
+                0 12px 34px -20px rgba(0, 0, 0, .7);
+        }
+
+        /* Mockup-Signatur: gestapelte Drahtgitter-Fragezeichen links (Desktop only) */
+        @media (min-width: 900px) {
+            body::after {
+                content: "";
+                position: fixed;
+                left: 12px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 330px;
+                height: 682px;
+                z-index: -1;
+                pointer-events: none;
+                opacity: .9;
+                background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22620%22 viewBox=%220 0 300 620%22%3E %3Cg fill=%22none%22 stroke=%22%237CFF2A%22 stroke-linejoin=%22round%22%3E     %3Ctext x=%22150%22 y=%22120%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22120%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.34%22           filter=%22url(%23g1)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22230%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22150%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.26%22           filter=%22url(%23g2)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22360%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22190%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.18%22           filter=%22url(%23g3)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22515%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22230%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223.5%22 opacity=%220.13%22           filter=%22url(%23g4)%22%3E?%3C/text%3E   %3C/g%3E %3Ccircle cx=%22150%22 cy=%22585%22 r=%2216%22 fill=%22none%22 stroke=%22%237CFF2A%22 stroke-width=%222.5%22 opacity=%220.22%22/%3E   %3Ccircle cx=%22150%22 cy=%22585%22 r=%228%22 fill=%22none%22 stroke=%22%237CFF2A%22 stroke-width=%221.5%22 opacity=%220.30%22/%3E   %3Cdefs%3E     %3Cfilter id=%22g1%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%223%22/%3E%3C/filter%3E     %3Cfilter id=%22g2%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%224%22/%3E%3C/filter%3E     %3Cfilter id=%22g3%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%225%22/%3E%3C/filter%3E     %3Cfilter id=%22g4%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%226%22/%3E%3C/filter%3E   %3C/defs%3E %3C/svg%3E");
+                background-size: 330px 682px;
+                background-repeat: no-repeat;
+            }
+        }
+        @media (max-width: 899px) {
+            body::after { display: none; }
+        }
+
+        /* body::before: kachelbares Platinen-Tile (seher, design-ref/riddler-hero-bg-clean.svg),
+           transparent (ohne Basis-Fill/Vignette), hinter Content, sehr dezent */
         body::before {
             content: "";
             position: fixed;
             inset: 0;
             z-index: -1;
             pointer-events: none;
-            opacity: .08;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M10 10h40v40' stroke='%23B026FF' stroke-width='1' fill='none'/%3E%3Cpath d='M70 70h40v40' stroke='%236EFF3A' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+            opacity: .35;
+            background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%3Cdefs%3E%0A%20%20%3Cpattern%20id%3D%22dotGrid%22%20width%3D%2232%22%20height%3D%2232%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%220.7%22%20fill%3D%22%237CFF2A%22%20opacity%3D%220.038%22%2F%3E%0A%20%20%3C%2Fpattern%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22url(%23dotGrid)%22%2F%3E%0A%3Cg%20id%3D%22traces%22%20fill%3D%22none%22%20stroke%3D%22%237CFF2A%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%220.19%22%3E%0A%20%20%3Cpath%20d%3D%22M%20512%2084%20H%20424%20V%20112%20H%20376%20V%20168%20H%20328%20V%20136%20H%20284%20V%20168%20H%20224%22%20stroke-width%3D%221.35%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20102%20H%20440%20V%20148%20H%20392%20V%20104%20H%20348%20V%20188%20H%20260%20V%20148%20H%20196%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20292%20H%20448%20V%20348%20H%20392%20V%20412%20H%20344%20V%20360%20H%20300%20V%20412%20H%20240%20V%20360%20H%20184%22%20stroke-width%3D%221.25%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20312%20H%20464%20V%20372%20H%20416%20V%20432%20H%20368%20V%20384%20H%20320%20V%20456%20H%20268%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20316%20H%2064%20V%20372%20H%20112%20V%20420%20H%20168%20V%20368%20H%20204%20V%20432%22%20stroke-width%3D%221.0%22%20opacity%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%200%20V%2048%20H%20144%20V%2092%20H%2096%20V%20140%22%20stroke-width%3D%221.15%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20196%200%20V%2056%20H%20240%20V%20104%20H%20288%20V%2056%20H%20332%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20380%200%20V%2032%20H%20332%20V%2068%20H%20284%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%2096%20H%2056%20V%2064%20H%20120%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20128%20H%2040%20V%20176%20H%2088%20V%20128%20H%20136%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20424%20212%20L%20404%20232%20H%20360%20V%20268%20L%20380%20288%20H%20424%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%20212%20L%2076%20232%20H%2032%20V%20268%20L%2052%20288%20H%2096%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20432%20H%2048%20V%20476%20H%20128%20V%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20384%20512%20V%20464%20H%20432%20V%20432%20H%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20468%20H%2028%20V%20492%20H%2064%22%20stroke-width%3D%220.9%22%2F%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22nodes%22%20opacity%3D%221%22%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.26%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22424%22%20cy%3D%2284%22%20r%3D%222.3%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22376%22%20cy%3D%22112%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22148%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22448%22%20cy%3D%22292%22%20r%3D%222.1%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22348%22%20r%3D%222.2%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22240%22%20cy%3D%22104%22%20r%3D%221.8%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22144%22%20cy%3D%2248%22%20r%3D%221.7%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2296%22%20cy%3D%2292%22%20r%3D%221.6%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%22232%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2248%22%20cy%3D%22432%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22432%22%20cy%3D%22464%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2228%22%20cy%3D%22468%22%20r%3D%221.5%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23B026FF%22%20stroke-width%3D%220.95%22%20opacity%3D%220.20%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Crect%20x%3D%22402%22%20y%3D%22396%22%20width%3D%2228%22%20height%3D%2226%22%20rx%3D%221.2%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22366%22%20y%3D%22210%22%20width%3D%2222%22%20height%3D%2218%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2218%22%20y%3D%22340%22%20width%3D%2224%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22248%22%20y%3D%22430%22%20width%3D%2226%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20stroke%3D%22%237CFF2A%22%20stroke-width%3D%220.85%22%20opacity%3D%220.14%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M402%20404%20H397%20M402%20411%20H397%20M402%20418%20H397%20M430%20404%20H435%20M430%20411%20H435%20M430%20418%20H435%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M366%20216%20H361%20M366%20222%20H361%20M388%20216%20H393%20M388%20222%20H393%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.18%22%3E%0A%20%20%20%20%3Crect%20x%3D%22282%22%20y%3D%22134%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22324%22%20y%3D%22166%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22342%22%20y%3D%22358%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22trace-glow%22%20fill%3D%22none%22%20stroke%3D%22%237CFF2A%22%20stroke-width%3D%222.6%22%20opacity%3D%220.018%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%3Cpath%20d%3D%22M512%2084%20H424%20V112%20H376%20V168%20H328%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M512%20292%20H448%20V348%20H392%20V412%20H344%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+            background-size: 512px;
         }
 
         /* ? decoration on .card.puzzle only (subtle, not on grids or brand) */
@@ -450,9 +562,14 @@
         @media print {
             body { background: #fff; }
             body::before { display: none; }
+            body::after { display: none; }
             .card.puzzle::before { display: none; }
+            .kicker { color: #2A5C2A; }
+            .kicker::before { text-shadow: none; }
             h1 { color: #000; text-shadow: none; }
             .brand .mark { color: #000; filter: none; }
+            .hero-logo { display: none; }
+            .print-logo { display: block; width: min(420px, 80%); height: auto; margin: 0 auto 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .pill { color: #000; border-color: #999; background: #eee; }
             .idx { color: #000; text-shadow: none; border-color: #000; background: #eee; }
             .puzzle:hover { box-shadow: none; }
@@ -467,8 +584,140 @@
 <body>
 <div class="wrap">
 
-    <header>
-        <div class="brand"><span class="mark">◆</span><h1>Riddler</h1></div>
+        <header>
+        <h1 class="sr-only">Riddler &mdash; Seed-basierte R&#228;tselbox</h1>
+        <svg class="hero-logo" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 170" width="640" height="170">
+<defs>
+  <!-- Distress v2: sichtbar aber scharf — scale 2.4 statt 3.6, erode 0.25 statt 0.4, 2 Oktaven -->
+  <filter id="lg-distress" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85 0.13" numOctaves="2" seed="7" stitchTiles="stitch" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+    <feMorphology operator="erode" radius="0.25" in="displaced" result="eroded"/>
+  </filter>
+  <!-- Purple outer-glow fuer ? — leicht gedrosselt 7 -> 6 -->
+  <filter id="lg-glow-purple" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+    <feFlood flood-color="#B026FF" flood-opacity="0.88" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <!-- v3: Purple BG-Glow hinter scharfer Kontur des ? -->
+  <filter id="lg-bg-glow-purple" x="-40%" y="-45%" width="180%" height="190%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
+    <feFlood flood-color="#B026FF" flood-opacity="1" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/></feMerge>
+  </filter>
+  <!-- Lime neon-glow v2: stdDeviation 2.0 -> 1.35, opacity 0.55 -> 0.42, DOPPEL-MERGE ENTFERNT -->
+  <filter id="lg-glow-lime" x="-20%" y="-30%" width="140%" height="160%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1.35" result="blur"/>
+    <feFlood flood-color="#7CFF2A" flood-opacity="0.42" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <!-- v3: HINTERGRUND-GLOW hinter scharfer Kontur: output = NUR blurred lime-halo, kein SourceGraphic -->
+  <filter id="lg-bg-glow-lime" x="-30%" y="-35%" width="160%" height="170%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="5.5" result="blur"/>
+    <feFlood flood-color="#7CFF2A" flood-opacity="1" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/></feMerge>
+  </filter>
+  <!-- Soft shadow fuer dice (legacy) -->
+  <filter id="lg-shadow" x="-50%" y="-50%" width="200%" height="200%">
+    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.7"/>
+  </filter>
+  <!-- Purple glow fuer dice — eigener weicher Glow -->
+  <filter id="lg-glow-dice" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="blur"/>
+    <feFlood flood-color="#B026FF" flood-opacity="0.55" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+
+<!-- Transparenter Hintergrund — auf #070A0F legen -->
+
+<!-- WORTMARKE -->
+<g id="wordmark">
+  <!-- STARKE GLOW-SCHICHT DAHINTER (blurry, lime), liegt hinter der scharfen Kontur -->
+  <text aria-hidden="true" x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
+        font-size="82" font-weight="900" font-stretch="condensed" letter-spacing="-1.0"
+        fill="none" stroke="#7CFF2A" stroke-width="16" stroke-linejoin="round"
+        filter="url(#lg-bg-glow-lime)" opacity="0.95">RIDDLER</text>
+
+  <!-- SCHARFES WORTMARKEN-BILD vorn: Breite schwarze Kontur, darin lime Fill -->
+  <text x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
+        font-size="82" font-weight="900" font-stretch="condensed"
+        letter-spacing="-1.0" word-spacing="0"
+        fill="#7CFF2A" filter="url(#lg-distress)"
+        paint-order="stroke" stroke="#0A0A14" stroke-width="5.5" stroke-linejoin="round">RIDDLER</text>
+
+  <!-- Stencil-Breaks v2: SEGMENTIERT, nicht durchgehend -->
+  <!-- obere Break-Reihe -->
+  <g id="break-upper" opacity="1" style="mix-blend-mode:multiply">
+    <rect x="16" y="57.2" width="82" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="110" y="57.2" width="42" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="166" y="57.2" width="66" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="248" y="57.2" width="52" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="314" y="57.2" width="38" height="2.8" rx="0.6" fill="#070A0F"/>
+    <path d="M98 57.2 l 3 2.8 l 4 -2.8 Z M152 57.2 l 3 2.8 l 4 -2.8 Z M232 57.2 l 3 2.8 l 4 -2.8 Z" fill="#070A0F" opacity="0.95"/>
+  </g>
+  <!-- untere Break-Reihe -->
+  <g id="break-lower" opacity="1" style="mix-blend-mode:multiply">
+    <rect x="16" y="81.8" width="54" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="82" y="81.8" width="64" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="160" y="81.8" width="48" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="222" y="81.8" width="82" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="318" y="81.8" width="36" height="2.9" rx="0.6" fill="#070A0F"/>
+    <path d="M70 81.8 l 3 2.9 l 4 -2.9 Z M146 81.8 l 3 2.9 l 4 -2.9 Z M208 81.8 l 3 2.9 l 4 -2.9 Z M304 81.8 l 3 2.9 l 4 -2.9 Z" fill="#070A0F" opacity="0.95"/>
+  </g>
+</g>
+
+<!-- UEBERDIMENSIONALES FRAGEZEICHEN — SCHRAEG nach rechts via rotate um Ankerpunkt -->
+<g id="question" transform="rotate(7 400 118)">
+  <!-- Purple BG-Glow hinter scharfer Kontur -->
+  <text aria-hidden="true" x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+        font-size="158" font-weight="900"
+        fill="none" stroke="#B026FF" stroke-width="18" stroke-linejoin="round"
+        filter="url(#lg-bg-glow-purple)" opacity="0.95">?</text>
+  <!-- scharfes ? mit breiter schwarzer Kontur — Arial Black: offene Apertur bleibt lesbar (seher R3) -->
+  <text x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+        font-size="158" font-weight="900"
+        fill="#B026FF"
+        paint-order="stroke" stroke="#0A0A14" stroke-width="7.5" stroke-linejoin="round">?</text>
+  <!-- feiner White-Kern innen (scharf, kein Glow) -->
+  <text x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+        font-size="158" font-weight="900"
+        fill="none" stroke="#FFFFFF" stroke-width="0.45" stroke-opacity="0.18">?</text>
+</g>
+
+<!-- WUERFEL-AKZENT v4: 32px, mitgedreht (+7), direkt unter ?-Punkt andockend -->
+<g id="dice" transform="translate(372, 152) rotate(7)" filter="url(#lg-glow-dice)">
+  <!-- isometrischer Wuerfel 32px -->
+  <path d="M0 0 L16 -9.242 L32 0 L16 9.242 Z" fill="#D99CFF" stroke="#070A0F" stroke-width="1.35" stroke-linejoin="round"/>
+  <path d="M0 0 L16 9.242 L16 27.728 L0 18.485 Z" fill="#B026FF" stroke="#070A0F" stroke-width="1.35" stroke-linejoin="round"/>
+  <path d="M16 9.242 L32 0 L32 18.485 L16 27.728 Z" fill="#7A1AB8" stroke="#070A0F" stroke-width="1.35" stroke-linejoin="round"/>
+  <!-- ? auf Seiten, skaliert fuer 32px -->
+  <text x="7.5" y="16.5" font-family="'Anton','Arial Black',sans-serif" font-size="10.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">?</text>
+  <text x="24" y="13.5" font-family="'Anton','Arial Black',sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">?</text>
+  <text x="16" y="-3.2" font-family="'Anton','Arial Black',sans-serif" font-size="7.5" font-weight="900" fill="#070A0F" text-anchor="middle" dominant-baseline="middle">?</text>
+  <!-- Lime / dark pips -->
+  <circle cx="9.5" cy="20.5" r="1.15" fill="#7CFF2A" opacity="0.95"/>
+  <circle cx="23.5" cy="8.8" r="1.05" fill="#070A0F" opacity="0.55"/>
+</g>
+
+<!-- Subtile Grundlinie entfernt (seher-Note v2: Mockup hat keine Line) -->
+</svg>
+        <img class="print-logo" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20640%20170%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Ctext%20x%3D%2214%22%20y%3D%22102%22%20font-family%3D%22'Anton'%2C'Impact'%2C'Arial%20Black'%2C'Barlow%20Condensed'%2Csans-serif%22%0A%20%20%20%20%20%20%20%20%20%20font-size%3D%2282%22%20font-weight%3D%22900%22%20font-stretch%3D%22condensed%22%20letter-spacing%3D%22-1.0%22%0A%20%20%20%20%20%20%20%20%20%20stroke-width%3D%224%22%3ERIDDLER%3C%2Ftext%3E%0A%20%20%20%20%3Cg%20transform%3D%22rotate(7%20400%20118)%22%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22320%22%20y%3D%22136%22%20font-family%3D%22'Arial%20Black'%2C'Arial%20Bold'%2CGadget%2Csans-serif%22%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3D%22158%22%20font-weight%3D%22900%22%20stroke-width%3D%225%22%3E%3F%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(370%2C%20151)%20scale(1.05)%20rotate(7)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200%20L16%20-9.242%20L32%200%20L16%209.242%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200%20L16%209.242%20L16%2027.728%20L0%2018.485%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%209.242%20L32%200%20L32%2018.485%20L16%2027.728%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E" alt="Riddler" width="420" height="112">
         <p class="kicker">Seed-basierte Rätselbox · 5 Rätsel · deterministisch</p>
         <div class="daily-pill"><span class="dot"></span>Rätsel des Tages &nbsp;·&nbsp; <span id="dailyDate">—</span></div>
     </header>

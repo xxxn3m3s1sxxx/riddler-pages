@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 170" width="640" height="170" role="img" aria-labelledby="title desc">
+<title>RIDDLER? — Neon Arcade Wortmarke (v3: .IO weg, BG-Glow + scharfe Kontur, ? schräg)</title>
+<desc>Lime RIDDLER distressed-stencil mit Glow DAHINTER, scharfer schwarzer Kontur vorn, segmentierten Breaks, grossem schraegem Wuerfel am ?-Fuss. Palette #7CFF2A / #B026FF / #070A0F. Rev 2026-09-12 v3.</desc>
+<defs>
+  <!-- Distress v2: sichtbar aber scharf — scale 2.4 statt 3.6, erode 0.25 statt 0.4, 2 Oktaven -->
+  <filter id="distress" x="-10%" y="-20%" width="120%" height="140%" color-interpolation-filters="sRGB">
+    <feTurbulence type="fractalNoise" baseFrequency="0.85 0.13" numOctaves="2" seed="7" stitchTiles="stitch" result="noise"/>
+    <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.4" xChannelSelector="R" yChannelSelector="G" result="displaced"/>
+    <feMorphology operator="erode" radius="0.25" in="displaced" result="eroded"/>
+  </filter>
+  <!-- Purple outer-glow fuer ? — leicht gedrosselt 7 -> 6 -->
+  <filter id="glow-purple" x="-50%" y="-50%" width="200%" height="200%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="6" result="blur"/>
+    <feFlood flood-color="#B026FF" flood-opacity="0.88" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <!-- v3: Purple BG-Glow hinter scharfer Kontur des ? -->
+  <filter id="bg-glow-purple" x="-40%" y="-45%" width="180%" height="190%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="9" result="blur"/>
+    <feFlood flood-color="#B026FF" flood-opacity="1" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/></feMerge>
+  </filter>
+  <!-- Lime neon-glow v2: stdDeviation 2.0 -> 1.35, opacity 0.55 -> 0.42, DOPPEL-MERGE ENTFERNT -->
+  <filter id="glow-lime" x="-20%" y="-30%" width="140%" height="160%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="1.35" result="blur"/>
+    <feFlood flood-color="#7CFF2A" flood-opacity="0.42" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+  <!-- v3: HINTERGRUND-GLOW hinter scharfer Kontur: output = NUR blurred lime-halo, kein SourceGraphic -->
+  <filter id="bg-glow-lime" x="-30%" y="-35%" width="160%" height="170%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceGraphic" stdDeviation="5.5" result="blur"/>
+    <feFlood flood-color="#7CFF2A" flood-opacity="1" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge><feMergeNode in="glow"/></feMerge>
+  </filter>
+  <!-- Soft shadow fuer dice (legacy) -->
+  <filter id="shadow" x="-50%" y="-50%" width="200%" height="200%">
+    <feDropShadow dx="0" dy="2" stdDeviation="2" flood-color="#000" flood-opacity="0.7"/>
+  </filter>
+  <!-- Purple glow fuer dice — eigener weicher Glow -->
+  <filter id="glow-dice" x="-60%" y="-60%" width="220%" height="220%" color-interpolation-filters="sRGB">
+    <feGaussianBlur in="SourceAlpha" stdDeviation="3.2" result="blur"/>
+    <feFlood flood-color="#B026FF" flood-opacity="0.55" result="color"/>
+    <feComposite in="color" in2="blur" operator="in" result="glow"/>
+    <feMerge>
+      <feMergeNode in="glow"/>
+      <feMergeNode in="SourceGraphic"/>
+    </feMerge>
+  </filter>
+</defs>
+
+<!-- Transparenter Hintergrund — auf #070A0F legen -->
+
+<!-- WORTMARKE -->
+<g id="wordmark">
+  <!-- STARKE GLOW-SCHICHT DAHINTER (blurry, lime), liegt hinter der scharfen Kontur -->
+  <text aria-hidden="true" x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
+        font-size="82" font-weight="900" font-stretch="condensed" letter-spacing="-1.0"
+        fill="none" stroke="#7CFF2A" stroke-width="16" stroke-linejoin="round"
+        filter="url(#bg-glow-lime)" opacity="0.95">RIDDLER</text>
+
+  <!-- SCHARFES WORTMARKEN-BILD vorn: Breite schwarze Kontur, darin lime Fill -->
+  <text x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
+        font-size="82" font-weight="900" font-stretch="condensed"
+        letter-spacing="-1.0" word-spacing="0"
+        fill="#7CFF2A" filter="url(#distress)"
+        paint-order="stroke" stroke="#0A0A14" stroke-width="5.5" stroke-linejoin="round">RIDDLER</text>
+
+  <!-- Stencil-Breaks v2: SEGMENTIERT, nicht durchgehend -->
+  <!-- obere Break-Reihe -->
+  <g id="break-upper" opacity="1" style="mix-blend-mode:multiply">
+    <rect x="16" y="57.2" width="82" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="110" y="57.2" width="42" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="166" y="57.2" width="66" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="248" y="57.2" width="52" height="2.8" rx="0.6" fill="#070A0F"/>
+    <rect x="314" y="57.2" width="38" height="2.8" rx="0.6" fill="#070A0F"/>
+    <path d="M98 57.2 l 3 2.8 l 4 -2.8 Z M152 57.2 l 3 2.8 l 4 -2.8 Z M232 57.2 l 3 2.8 l 4 -2.8 Z" fill="#070A0F" opacity="0.95"/>
+  </g>
+  <!-- untere Break-Reihe -->
+  <g id="break-lower" opacity="1" style="mix-blend-mode:multiply">
+    <rect x="16" y="81.8" width="54" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="82" y="81.8" width="64" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="160" y="81.8" width="48" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="222" y="81.8" width="82" height="2.9" rx="0.6" fill="#070A0F"/>
+    <rect x="318" y="81.8" width="36" height="2.9" rx="0.6" fill="#070A0F"/>
+    <path d="M70 81.8 l 3 2.9 l 4 -2.9 Z M146 81.8 l 3 2.9 l 4 -2.9 Z M208 81.8 l 3 2.9 l 4 -2.9 Z M304 81.8 l 3 2.9 l 4 -2.9 Z" fill="#070A0F" opacity="0.95"/>
+  </g>
+</g>
+
+<!-- UEBERDIMENSIONALES FRAGEZEICHEN — SCHRAEG nach rechts via rotate um Ankerpunkt -->
+<g id="question" transform="rotate(7 400 118)">
+  <!-- Purple BG-Glow hinter scharfer Kontur -->
+  <text aria-hidden="true" x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+        font-size="158" font-weight="900"
+        fill="none" stroke="#B026FF" stroke-width="18" stroke-linejoin="round"
+        filter="url(#bg-glow-purple)" opacity="0.95">?</text>
+  <!-- scharfes ? mit breiter schwarzer Kontur — Arial Black: offene Apertur bleibt lesbar (seher R3) -->
+  <text x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+        font-size="158" font-weight="900"
+        fill="#B026FF"
+        paint-order="stroke" stroke="#0A0A14" stroke-width="7.5" stroke-linejoin="round">?</text>
+  <!-- feiner White-Kern innen (scharf, kein Glow) -->
+  <text x="320" y="136" font-family="'Arial Black','Arial Bold',Gadget,sans-serif"
+        font-size="158" font-weight="900"
+        fill="none" stroke="#FFFFFF" stroke-width="0.45" stroke-opacity="0.18">?</text>
+</g>
+
+<!-- WUERFEL-AKZENT v4: 32px, mitgedreht (+7), direkt unter ?-Punkt andockend -->
+<g id="dice" transform="translate(372, 152) rotate(7)" filter="url(#glow-dice)">
+  <!-- isometrischer Wuerfel 32px -->
+  <path d="M0 0 L16 -9.242 L32 0 L16 9.242 Z" fill="#D99CFF" stroke="#070A0F" stroke-width="1.35" stroke-linejoin="round"/>
+  <path d="M0 0 L16 9.242 L16 27.728 L0 18.485 Z" fill="#B026FF" stroke="#070A0F" stroke-width="1.35" stroke-linejoin="round"/>
+  <path d="M16 9.242 L32 0 L32 18.485 L16 27.728 Z" fill="#7A1AB8" stroke="#070A0F" stroke-width="1.35" stroke-linejoin="round"/>
+  <!-- ? auf Seiten, skaliert fuer 32px -->
+  <text x="7.5" y="16.5" font-family="'Anton','Arial Black',sans-serif" font-size="10.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">?</text>
+  <text x="24" y="13.5" font-family="'Anton','Arial Black',sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">?</text>
+  <text x="16" y="-3.2" font-family="'Anton','Arial Black',sans-serif" font-size="7.5" font-weight="900" fill="#070A0F" text-anchor="middle" dominant-baseline="middle">?</text>
+  <!-- Lime / dark pips -->
+  <circle cx="9.5" cy="20.5" r="1.15" fill="#7CFF2A" opacity="0.95"/>
+  <circle cx="23.5" cy="8.8" r="1.05" fill="#070A0F" opacity="0.55"/>
+</g>
+
+<!-- Subtile Grundlinie entfernt (seher-Note v2: Mockup hat keine Line) -->
+</svg>

@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+<defs>
+  <pattern id="dotGrid" width="32" height="32" patternUnits="userSpaceOnUse">
+    <circle cx="16" cy="16" r="0.7" fill="#7CFF2A" opacity="0.038"/>
+  </pattern>
+</defs>
+<rect width="512" height="512" fill="url(#dotGrid)"/>
+<g id="traces" fill="none" stroke="#7CFF2A" stroke-linecap="round" stroke-linejoin="round" opacity="0.19">
+  <path d="M 512 84 H 424 V 112 H 376 V 168 H 328 V 136 H 284 V 168 H 224" stroke-width="1.35"/>
+  <path d="M 512 102 H 440 V 148 H 392 V 104 H 348 V 188 H 260 V 148 H 196" stroke-width="1.05"/>
+  <path d="M 512 292 H 448 V 348 H 392 V 412 H 344 V 360 H 300 V 412 H 240 V 360 H 184" stroke-width="1.25"/>
+  <path d="M 512 312 H 464 V 372 H 416 V 432 H 368 V 384 H 320 V 456 H 268" stroke-width="1.0"/>
+  <path d="M 0 316 H 64 V 372 H 112 V 420 H 168 V 368 H 204 V 432" stroke-width="1.0" opacity="0.95"/>
+  <path d="M 96 0 V 48 H 144 V 92 H 96 V 140" stroke-width="1.15"/>
+  <path d="M 196 0 V 56 H 240 V 104 H 288 V 56 H 332" stroke-width="1.0"/>
+  <path d="M 380 0 V 32 H 332 V 68 H 284" stroke-width="1.0"/>
+  <path d="M 0 96 H 56 V 64 H 120" stroke-width="0.95"/>
+  <path d="M 0 128 H 40 V 176 H 88 V 128 H 136" stroke-width="0.95"/>
+  <path d="M 424 212 L 404 232 H 360 V 268 L 380 288 H 424" stroke-width="1.05"/>
+  <path d="M 96 212 L 76 232 H 32 V 268 L 52 288 H 96" stroke-width="1.05"/>
+  <path d="M 0 432 H 48 V 476 H 128 V 512" stroke-width="1.1"/>
+  <path d="M 384 512 V 464 H 432 V 432 H 512" stroke-width="1.1"/>
+  <path d="M 0 468 H 28 V 492 H 64" stroke-width="0.9"/>
+</g>
+<g id="nodes" opacity="1">
+  <g fill="#B026FF" opacity="0.26">
+    <circle cx="424" cy="84" r="2.3"/>
+    <circle cx="376" cy="112" r="2.0"/>
+    <circle cx="392" cy="148" r="1.9"/>
+    <circle cx="448" cy="292" r="2.1"/>
+    <circle cx="392" cy="348" r="2.2"/>
+    <circle cx="240" cy="104" r="1.8"/>
+    <circle cx="144" cy="48" r="1.7"/>
+    <circle cx="96" cy="92" r="1.6"/>
+    <circle cx="32" cy="232" r="1.9"/>
+    <circle cx="48" cy="432" r="2.0"/>
+    <circle cx="432" cy="464" r="1.9"/>
+    <circle cx="28" cy="468" r="1.5"/>
+  </g>
+  <g fill="none" stroke="#B026FF" stroke-width="0.95" opacity="0.20" stroke-linejoin="round">
+    <rect x="402" y="396" width="28" height="26" rx="1.2"/>
+    <rect x="366" y="210" width="22" height="18" rx="1.0"/>
+    <rect x="18" y="340" width="24" height="20" rx="1.0"/>
+    <rect x="248" y="430" width="26" height="20" rx="1.0"/>
+  </g>
+  <g stroke="#7CFF2A" stroke-width="0.85" opacity="0.14" stroke-linecap="round">
+    <path d="M402 404 H397 M402 411 H397 M402 418 H397 M430 404 H435 M430 411 H435 M430 418 H435"/>
+    <path d="M366 216 H361 M366 222 H361 M388 216 H393 M388 222 H393"/>
+  </g>
+  <g fill="#B026FF" opacity="0.18">
+    <rect x="282" y="134" width="6" height="6" rx="1.1"/>
+    <rect x="324" y="166" width="5.5" height="5.5" rx="1.0"/>
+    <rect x="342" y="358" width="6" height="6" rx="1.1"/>
+  </g>
+</g>
+<g id="trace-glow" fill="none" stroke="#7CFF2A" stroke-width="2.6" opacity="0.018" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M512 84 H424 V112 H376 V168 H328"/>
+  <path d="M512 292 H448 V348 H392 V412 H344"/>
+</g>
+</svg>

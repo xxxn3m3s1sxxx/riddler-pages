@@ -1,0 +1,79 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1920 1080" width="1920" height="1080" role="img" aria-labelledby="title desc">
+<title>RIDDLER.IO — Full Hero Scene 1920x1080</title>
+<desc>Volle Szene fuer Hero-Hintergrund: #070A0F Grund, rechte Haelfte dichte Platine (Lime 0.075), links dunkel leer fuer Content, Vignette, subtiler Top-Grid. Keine Wireframe-? (begruendet im Tile). Kein &lt;image&gt;, kein externer Import.</desc>
+<defs>
+  <radialGradient id="vFull" cx="58%" cy="55%" r="82%">
+    <stop offset="62%" stop-color="#070A0F" stop-opacity="0"/>
+    <stop offset="100%" stop-color="#000" stop-opacity="0.62"/>
+  </radialGradient>
+  <pattern id="gridFull" width="40" height="40" patternUnits="userSpaceOnUse">
+    <circle cx="20" cy="20" r="0.7" fill="#7CFF2A" opacity="0.035"/>
+  </pattern>
+  <linearGradient id="fadeLeft" x1="0" y1="0" x2="1" y2="0">
+    <stop offset="0%" stop-color="#070A0F" stop-opacity="1"/>
+    <stop offset="48%" stop-color="#070A0F" stop-opacity="1"/>
+    <stop offset="68%" stop-color="#070A0F" stop-opacity="0.0"/>
+    <stop offset="100%" stop-color="#070A0F" stop-opacity="0.0"/>
+  </linearGradient>
+</defs>
+<rect width="1920" height="1080" fill="#070A0F"/>
+<rect width="1920" height="1080" fill="url(#gridFull)"/>
+
+<!-- RECHTE PLATINEN-HAELFTE (ab x ~ 1080) — dicht -->
+<g id="circuit-right" fill="none" stroke="#7CFF2A" stroke-linecap="round" stroke-linejoin="round" opacity="0.082">
+  <!-- Hauptstrasse -->
+  <path d="M1920 140 H 1580 V 220 H 1440 V 340 H 1320 V 280 H 1180" stroke-width="1.45"/>
+  <path d="M1920 180 H 1620 V 300 H 1480 V 200 H 1360 V 360 H 1200 V 300" stroke-width="1.15"/>
+  <path d="M1920 620 H 1720 V 760 H 1560 V 900 H 1420 V 820 H 1280 V 900 H 1160" stroke-width="1.35"/>
+  <path d="M1920 670 H 1760 V 820 H 1600 V 940 H 1460 V 860 H 1320 V 980" stroke-width="1.05"/>
+  <!-- Quer-Verdrahtung -->
+  <path d="M 1480 200 V 120 H 1600" stroke-width="1.0"/>
+  <path d="M 1320 340 V 420 H 1480 V 480 H 1600 V 560" stroke-width="1.0"/>
+  <path d="M 1720 760 V 620 H 1480" stroke-width="1.0"/>
+  <!-- diagonal jogs -->
+  <path d="M 1620 440 L 1580 480 H 1420 V 540 L 1460 580 H 1620" stroke-width="1.1"/>
+  <path d="M 1180 540 L 1140 580 H 1080 V 640" stroke-width="1.0"/>
+  <!-- feine Neben-Traces -->
+  <path d="M1920 260 H 1520 V 360 H 1400" stroke-width="0.9"/>
+  <path d="M1920 760 H 1680 V 880 H 1520" stroke-width="0.9"/>
+</g>
+
+<!-- ICs & Knoten rechts -->
+<g id="nodes-right">
+  <g fill="#B026FF" opacity="0.28">
+    <circle cx="1580" cy="140" r="2.8"/>
+    <circle cx="1440" cy="220" r="2.4"/>
+    <circle cx="1480" cy="300" r="2.2"/>
+    <circle cx="1720" cy="620" r="2.6"/>
+    <circle cx="1560" cy="760" r="2.5"/>
+    <circle cx="1620" cy="440" r="2.0"/>
+  </g>
+  <g fill="none" stroke="#B026FF" opacity="0.22" stroke-width="1.0" stroke-linejoin="round">
+    <rect x="1524" y="820" width="64" height="54" rx="1.4"/>
+    <rect x="1380" y="420" width="52" height="42" rx="1.2"/>
+    <rect x="1650" y="300" width="44" height="38" rx="1.0"/>
+  </g>
+  <g stroke="#7CFF2A" opacity="0.12" stroke-width="0.9" stroke-linecap="round">
+    <path d="M1524 834 H1514 M1524 848 H1514 M1524 862 H1514 M1588 834 H1598 M1588 848 H1598 M1588 862 H1598"/>
+  </g>
+</g>
+
+<!-- LINKS sehr dezent — nur 2-3 feine Traces, damit Content lesbar bleibt -->
+<g id="circuit-left" fill="none" stroke="#7CFF2A" stroke-linecap="round" stroke-linejoin="round" opacity="0.035">
+  <path d="M0 180 H 220 V 260 H 380" stroke-width="1.0"/>
+  <path d="M0 720 H 180 V 820 H 320" stroke-width="1.0"/>
+  <path d="M0 880 H 140 V 960 H 280" stroke-width="0.9"/>
+</g>
+
+<!-- Ueberblendung links -> Platine weich ausfaden -->
+<rect x="620" y="0" width="600" height="1080" fill="url(#fadeLeft)" opacity="0.0"/>
+<!-- Manuell mit Gradient: linker Bereich bleibt clean -->
+<rect x="0" y="0" width="900" height="1080" fill="#070A0F" opacity="0.0"/>
+
+<!-- Vignette -->
+<rect width="1920" height="1080" fill="url(#vFull)"/>
+
+<!-- Top-Hairline fuer Neon-Trennung -->
+<rect x="0" y="118" width="1920" height="1" fill="#7CFF2A" opacity="0.04"/>
+</svg>
