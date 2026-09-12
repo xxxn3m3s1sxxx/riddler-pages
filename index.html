@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#0B0D14">
+    <meta name="theme-color" content="#070A0F">
     <meta name="riddler:payload" content="UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ==">
     <title>Riddler — Seed-basierte Rätselbox</title>
     <style>
@@ -17,12 +17,15 @@
             --txt: #F1F5F9;
             --txt2: #94A3B8;
             --txt3: #5B6478;
-            --indigo: #6366F1;
-            --indigo2: #818CF8;
-            --indigo-dim: rgba(99, 102, 241, .14);
-            --green: #10B981;
+            --indigo: #B026FF;
+            --indigo2: #C44EFF;
+            --indigo-dim: rgba(176, 38, 255, .14);
+            --green: #6EFF3A;
             --red: #F43F5E;
             --amber: #FBBF24;
+            --neon-green: #6EFF3A;
+            --neon-purple: #B026FF;
+            --neon-purple-text: #C44EFF;
             --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             --sans: Geist, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
         }
@@ -260,6 +263,19 @@
         /* ---------- Footer ---------- */
         .foot { text-align: center; color: var(--txt3); font-size: 11px; margin-top: 28px; line-height: 1.9; }
 
+        /* ---------- A11y Fokus-Ring WCAG 2.4.11 ---------- */
+        :focus-visible {
+            outline: 3px solid #005fcc;
+            outline-offset: 2px;
+            box-shadow: 0 0 0 6px rgba(0, 95, 204, .35);
+        }
+        input.cw-cell:focus-visible { outline-offset: -2px; box-shadow: none; }
+        .current { outline: 3px solid #005fcc !important; outline-offset: -1px; box-shadow: 0 0 0 6px rgba(0, 95, 204, .35) !important; }
+        #mazeCanvas:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #005fcc, 0 0 0 6px rgba(0, 95, 204, .35); }
+        .sdk-cell:focus-visible { outline-offset: -1px; }
+        .clue:focus-visible { border-color: #005fcc; box-shadow: 0 0 0 4px rgba(0, 95, 204, .30); }
+        .btn:focus-visible, .icon-btn:focus-visible, .seg button:focus-visible, .cw-lang:focus-visible { box-shadow: 0 0 0 3px rgba(0, 95, 204, .45); }
+
         /* ---------- Print ---------- */
         .print-line { display: none; }
         @media print {
@@ -294,6 +310,157 @@
             #mazeCanvas { box-shadow: none; border: 1px solid #000; }
             .print-line { display: block !important; margin-top: 10px; border-bottom: 1px solid #000; width: 240px; height: 30px; font-size: 12px; color: #666; }
             .foot { display: none; }
+        }
+
+        /* ---------- Mobile (suckz-Region) ---------- */
+        .cw-thumbkb { display: none; }
+        @media (hover: none), (pointer: coarse) {
+            .cw-grid { --cw: clamp(40px, 10.4vw, 44px); }
+            #p-crossword .cw-bar:has(.cw-active) {
+                position: sticky; top: 0; z-index: 6; background: var(--card);
+                padding: 8px 0; border-radius: 12px;
+            }
+            .clues { display: flex; flex-direction: column; gap: 8px; }
+            .clues .clue {
+                flex: none; width: 100%; min-height: 44px; display: flex; align-items: center;
+                gap: 8px; padding: 10px 12px; border-radius: 12px; font-size: 13px;
+            }
+            .clues .clue .n { flex: 0 0 auto; }
+            .clues .clue .d { flex: 0 0 auto; font-size: 13px; }
+            .cw-thumbkb { display: block; margin-top: 10px; }
+            .cw-tkb-row { display: flex; flex-wrap: wrap; gap: 6px; justify-content: center; }
+            .tkb-key {
+                min-width: 34px; min-height: 44px; border-radius: 8px; padding: 0 4px;
+                border: 1px solid var(--line2); background: var(--card2); color: var(--txt);
+                font: 700 15px var(--mono); touch-action: manipulation;
+            }
+            .tkb-key:active { background: var(--indigo); color: #fff; }
+            .tkb-special { min-width: 56px; color: var(--indigo2); font-size: 17px; }
+            .tkb-special.tkb-del { color: var(--red); }
+            .cw-lang { min-height: 44px; min-width: 44px; display: inline-flex; align-items: center; justify-content: center; }
+            #cwHintBtn { min-height: 44px; display: inline-flex; align-items: center; }
+        }
+        /* ============ NEON THEME (Batcomputer / Riddler-terminal, measured) ============ */
+        /* Reversible: delete this block + restore :root baseline values. */
+        /* circuit optional: body::before inline SVG, pointer-events:none, low opacity */
+
+        /* body: near-black with subtle purple radial tint */
+        body {
+            background:
+                radial-gradient(900px 380px at 50% -140px, rgba(176, 38, 255, .10), transparent 70%),
+                #070A0F;
+        }
+
+        /* h1 + .mark: neon-green with layered glow */
+        h1 {
+            color: var(--neon-green);
+            text-shadow:
+                0 0 10px rgba(110, 255, 58, .5),
+                0 0 20px rgba(176, 38, 255, .3);
+        }
+        .brand .mark {
+            color: var(--neon-green);
+            filter: drop-shadow(0 0 10px rgba(110, 255, 58, .65)) drop-shadow(0 0 20px rgba(176, 38, 255, .35));
+        }
+
+        /* .pill + .idx: neon-green accent */
+        .pill {
+            color: var(--neon-green);
+            border-color: rgba(110, 255, 58, .35);
+            background: rgba(110, 255, 58, .10);
+        }
+        .idx {
+            color: var(--neon-green);
+            background: rgba(110, 255, 58, .08);
+            border-color: rgba(110, 255, 58, .30);
+            text-shadow: 0 0 8px rgba(110, 255, 58, .35);
+        }
+
+        /* cards: subtle purple border glow on hover only (NOT static) */
+        .puzzle:hover {
+            border-color: var(--neon-purple);
+            box-shadow: 0 12px 34px -20px rgba(0,0,0,.7), 0 0 18px rgba(176, 38, 255, .22);
+        }
+
+        /* .btn.primary + .seg button.active: purple gradient + glow */
+        .btn.primary {
+            background: linear-gradient(180deg, #C44EFF, #9B20DC);
+            border-color: #9B20DC;
+            box-shadow: 0 4px 16px rgba(155, 32, 220, .38);
+        }
+        .btn.primary:hover {
+            box-shadow: 0 6px 22px rgba(155, 32, 220, .52);
+        }
+        .seg button.active {
+            background: linear-gradient(180deg, #C44EFF, #B026FF);
+            box-shadow: 0 2px 10px rgba(176, 38, 255, .45);
+        }
+
+        /* override hardcoded indigo rgba in .sym and inputs */
+        .sym {
+            background: rgba(176, 38, 255, .14);
+            border-color: rgba(176, 38, 255, .40);
+        }
+        input:focus-visible {
+            box-shadow: 0 0 0 3px rgba(176, 38, 255, .25);
+        }
+
+        /* .cw-lang contrast fix: lightened inactive text for >=4.5:1 on card2 */
+        .cw-lang {
+            color: #8A94A8;
+        }
+
+        /* body::before: inline circuit pattern, very subtle, behind content (optional circuit motif) */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            opacity: .08;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Cpath d='M10 10h40v40' stroke='%23B026FF' stroke-width='1' fill='none'/%3E%3Cpath d='M70 70h40v40' stroke='%236EFF3A' stroke-width='1' fill='none'/%3E%3C/svg%3E");
+        }
+
+        /* ? decoration on .card.puzzle only (subtle, not on grids or brand) */
+        .puzzle {
+            position: relative;
+        }
+        .card.puzzle::before {
+            content: "?";
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font: 700 28px var(--sans);
+            color: rgba(176, 38, 255, .06);
+            pointer-events: none;
+            line-height: 1;
+        }
+
+        /* ---------- neon reduced-motion: strip theme glow only, NOT a11y focus ring ---------- */
+        @media (prefers-reduced-motion: reduce) {
+            h1 { text-shadow: none; }
+            .brand .mark { filter: none; }
+            .puzzle:hover { box-shadow: 0 12px 34px -20px rgba(0,0,0,.7); }
+            .idx { text-shadow: none; }
+            .dot { box-shadow: none; }
+            .pill { text-shadow: none; }
+        }
+
+        /* ---------- neon print: neutralize theme additions ---------- */
+        @media print {
+            body { background: #fff; }
+            body::before { display: none; }
+            .card.puzzle::before { display: none; }
+            h1 { color: #000; text-shadow: none; }
+            .brand .mark { color: #000; filter: none; }
+            .pill { color: #000; border-color: #999; background: #eee; }
+            .idx { color: #000; text-shadow: none; border-color: #000; background: #eee; }
+            .puzzle:hover { box-shadow: none; }
+            .btn.primary { background: #000; color: #fff; box-shadow: none; }
+            .seg button.active { background: #000; color: #fff; box-shadow: none; }
+            input:focus-visible { box-shadow: none; }
+            .cw-lang { color: #333; border-color: #999; background: transparent; }
+            .cw-lang.active { background: #000; border-color: #000; color: #fff; }
         }
     </style>
 </head>
@@ -380,11 +547,18 @@
         </div>
         <div class="cw-bar"><span class="cw-active" id="cwActive">Tippe eine Zelle an, um zu starten</span></div>
         <div class="cw-scroll">
-            <div class="cw-grid" id="cwGrid"></div>
+            <div class="cw-grid" id="cwGrid" role="grid" aria-label="Kreuzworträtsel"></div>
         </div>
         <div class="cw-bar">
             <button class="btn small" id="cwHintBtn" type="button">💡 Hinweis <span class="cw-hint" id="cwHintsLeft">3</span></button>
             <span class="keystroke">Eingabe = Auto-Sprung · Backspace = zurück · Pfeile = bewegen · Leertaste = Richtung</span>
+        </div>
+        <div class="cw-thumbkb" id="cwThumbKB" aria-label="Virtuelle Tastatur" hidden>
+            <div class="cw-tkb-row" id="cwTkbRow"></div>
+            <div class="cw-tkb-row cw-tkb-ctl">
+                <button type="button" class="tkb-key tkb-special" id="cwTkbDir" aria-label="Richtung wechseln">⇄ Richtung</button>
+                <button type="button" class="tkb-key tkb-special tkb-del" id="cwTkbDel" aria-label="Zeichen löschen">⌫</button>
+            </div>
         </div>
         <div class="clues" id="cwClues"></div>
         <div class="print-line">Hinweise und Lösung: siehe Legende</div>
@@ -397,7 +571,7 @@
             <span class="pill hidden" id="solved-maze">Gelöst ✓</span>
         </div>
         <p class="sub">Finde den Weg vom grünen <b>S</b> zum gelben <b>Z</b> — per Pfeiltasten oder Wischen.</p>
-        <canvas id="mazeCanvas" width="320" height="320" tabindex="0"></canvas>
+        <canvas id="mazeCanvas" width="320" height="320" tabindex="0" role="application" aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu."></canvas>
         <div class="maze-bar">
             <span class="steps">Schritte: <b id="mazeSteps">0</b></span>
             <span class="keystroke">↑ ↓ ← →</span>
@@ -414,7 +588,7 @@
             <span class="pill hidden" id="solved-sudoku">Gelöst ✓</span>
         </div>
         <p class="sub">Jede Ziffer 1–9 genau einmal pro Zeile, Spalte und 3×3-Block. Gedruckte Zellen sind vorgegeben.</p>
-        <div class="sdk-grid" id="sudokuGrid"></div>
+        <div class="sdk-grid" id="sudokuGrid" role="grid" aria-label="Sudoku"></div>
     </section>
 
     <footer class="foot">
@@ -560,6 +734,53 @@ function updateSolvedPills(seed, diff) {
         if (el) el.classList.toggle('hidden', !isSolved(seed, diff, p));
     });
 }
+
+// ============================================================
+//  DRAFT PERSISTENZ (localStorage, pro Seed + Schwierigkeit)
+// ============================================================
+function draftKey() { return 'riddler-draft|' + solKey(curSeed, curDiff); }
+function saveDraft() {
+    var d = { cw: {}, math: '', word: '', sdk: {} };
+    cwLetterInputs.forEach(function(i) { if (i.value) d.cw[i.dataset.r + ',' + i.dataset.c] = i.value; });
+    var mi = document.getElementById('mathInput');
+    if (mi) d.math = mi.value;
+    var wi = document.getElementById('wordInput');
+    if (wi) d.word = wi.value;
+    sdkUserCells.forEach(function(c, ci) { if (c.value) d.sdk[ci] = c.value; });
+    try { localStorage.setItem(draftKey(), JSON.stringify(d)); } catch (e) {}
+}
+function restoreDraft() {
+    var d = null;
+    try { d = JSON.parse(localStorage.getItem(draftKey()) || 'null'); } catch (e) {}
+    if (!d) return;
+    if (d.cw) Object.keys(d.cw).forEach(function(k) {
+        var rc = k.split(',');
+        var ip = inpAt(+rc[0], +rc[1]);
+        if (ip && !ip.classList.contains('ok')) {
+            ip.value = d.cw[k];
+            if (ip.value === ip.dataset.solution) { ip.classList.add('ok'); ip.classList.remove('bad'); }
+            else if (ip.value) { ip.classList.add('bad'); ip.classList.remove('ok'); }
+        }
+    });
+    var mi = document.getElementById('mathInput');
+    if (mi && d.math) mi.value = d.math;
+    var wi = document.getElementById('wordInput');
+    if (wi && d.word) wi.value = d.word;
+    sdkUserCells.forEach(function(c, ci) {
+        var dc = d.sdk && d.sdk[ci];
+        if (dc) {
+            c.value = dc;
+            if (dc === c.dataset.solution) c.classList.add('ok');
+            else c.classList.add('bad');
+        }
+    });
+    cwSolved();
+    sdkSolved();
+}
+window.addEventListener('input', function(e) {
+    var t = e.target;
+    if (t && (t.classList.contains('cw-letter') || t.id === 'mathInput' || t.id === 'wordInput' || t.classList.contains('sdk-cell'))) saveDraft();
+});
 
 // ============================================================
 //  GENERATE
@@ -1167,6 +1388,11 @@ function renderCrossword(plan) {
             inp.dataset.r = y;
             inp.dataset.c = x;
             inp.dataset.k = cwKey(y, x);
+            var numHere = numAt[cwKey(y, x)];
+            inp.setAttribute('role', 'gridcell');
+            inp.setAttribute('aria-label', numHere !== undefined ?
+                'Zeile ' + (y + 1) + ', Spalte ' + (x + 1) + ', Nummer ' + numHere : 'Zeile ' + (y + 1) + ', Spalte ' + (x + 1));
+            inp.tabIndex = -1;
             inp.addEventListener('focus', function() { cwFocus(this); });
             inp.addEventListener('click', function() { cwClick(this); });
             inp.addEventListener('input', function() { cwType(this); });
@@ -1265,7 +1491,13 @@ function focusCell(r, c) {
 }
 function syncActive() {
     var a = cwState.active, k = cwKey(a.r, a.c);
-    cwLetterInputs.forEach(function(i) { i.classList.toggle('current', i.dataset.k === k); });
+    var anchor = -1;
+    cwLetterInputs.forEach(function(i) {
+        var isActive = i.dataset.k === k;
+        i.classList.toggle('current', isActive);
+        i.tabIndex = isActive || (a.r < 0 && anchor < 0) ? 0 : -1;
+        if (i.tabIndex === 0) anchor = 0;
+    });
     var ridx = cwCellEntry(a.r, a.c, a.dir);
     var pills = document.querySelectorAll('#cwClues .clue');
     for (var p = 0; p < pills.length; p++) pills[p].classList.toggle('hot', +pills[p].dataset.run === ridx);
@@ -1330,10 +1562,47 @@ function nextEmpty(ridx, r, c) {
     }
     return null;
 }
+function nextRunAfter(ridx, step) {
+    var L = cwState.runs.length;
+    if (!L || ridx < 0) return -1;
+    for (var s = 1; s <= L; s++) {
+        var idx = (ridx + (step > 0 ? s : L - s)) % L;
+        var hasEmpty = runCells(cwState.runs[idx]).some(function(cl) {
+            var ip = inpAt(cl.r, cl.c);
+            return ip && !ip.classList.contains('ok');
+        });
+        if (hasEmpty) return idx;
+    }
+    return -1;
+}
 function cwKeyDown(inp, e) {
     var a = cwState.active;
     var ridx = cwCellEntry(a.r, a.c, a.dir);
     var ru = ridx >= 0 ? cwState.runs[ridx] : null;
+    // A11y: Enter = Pfeil vorwärts in aktiver Richtung (nächstes leeres Feld)
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        var fwd = nextEmpty(ridx, a.r, a.c);
+        if (fwd) { focusCell(fwd.r, fwd.c); return; }
+        return;
+    }
+    // A11y: Tab / Shift+Tab = nächstes / vorheriges Wort mit leerer Zelle
+    if (e.key === 'Tab') {
+        e.preventDefault();
+        var nxt = nextRunAfter(ridx, e.shiftKey ? -1 : 1);
+        if (nxt >= 0) cwPickRun(nxt);
+        return;
+    }
+    // A11y: Home / End = Anfang / Ende des aktuellen Wortes
+    if (e.key === 'Home' || e.key === 'End') {
+        e.preventDefault();
+        if (ru) {
+            var cellsH = runCells(ru);
+            var hEl = e.key === 'Home' ? cellsH[0] : cellsH[cellsH.length - 1];
+            focusCell(hEl.r, hEl.c);
+        }
+        return;
+    }
     if (e.key === 'Backspace') {
         if (inp.value === '' && ru) {
             e.preventDefault();
@@ -1666,7 +1935,65 @@ window.addEventListener('DOMContentLoaded', function() {
     cwBindLangButtons();
     cwSyncLangUI();
     generate();
+    restoreDraft();
+    // neon theme class-exposure (ES5; optional JS hook for the CSS overhaul)
+    document.documentElement.classList.add('neon');
 });
+
+// ============================================================
+//  MOBILE — Thumb-Keyboard & Grid-Dimensionierung (suckz)
+//  Touch-only. Baut eine virtuelle A-Z + Del + Dir-Leiste
+//  unter dem Grid; Tastendrücke laufen über cwType/cwKeyDown
+//  (bestehende Logik, kein Duplikat). Nur auf Coarse-Pointer-
+//  Geräten aktiv, aria-hidden via [hidden] bis dorthin.
+// ============================================================
+(function() {
+    function isTouch() {
+        try { return window.matchMedia('(hover: none)').matches || window.matchMedia('(pointer: coarse)').matches; }
+        catch (e) { return false; }
+    }
+    var kb = document.getElementById('cwThumbKB');
+    if (!kb) return;
+    var rowEl = document.getElementById('cwTkbRow');
+    if (!rowEl) return;
+    function activeInput() {
+        var a = cwState.active;
+        if (!a || a.r < 0 || a.c < 0) return null;
+        return cwState.inputMap[cwKey(a.r, a.c)] || null;
+    }
+    function pressLetter(ch) {
+        var inp = activeInput();
+        if (!inp) return;
+        inp.value = ch;
+        cwType(inp);
+    }
+    function pressDel() {
+        var inp = activeInput();
+        if (!inp) return;
+        if (inp.value) { inp.value = ''; cwType(inp); }
+        else cwKeyDown(inp, { key: 'Backspace', preventDefault: function() {} });
+    }
+    function pressDir() {
+        var inp = activeInput();
+        if (!inp) return;
+        cwKeyDown(inp, { key: ' ', preventDefault: function() {} });
+    }
+    var LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    for (var li = 0; li < LETTERS.length; li++) {
+        (function(ch) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'tkb-key';
+            b.textContent = ch;
+            b.setAttribute('aria-label', 'Buchstabe ' + ch);
+            b.addEventListener('click', function() { pressLetter(ch); });
+            rowEl.appendChild(b);
+        })(LETTERS[li]);
+    }
+    document.getElementById('cwTkbDir').addEventListener('click', pressDir);
+    document.getElementById('cwTkbDel').addEventListener('click', pressDel);
+    if (isTouch()) kb.hidden = false;
+})();
 </script>
 <!-- UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ== -->
 </body>
