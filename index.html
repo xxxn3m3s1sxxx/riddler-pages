@@ -6,6 +6,28 @@
     <meta name="theme-color" content="#070A0F">
     <meta name="riddler:payload" content="UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ==">
     <title>Riddler — Seed-basierte Rätselbox</title>
+    <meta name="description" content="Seed-basierte Rätselbox: Symbol-Arithmetik, Buchstabensalat, Kreuzworträtsel, Labyrinth und ein tägliches Rätsel. Deterministisch, offline, ein Seed = ein Zustand.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="canonical" href="https://xxxn3m3s1sxxx.github.io/riddler-pages/">
+    <meta property="og:type" content="website">
+    <meta property="og:site_name" content="Riddler">
+    <meta property="og:title" content="Riddler — Seed-basierte Rätselbox">
+    <meta property="og:description" content="Deterministische Rätselbox offline: Symbol-Arithmetik, Buchstabensalat, Kreuzworträtsel, Labyrinth. Jede URL ist per Seed reproduzierbar.">
+    <meta property="og:url" content="https://xxxn3m3s1sxxx.github.io/riddler-pages/">
+    <meta name="twitter:card" content="summary">
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Riddler",
+      "applicationCategory": "GameApplication",
+      "operatingSystem": "Any",
+      "inLanguage": "de",
+      "isFamilyFriendly": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+      "description": "Seed-basierte Rätselbox offline: deterministische Rätsel, reproduzierbar über eine URL."
+    }
+    </script>
     <style>
         :root {
             --bg: #0B0D14;
@@ -2194,6 +2216,10 @@ window.addEventListener('DOMContentLoaded', function() {
     cwSyncLangUI();
     generate();
     restoreDraft();
+    // SEO/Print-SEED: ?seed=NNN&print=1  — Grid abwarten, dann drucken
+    if (location.search.indexOf('print=1') !== -1) {
+        setTimeout(function() { window.print(); }, 600);
+    }
     // neon theme class-exposure (ES5; optional JS hook for the CSS overhaul)
     document.documentElement.classList.add('neon');
 });
