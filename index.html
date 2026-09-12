@@ -326,10 +326,12 @@
             .cw-num { color: #000 !important; }
             .cw-block { background: #000; border-radius: 0; }
             .cw-cell.ok, .cw-cell.bad { background: #fff; }
-            .sdk-grid { border-color: #000; }
+            .sdk-grid { border-color: #000; background: #fff; }
             .sdk-cell { background: #fff; border: 1px solid #999; }
             .sdk-given { background: #eee; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .sdk-cell:disabled { background: #eee; }
             .sdk-cell:not(.sdk-given) { color: transparent; }
+            .sdk-cell.ok, .sdk-cell.bad { background: #fff; }
             .sdk-cell.b3 { border-right: 2px solid #000; }
             .sdk-cell.b6 { border-bottom: 2px solid #000; }
             #mazeCanvas { box-shadow: none; border: 1px solid #000; width: min(90%, 512px); height: auto; }
