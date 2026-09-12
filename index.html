@@ -629,7 +629,7 @@
                 border: none;
             }
             #solutions .card-head { display: none; }
-            #solutions .sol-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-items: start; transform: rotate(180deg); }
+            #solutions .sol-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-items: start; }
             #solutions .sol-card {
                 background: #fff; border: 1px solid #000; border-radius: 3px;
                 padding: 4px; break-inside: avoid; color: #000;
@@ -655,13 +655,15 @@
             #solutions .sol-cw-blk { width: 13px; height: 13px; background: #000; }
             #solutions .sol-maze {
                 display: grid; grid-template-columns: repeat(var(--maze-w, 16), minmax(0, 1fr));
-                gap: 0; width: min(100%, 168px); margin: 0 auto; border: 1px solid #000;
+                gap: 1px; width: min(100%, 230px); margin: 0 auto; border: 1px solid #000;
+                background: #000;
             }
             #solutions .sol-maze-cell {
-                aspect-ratio: 1 / 1; font: 700 6px var(--mono); text-align: center; line-height: 10px;
-                border: 1px solid #000; background: #fff; color: #000;
+                aspect-ratio: 1 / 1; font: 700 9px var(--mono); text-align: center; line-height: 14px;
+                background: #fff; color: #000;
             }
-            #solutions .sol-maze-cell.sol-onpath { background: #ccc; }
+            #solutions .sol-maze-cell.sol-onpath { background: #999; }
+            #solutions .sol-maze-cell.sol-sz { background: #000; color: #fff; }
             #solutions .sol-sdk {
                 display: grid; grid-template-columns: repeat(9, 15px); gap: 0; width: max-content; margin: 0 auto;
                 border: 1px solid #000;
@@ -2207,11 +2209,13 @@ function drawMaze() {
     var cvs = document.getElementById('mazeCanvas');
     var cols = mazeW;
     var rows = mazeH;
-    if (cvs.width !== cols * mazeCell || cvs.height !== rows * mazeCell) {
-        cvs.width = cols * mazeCell;
-        cvs.height = rows * mazeCell;
+    var scale = printing ? 2 : 1;
+    if (cvs.width !== cols * mazeCell * scale || cvs.height !== rows * mazeCell * scale) {
+        cvs.width = cols * mazeCell * scale;
+        cvs.height = rows * mazeCell * scale;
     }
     var ctx = cvs.getContext('2d');
+    if (printing) ctx.scale(scale, scale);
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.fillStyle = printing ? '#fff' : '#0E1019';
     ctx.fillRect(0, 0, cvs.width, cvs.height);
@@ -2357,7 +2361,8 @@ function renderSolutions() {
     for (var my = 0; my < mazeH; my++) {
         for (var mx = 0; mx < mazeW; mx++) {
             var onP = pSet[mx + ',' + my] ? ' sol-onpath' : '';
-            mazeHtml += '<div class="sol-maze-cell' + onP + '">' +
+            var isSz = (mx === 0 && my === 0) || (mx === mazeW - 1 && my === mazeH - 1);
+            mazeHtml += '<div class="sol-maze-cell' + onP + (isSz ? ' sol-sz' : '') + '">' +
                 (mx === 0 && my === 0 ? 'S' : (mx === mazeW - 1 && my === mazeH - 1 ? 'Z' : '')) + '</div>';
         }
     }
