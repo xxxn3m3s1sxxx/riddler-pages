@@ -291,11 +291,15 @@
             .val { color: #000; }
             .val.q { color: #444; border: 1px dashed #666; }
             .tile { background: #fff; border: 1px solid #000; color: #000; }
-            .clues { background: #fff; }
-            .clue { border: 1px solid #999; color: #111; background: #fff; }
-            .clue .n { background: #000; }
+            .clues { background: #fff; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 8px; margin: 8px 0 6px; max-width: 100%; }
+            .clues .group-heading { grid-column: 1 / -1; flex-basis: auto; font: 750 9px var(--mono); letter-spacing: .06em; color: #000; text-transform: uppercase; margin: 4px 0 1px; }
+            .clues .group-heading.d { margin-top: 5px; }
+            .clue { display: inline-flex; align-items: baseline; gap: 5px; font-size: 9px; line-height: 1.22; color: #111; background: #fff; border: none; border-radius: 0; padding: 0; break-inside: avoid; }
+            .clue .n { background: #000; color: #fff; min-width: 13px; height: 13px; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; margin-top: 0; }
+            .clue .d { font-size: 9px; font-weight: 400; }
+            .clue.hot { border: none; background: none; }
             .cw-bar, #cwActive { display: none !important; }
-            .cw-grid { --cw: 26px; }
+            .cw-grid { --cw: min(56px, calc((100% - 4px * (var(--n) - 1)) / var(--n))); width: max-content; max-width: 100%; margin: 0 auto; }
             .cw-w { width: var(--cw); height: var(--cw); }
             .cw-cell { background: #fff; border: 2px solid #000; border-radius: 0; color: transparent; }
             .cw-num { color: #000 !important; }
@@ -578,6 +582,11 @@
             input:focus-visible { box-shadow: none; }
             .cw-lang { color: #333; border-color: #999; background: transparent; }
             .cw-lang.active { background: #000; border-color: #000; color: #fff; }
+            .cw-scroll { overflow: visible; }
+            .cw-grid { width: 100%; max-width: 780px; margin: 0 auto; grid-template-columns: repeat(var(--n), minmax(0, 1fr)); }
+            .cw-w { width: 100%; height: auto; aspect-ratio: 1 / 1; }
+            .cw-cell { font: 700 20px var(--mono); }
+            .cw-num { font: 750 11px var(--sans); }
         }
     </style>
 </head>
