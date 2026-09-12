@@ -30,24 +30,24 @@
     </script>
     <style>
         :root {
-            --bg: #0B0D14;
-            --bg2: #0E1019;
-            --card: #141623;
-            --card2: #181B2E;
-            --line: #262A3D;
-            --line2: #343A57;
+            --bg: #070A0F;
+            --bg2: #0A0F0A;
+            --card: #0F1410;
+            --card2: #141B16;
+            --line: #1E2A1F;
+            --line2: #2A3A2B;
             --txt: #F1F5F9;
-            --txt2: #94A3B8;
-            --txt3: #5B6478;
-            --indigo: #B026FF;
-            --indigo2: #C44EFF;
-            --indigo-dim: rgba(176, 38, 255, .14);
-            --green: #6EFF3A;
+            --txt2: #A8B5A0;
+            --txt3: #7A8A72;
+            --indigo: #A412DB;
+            --indigo2: #B026FF;
+            --indigo-dim: rgba(164, 18, 219, .14);
+            --green: #7FFF2A;
             --red: #F43F5E;
             --amber: #FBBF24;
-            --neon-green: #6EFF3A;
-            --neon-purple: #B026FF;
-            --neon-purple-text: #C44EFF;
+            --neon-green: #7FFF2A;
+            --neon-purple: #A412DB;
+            --neon-purple-text: #D946FF;
             --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             --sans: Geist, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
         }
@@ -55,9 +55,7 @@
         html { -webkit-text-size-adjust: 100%; }
         body {
             font-family: var(--sans);
-            background:
-                radial-gradient(900px 380px at 50% -140px, rgba(99, 102, 241, .16), transparent 70%),
-                var(--bg);
+            background: var(--bg);
             color: var(--txt);
             min-height: 100vh;
             -webkit-font-smoothing: antialiased;
@@ -67,7 +65,7 @@
         /* ---------- Header ---------- */
         header { text-align: center; margin-bottom: 26px; }
         .brand { display: flex; align-items: center; justify-content: center; gap: 10px; }
-        .mark { font-size: 24px; color: var(--indigo2); filter: drop-shadow(0 0 12px rgba(99,102,241,.65)); }
+        .mark { font-size: 24px; color: var(--indigo2); filter: drop-shadow(0 0 12px rgba(176,38,255,.65)); }
         h1 { font-size: 27px; letter-spacing: -.5px; }
         .kicker { margin-top: 3px; font-size: 12.5px; color: var(--txt2); }
         .daily-pill {
@@ -95,7 +93,7 @@
         .cw-lang.active { background: var(--indigo2); border-color: var(--indigo2); color: #fff; }
         .idx {
             font: 700 10px var(--mono); letter-spacing: 1.5px; color: var(--indigo2);
-            background: var(--indigo-dim); border: 1px solid rgba(99,102,241,.35);
+            background: var(--indigo-dim); border: 1px solid rgba(176,38,255,.35);
             border-radius: 8px; padding: 5px 7px 4px; line-height: 1;
         }
         .sub { font-size: 12.5px; color: var(--txt2); margin-top: 3px; line-height: 1.45; }
@@ -128,7 +126,7 @@
         #seedInput { width: 150px; letter-spacing: 1px; }
         input::-webkit-inner-spin-button, input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type=number] { -moz-appearance: textfield; appearance: textfield; }
-        input:focus-visible { outline: none; border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(99,102,241,.25); }
+        input:focus-visible { outline: none; border-color: var(--indigo); box-shadow: 0 0 0 3px rgba(176,38,255,.25); }
 
         .btn {
             appearance: none; border: 1px solid var(--line2); background: var(--card2); color: var(--txt);
@@ -174,24 +172,22 @@
         .tafel-row { display: flex; align-items: center; justify-content: center; gap: 10px; }
         .sym {
             width: 36px; height: 36px; display: grid; place-items: center; font-size: 19px;
-            background: var(--indigo-dim); border: 1px solid rgba(99,102,241,.4); border-radius: 11px;
+            background: var(--indigo-dim); border: 1px solid rgba(176,38,255,.4); border-radius: 11px;
         }
         .op { color: var(--txt3); font-weight: 700; font-size: 15px; }
         .eq { color: var(--txt3); font-weight: 700; }
-        .val { font: 700 18px var(--mono); color: var(--amber); min-width: 4ch; text-align: center; }
-        .val.q { color: var(--txt3); border: 1px dashed var(--line2); border-radius: 8px; padding: 3px 8px; }
+        .val { font: 700 18px var(--mono); color: var(--neon-green); text-shadow: 0 0 6px rgba(127, 255, 42, .6); min-width: 4ch; text-align: center; }
+        .val.q { color: var(--neon-purple-text); text-shadow: 0 0 6px rgba(217, 70, 255, .4); border: 1px dashed rgba(176, 38, 255, .55); border-radius: 8px; padding: 3px 8px; }
 
         /* ---------- #2 Word ---------- */
         .tiles { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin: 16px 0 4px; }
         .tile {
             width: 42px; height: 54px; display: grid; place-items: center;
-            background: var(--card2); border: 1px solid var(--line2); border-bottom-width: 3px; border-radius: 10px;
+            background: #161A24; border: 1px solid var(--line2); border-bottom-width: 3px; border-radius: 8px;
             font: 700 24px var(--mono); color: var(--txt); user-select: none;
-            transition: transform .15s ease, border-color .15s ease;
+            transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
         }
-        .tile:nth-child(odd)  { transform: rotate(-2deg); }
-        .tile:nth-child(even) { transform: rotate(2deg); }
-        .tile:hover { transform: rotate(0deg) translateY(-3px); border-color: var(--indigo); }
+        .tile:hover { transform: translateY(-2px); border-color: rgba(127, 255, 42, .55); box-shadow: 0 0 12px rgba(127, 255, 42, .18); }
         .topic-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
 
         /* ---------- #3 Crossword ---------- */
@@ -212,7 +208,7 @@
             min-width: 19px; height: 19px; display: grid; place-items: center;
             background: var(--indigo); color: #fff; border-radius: 999px; font-size: 10px; font-weight: 750;
         }
-        .clue .d { color: var(--txt3); font-size: 11px; font-weight: 750; }
+        .clue .d { color: #8E9E86; font-size: 11px; font-weight: 750; }
         .clue.hot { border-color: var(--indigo2); color: var(--txt); background: var(--indigo-dim); }
         .cw-scroll { overflow-x: auto; margin-top: 10px; padding: 4px 2px 8px; }
         .cw-grid {
@@ -224,14 +220,14 @@
         .cw-cell {
             width: 100%; height: 100%; min-width: 0; min-height: 0; padding: 0;
             border-radius: 6px; text-align: center; font: 700 calc(var(--cw) * .44) var(--mono); text-transform: uppercase;
-            color: #0F172A; background: #F8FAFC; border: 1px solid #C7CDDB; cursor: pointer;
+            color: #F1F5F9; background: #161A24; border: 1px solid #2A3A2B; cursor: pointer;
         }
         input.cw-letter:focus { outline: 2px solid var(--indigo2); outline-offset: -2px; }
         .current { outline: 2px solid var(--indigo2); outline-offset: -1px; box-shadow: 0 0 0 4px var(--indigo-dim); }
         .cw-num { position: absolute; top: 0; left: 4px; z-index: 2; font: 750 calc(var(--cw) * .26) var(--sans); color: var(--txt3); pointer-events: none; line-height: 1.1; }
         .cw-block { background: var(--bg); border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
-        .cw-cell.ok { background: #D1FAE5; border-color: #6EE7B7; }
-        .cw-cell.bad { background: #FEE2E2; border-color: #FCA5A5; }
+        .cw-cell.ok { background: rgba(127, 255, 42, .22); border-color: rgba(127, 255, 42, .6); }
+        .cw-cell.bad { background: rgba(244, 63, 94, .22); border-color: rgba(244, 63, 94, .6); }
         .cw-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .cw-active {
             display: inline-block; max-width: 100%; vertical-align: middle;
@@ -256,20 +252,20 @@
         /* ---------- #5 Sudoku ---------- */
         .sdk-grid {
             display: grid; grid-template-columns: repeat(9, 34px); gap: 0; width: max-content; margin: 14px auto;
-            border: 2px solid #1E293B; border-radius: 10px; overflow: hidden; background: #0B0D14;
+            border: 2px solid #1E2A1F; border-radius: 10px; overflow: hidden; background: #070A0F;
         }
         .sdk-cell {
             width: 34px; height: 34px; padding: 0; min-width: 0; min-height: 0; max-width: 34px;
-            border: 1px solid #D8DEE9; background: #F8FAFC; text-align: center;
-            font: 700 16px var(--mono); color: #0F172A; cursor: pointer;
+            border: 1px solid #2A3A2B; background: #161A24; text-align: center;
+            font: 700 16px var(--mono); color: #F1F5F9; cursor: pointer;
         }
-        .sdk-given { background: #E9EDF8; color: #334155; font-weight: 750; cursor: default; }
-        .sdk-cell:disabled { background: #E9EDF8; }
+        .sdk-given { background: #141B16; color: #A8B5A0; font-weight: 750; cursor: default; }
+        .sdk-cell:disabled { background: #141B16; }
         .sdk-cell:focus { outline: 2px solid var(--indigo); outline-offset: -1px; }
-        .sdk-cell.b3 { border-right: 2px solid #1E293B; }
-        .sdk-cell.b6 { border-bottom: 2px solid #1E293B; }
-        .sdk-cell.ok { background: #D1FAE5; }
-        .sdk-cell.bad { background: #FEE2E2; }
+        .sdk-cell.b3 { border-right: 2px solid #1E2A1F; }
+        .sdk-cell.b6 { border-bottom: 2px solid #1E2A1F; }
+        .sdk-cell.ok { background: rgba(127, 255, 42, .22); }
+        .sdk-cell.bad { background: rgba(244, 63, 94, .22); }
 
         /* ---------- Micro interactions ---------- */
         @keyframes rise { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
@@ -287,16 +283,16 @@
 
         /* ---------- A11y Fokus-Ring WCAG 2.4.11 ---------- */
         :focus-visible {
-            outline: 3px solid #005fcc;
+            outline: 3px solid #A412DB;
             outline-offset: 2px;
-            box-shadow: 0 0 0 6px rgba(0, 95, 204, .35);
+            box-shadow: 0 0 0 6px rgba(164, 18, 219, .35);
         }
         input.cw-cell:focus-visible { outline-offset: -2px; box-shadow: none; }
-        .current { outline: 3px solid #005fcc !important; outline-offset: -1px; box-shadow: 0 0 0 6px rgba(0, 95, 204, .35) !important; }
-        #mazeCanvas:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #005fcc, 0 0 0 6px rgba(0, 95, 204, .35); }
+        .current { outline: 3px solid #A412DB !important; outline-offset: -1px; box-shadow: 0 0 0 6px rgba(164, 18, 219, .35) !important; }
+        #mazeCanvas:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #A412DB, 0 0 0 6px rgba(164, 18, 219, .35); }
         .sdk-cell:focus-visible { outline-offset: -1px; }
-        .clue:focus-visible { border-color: #005fcc; box-shadow: 0 0 0 4px rgba(0, 95, 204, .30); }
-        .btn:focus-visible, .icon-btn:focus-visible, .seg button:focus-visible, .cw-lang:focus-visible { box-shadow: 0 0 0 3px rgba(0, 95, 204, .45); }
+        .clue:focus-visible { border-color: #A412DB; box-shadow: 0 0 0 4px rgba(164, 18, 219, .30); }
+        .btn:focus-visible, .icon-btn:focus-visible, .seg button:focus-visible, .cw-lang:focus-visible { box-shadow: 0 0 0 3px rgba(164, 18, 219, .45); }
 
         /* ---------- Print ---------- */
         .print-line { display: none; }
@@ -381,12 +377,15 @@
                 radial-gradient(120% 120% at 50% 42%, transparent 55%, rgba(0, 0, 0, .48) 100%),
                 url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20160%22%3E%3Cg%20fill%3D%22%237CFF2A%22%20opacity%3D%220.07%22%3E%3Cpath%20d%3D%22M110%2014%20C98%208%2082%2014%2082%2030%20C70%2026%2056%2033%2044%2042%20C28%2052%2018%2063%2015%2076%20C13%2086%2024%2087%2030%2081%20C38%2073%2041%2066%2049%2072%20C57%2078%2061%2088%2071%2084%20C81%2080%2082%2073%2090%2078%20C97%2081%20101%2086%20110%2084%20C119%2086%20123%2081%20130%2078%20C138%2073%20139%2080%20149%2084%20C159%2088%20163%2078%20171%2072%20C179%2066%20182%2073%20190%2081%20C196%2087%20207%2086%20205%2076%20C202%2063%20192%2052%20176%2042%20C164%2033%20150%2026%20138%2030%20C138%2014%20122%208%20110%2014%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
                 repeating-linear-gradient(0deg, rgba(0, 0, 0, .28) 0 1.5px, transparent 1.5px 4px),
-                radial-gradient(900px 380px at 50% -140px, rgba(176, 38, 255, .10), transparent 70%);
+                radial-gradient(900px 380px at 50% -140px, rgba(127, 255, 42, .07), transparent 70%);
             background-attachment: fixed, fixed, scroll, scroll;
             background-size: cover, 280px 204px, auto, auto;
             background-position: center, right 24px center, left top, center;
             background-repeat: no-repeat, no-repeat, repeat, no-repeat;
         }
+
+        /* body::before circuit density: Gemini-anlehnt, dichter Traces (SPECIFICITY-FIX: nur hier definieren) */
+        body::before { opacity: .45; }
 
         /* h1 + .mark: neon-green with layered glow */
         h1 {
@@ -448,22 +447,23 @@
 
         /* .btn.primary + .seg button.active: purple gradient + glow */
         .btn.primary {
-            background: linear-gradient(180deg, #C44EFF, #9B20DC);
-            border-color: #9B20DC;
-            box-shadow: 0 4px 16px rgba(155, 32, 220, .38);
+            background: linear-gradient(180deg, #B026FF, #A412DB);
+            border-color: #A412DB;
+            box-shadow: 0 4px 16px rgba(164, 18, 219, .42);
         }
         .btn.primary:hover {
-            box-shadow: 0 6px 22px rgba(155, 32, 220, .52);
+            box-shadow: 0 6px 22px rgba(164, 18, 219, .5);
         }
         .seg button.active {
-            background: linear-gradient(180deg, #C44EFF, #B026FF);
-            box-shadow: 0 2px 10px rgba(176, 38, 255, .45);
+            background: linear-gradient(180deg, #B026FF, #A412DB);
+            box-shadow: 0 2px 10px rgba(164, 18, 219, .5);
         }
 
         /* override hardcoded indigo rgba in .sym and inputs */
         .sym {
-            background: rgba(176, 38, 255, .14);
-            border-color: rgba(176, 38, 255, .40);
+            background: rgba(127, 255, 42, .09);
+            border-color: rgba(127, 255, 42, .45);
+            box-shadow: 0 0 10px rgba(127, 255, 42, .14);
         }
         input:focus-visible {
             box-shadow: 0 0 0 3px rgba(176, 38, 255, .25);
@@ -557,7 +557,7 @@
             inset: 0;
             z-index: -1;
             pointer-events: none;
-            opacity: .35;
+            opacity: .45;
             background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%3Cdefs%3E%0A%20%20%3Cpattern%20id%3D%22dotGrid%22%20width%3D%2232%22%20height%3D%2232%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%220.7%22%20fill%3D%22%237CFF2A%22%20opacity%3D%220.038%22%2F%3E%0A%20%20%3C%2Fpattern%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22url(%23dotGrid)%22%2F%3E%0A%3Cg%20id%3D%22traces%22%20fill%3D%22none%22%20stroke%3D%22%237CFF2A%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%220.19%22%3E%0A%20%20%3Cpath%20d%3D%22M%20512%2084%20H%20424%20V%20112%20H%20376%20V%20168%20H%20328%20V%20136%20H%20284%20V%20168%20H%20224%22%20stroke-width%3D%221.35%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20102%20H%20440%20V%20148%20H%20392%20V%20104%20H%20348%20V%20188%20H%20260%20V%20148%20H%20196%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20292%20H%20448%20V%20348%20H%20392%20V%20412%20H%20344%20V%20360%20H%20300%20V%20412%20H%20240%20V%20360%20H%20184%22%20stroke-width%3D%221.25%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20312%20H%20464%20V%20372%20H%20416%20V%20432%20H%20368%20V%20384%20H%20320%20V%20456%20H%20268%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20316%20H%2064%20V%20372%20H%20112%20V%20420%20H%20168%20V%20368%20H%20204%20V%20432%22%20stroke-width%3D%221.0%22%20opacity%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%200%20V%2048%20H%20144%20V%2092%20H%2096%20V%20140%22%20stroke-width%3D%221.15%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20196%200%20V%2056%20H%20240%20V%20104%20H%20288%20V%2056%20H%20332%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20380%200%20V%2032%20H%20332%20V%2068%20H%20284%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%2096%20H%2056%20V%2064%20H%20120%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20128%20H%2040%20V%20176%20H%2088%20V%20128%20H%20136%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20424%20212%20L%20404%20232%20H%20360%20V%20268%20L%20380%20288%20H%20424%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%20212%20L%2076%20232%20H%2032%20V%20268%20L%2052%20288%20H%2096%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20432%20H%2048%20V%20476%20H%20128%20V%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20384%20512%20V%20464%20H%20432%20V%20432%20H%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20468%20H%2028%20V%20492%20H%2064%22%20stroke-width%3D%220.9%22%2F%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22nodes%22%20opacity%3D%221%22%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.26%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22424%22%20cy%3D%2284%22%20r%3D%222.3%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22376%22%20cy%3D%22112%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22148%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22448%22%20cy%3D%22292%22%20r%3D%222.1%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22348%22%20r%3D%222.2%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22240%22%20cy%3D%22104%22%20r%3D%221.8%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22144%22%20cy%3D%2248%22%20r%3D%221.7%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2296%22%20cy%3D%2292%22%20r%3D%221.6%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%22232%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2248%22%20cy%3D%22432%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22432%22%20cy%3D%22464%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2228%22%20cy%3D%22468%22%20r%3D%221.5%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23B026FF%22%20stroke-width%3D%220.95%22%20opacity%3D%220.20%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Crect%20x%3D%22402%22%20y%3D%22396%22%20width%3D%2228%22%20height%3D%2226%22%20rx%3D%221.2%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22366%22%20y%3D%22210%22%20width%3D%2222%22%20height%3D%2218%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2218%22%20y%3D%22340%22%20width%3D%2224%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22248%22%20y%3D%22430%22%20width%3D%2226%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20stroke%3D%22%237CFF2A%22%20stroke-width%3D%220.85%22%20opacity%3D%220.14%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M402%20404%20H397%20M402%20411%20H397%20M402%20418%20H397%20M430%20404%20H435%20M430%20411%20H435%20M430%20418%20H435%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M366%20216%20H361%20M366%20222%20H361%20M388%20216%20H393%20M388%20222%20H393%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.18%22%3E%0A%20%20%20%20%3Crect%20x%3D%22282%22%20y%3D%22134%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22324%22%20y%3D%22166%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22342%22%20y%3D%22358%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22trace-glow%22%20fill%3D%22none%22%20stroke%3D%22%237CFF2A%22%20stroke-width%3D%222.6%22%20opacity%3D%220.018%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%3Cpath%20d%3D%22M512%2084%20H424%20V112%20H376%20V168%20H328%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M512%20292%20H448%20V348%20H392%20V412%20H344%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E");
             background-size: 512px;
         }
@@ -2233,7 +2233,7 @@ function drawMaze() {
 
     if (!printing) {
         mazeTrail.forEach(function(t) {
-            ctx.fillStyle = 'rgba(99,102,241,.18)';
+            ctx.fillStyle = 'rgba(176,38,255,.22)';
             ctx.beginPath();
             ctx.arc(t.x * mazeCell + mazeCell / 2, t.y * mazeCell + mazeCell / 2, mazeCell / 6, 0, Math.PI * 2);
             ctx.fill();
