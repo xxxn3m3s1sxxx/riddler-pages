@@ -245,7 +245,7 @@
         /* ---------- #4 Maze ---------- */
         #mazeCanvas {
             display: block; margin: 14px auto 0; border-radius: 12px;
-            width: min(100%, 320px); height: auto; background: var(--bg2);
+            width: min(100%, 560px); height: auto; background: var(--bg2);
             box-shadow: inset 0 0 0 1px var(--line); outline: none; touch-action: none; cursor: crosshair;
         }
         #mazeCanvas:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
@@ -314,14 +314,15 @@
             .val.q { color: #444; border: 1px dashed #666; }
             .tile { background: #fff; border: 1px solid #000; color: #000; }
             .clues { background: #fff; display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px 8px; margin: 8px 0 6px; max-width: 100%; }
-            .clues .group-heading { grid-column: 1 / -1; flex-basis: auto; font: 750 9px var(--mono); letter-spacing: .06em; color: #000; text-transform: uppercase; margin: 4px 0 1px; }
-            .clues .group-heading.d { margin-top: 5px; }
-            .clue { display: inline-flex; align-items: baseline; gap: 5px; font-size: 9px; line-height: 1.22; color: #111; background: #fff; border: none; border-radius: 0; padding: 0; break-inside: avoid; }
-            .clue .n { background: #000; color: #fff; min-width: 13px; height: 13px; display: inline-flex; align-items: center; justify-content: center; font-size: 8px; font-weight: 700; margin-top: 0; }
-            .clue .d { font-size: 9px; font-weight: 400; }
+            .clues .group-heading { grid-column: 1 / -1; flex-basis: auto; font: 750 8px var(--mono); letter-spacing: .05em; color: #000; text-transform: uppercase; margin: 3px 0 1px; }
+            .clues .group-heading.d { margin-top: 4px; }
+            .clue { display: inline-flex; align-items: baseline; gap: 4px; font-size: 8px; line-height: 1.16; color: #111; background: #fff; border: none; border-radius: 0; padding: 0; break-inside: avoid; }
+            .clue .n { background: #000; color: #fff; min-width: 11px; height: 11px; display: inline-flex; align-items: center; justify-content: center; font-size: 7px; font-weight: 700; margin-top: 0; }
+            .clue .d { font-size: 8px; font-weight: 400; }
             .clue.hot { border: none; background: none; }
             .cw-bar, #cwActive { display: none !important; }
-            .cw-grid { --cw: min(56px, calc((100% - 4px * (var(--n) - 1)) / var(--n))); width: max-content; max-width: 100%; margin: 0 auto; }
+            #p-crossword, #p-crossword .clues { break-inside: avoid; page-break-inside: avoid; }
+            .cw-grid { --cw: min(48px, calc((100% - 4px * (var(--n) - 1)) / var(--n))); width: max-content; max-width: 100%; margin: 0 auto; }
             .cw-w { width: var(--cw); height: var(--cw); }
             .cw-cell { background: #fff; border: 2px solid #000; border-radius: 0; color: transparent; }
             .cw-num { color: #000 !important; }
@@ -333,7 +334,7 @@
             .sdk-cell:not(.sdk-given) { color: transparent; }
             .sdk-cell.b3 { border-right: 2px solid #000; }
             .sdk-cell.b6 { border-bottom: 2px solid #000; }
-            #mazeCanvas { box-shadow: none; border: 1px solid #000; }
+            #mazeCanvas { box-shadow: none; border: 1px solid #000; width: min(90%, 512px); height: auto; }
             .print-line { display: block !important; margin-top: 10px; border-bottom: 1px solid #000; width: 240px; height: 30px; font-size: 12px; color: #666; }
             .foot { display: none; }
         }
@@ -610,6 +611,66 @@
             .cw-cell { font: 700 20px var(--mono); }
             .cw-num { font: 750 11px var(--sans); }
         }
+
+        /* ---------- Lösungsleiste: Screen versteckt, Print-only, auf dem Kopf ---------- */
+        #solutions { display: none; }
+        @media print {
+            #solutions {
+                display: block;
+                background: #fff;
+                break-inside: auto;
+                page-break-inside: auto;
+                margin: 0;
+                padding: 0;
+                border: none;
+            }
+            #solutions .card-head { display: none; }
+            #solutions .sol-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-items: start; transform: rotate(180deg); }
+            #solutions .sol-card {
+                background: #fff; border: 1px solid #000; border-radius: 3px;
+                padding: 4px; break-inside: avoid; color: #000;
+            }
+            #solutions .sol-card h4 { margin: 0 0 2px; font: 750 8px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #000; }
+            #solutions .sol-card .sol-h4b { font: 750 8px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #000; border-top: 1px dashed #999; margin: 4px 0 2px; padding-top: 3px; }
+            #solutions .sol-math { display: flex; align-items: center; gap: 3px; font: 700 9px var(--mono); margin: 1px 0; }
+            #solutions .sol-card { text-align: center; }
+            #solutions .sol-scram { display: flex; flex-wrap: wrap; gap: 1px; margin: 2px 0 3px; justify-content: center; }
+            #solutions .sol-scram .sol-tile { border: 1px dashed #888; background: #fff; }
+            #solutions .sol-tile {
+                width: 12px; height: 12px; border: 1px solid #000; background: #fff;
+                font: 700 8px var(--mono); text-transform: uppercase; text-align: center; line-height: 12px; color: #000;
+            }
+            #solutions .sol-ans {
+                font: 700 9px var(--mono); letter-spacing: .18em; text-transform: uppercase; color: #000;
+            }
+            #solutions .sol-cw { display: grid; gap: 1px; width: max-content; margin: 0 auto; }
+            #solutions .sol-cw-cell {
+                width: 13px; height: 13px; border: 1px solid #000; background: #fff;
+                font: 700 7.5px var(--mono); text-transform: uppercase; text-align: center; line-height: 13px;
+            }
+            #solutions .sol-cw-blk { width: 13px; height: 13px; background: #000; }
+            #solutions .sol-maze {
+                display: grid; grid-template-columns: repeat(var(--maze-w, 16), minmax(0, 1fr));
+                gap: 0; width: min(100%, 168px); margin: 0 auto; border: 1px solid #000;
+            }
+            #solutions .sol-maze-cell {
+                aspect-ratio: 1 / 1; font: 700 6px var(--mono); text-align: center; line-height: 10px;
+                border: 1px solid #000; background: #fff; color: #000;
+            }
+            #solutions .sol-maze-cell.sol-onpath { background: #ccc; }
+            #solutions .sol-sdk {
+                display: grid; grid-template-columns: repeat(9, 15px); gap: 0; width: max-content; margin: 0 auto;
+                border: 1px solid #000;
+            }
+            #solutions .sol-sdk-cell {
+                width: 15px; height: 15px; border: 1px solid #999; background: #fff;
+                font: 700 8px var(--mono); text-align: center; line-height: 15px; color: #000;
+            }
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(3n) { border-right: 2px solid #000; }
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(9n) { border-right: 1px solid #999; }
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(n+19):nth-child(-n+27),
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid #000; }
+        }
     </style>
 </head>
 <body>
@@ -815,10 +876,27 @@
         <div class="print-line">Lösung: ______</div>
     </section>
 
-    <!-- #3 CROSSWORD -->
+    <!-- #3 WORD 2 -->
+    <section class="card puzzle" id="p-word2">
+        <div class="card-head">
+            <h3><span class="idx">03</span>&nbsp; Buchstabensalat 2</h3>
+            <span class="pill hidden" id="solved-word2">Gelöst ✓</span>
+        </div>
+        <p class="sub">Bring auch diese Buchstaben in die richtige Reihenfolge.</p>
+        <div class="tiles" id="wordTiles2"></div>
+        <div class="topic-row">
+            <input type="text" class="ans" id="wordInput2" maxlength="40" placeholder="Lösung" autocomplete="off">
+            <button class="btn small" id="wordCheck2">Prüfen</button>
+            <button class="icon-btn" id="wordShuffle2" title="Kacheln mischen">🔀</button>
+        </div>
+        <div class="result" id="wordResult2"></div>
+        <div class="print-line">Lösung: ______</div>
+    </section>
+
+    <!-- #4 CROSSWORD -->
     <section class="card puzzle" id="p-crossword">
         <div class="card-head">
-            <h3><span class="idx">03</span>&nbsp; Kreuzworträtsel</h3>
+            <h3><span class="idx">04</span>&nbsp; Kreuzworträtsel</h3>
             <span class="cw-langs">
                 <button class="cw-lang active" type="button" data-lang="DE" title="Deutsch">DE</button>
                 <button class="cw-lang" type="button" data-lang="EN" title="English">EN</button>
@@ -844,14 +922,14 @@
         <div class="print-line">Hinweise und Lösung: siehe Legende</div>
     </section>
 
-    <!-- #4 MAZE -->
+    <!-- #5 MAZE -->
     <section class="card puzzle" id="p-maze">
         <div class="card-head">
-            <h3><span class="idx">04</span>&nbsp; Labyrinth</h3>
+            <h3><span class="idx">05</span>&nbsp; Labyrinth</h3>
             <span class="pill hidden" id="solved-maze">Gelöst ✓</span>
         </div>
         <p class="sub">Finde den Weg vom grünen <b>S</b> zum gelben <b>Z</b> — per Pfeiltasten oder Wischen.</p>
-        <canvas id="mazeCanvas" width="320" height="320" tabindex="0" role="application" aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu."></canvas>
+        <canvas id="mazeCanvas" width="512" height="320" tabindex="0" role="application" aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu."></canvas>
         <div class="maze-bar">
             <span class="steps">Schritte: <b id="mazeSteps">0</b></span>
             <span class="keystroke">↑ ↓ ← →</span>
@@ -861,14 +939,38 @@
         <div class="print-line">Ausgang (Z): ______</div>
     </section>
 
-    <!-- #5 SUDOKU -->
+    <!-- #6 SUDOKU -->
     <section class="card puzzle" id="p-sudoku">
         <div class="card-head">
-            <h3><span class="idx">05</span>&nbsp; Sudoku</h3>
+            <h3><span class="idx">06</span>&nbsp; Sudoku</h3>
             <span class="pill hidden" id="solved-sudoku">Gelöst ✓</span>
         </div>
         <p class="sub">Jede Ziffer 1–9 genau einmal pro Zeile, Spalte und 3×3-Block. Gedruckte Zellen sind vorgegeben.</p>
         <div class="sdk-grid" id="sudokuGrid" role="grid" aria-label="Sudoku"></div>
+    </section>
+
+    <!-- #7 MATH 2 -->
+    <section class="card puzzle" id="p-math2">
+        <div class="card-head">
+            <h3><span class="idx">07</span>&nbsp; Symbol-Arithmetik 2</h3>
+            <span class="pill hidden" id="solved-math2">Gelöst ✓</span>
+        </div>
+        <p class="sub">Auch hier: Finde die Werte der Symbole und löse die letzte Zeile.</p>
+        <div class="tafel" id="mathDisplay2"></div>
+        <div class="ans-row">
+            <input type="number" class="ans" id="mathInput2" inputmode="numeric" placeholder="Ergebnis">
+            <button class="btn small" id="mathCheck2">Prüfen</button>
+        </div>
+        <div class="result" id="mathResult2"></div>
+        <div class="print-line">Ergebnis: ______</div>
+    </section>
+
+    <!-- #L LÖSUNGSLEISTE (Print-only, auf dem Kopf) -->
+    <section class="card solutions" id="solutions" aria-label="Lösungen zu allen Rätseln">
+        <div class="card-head">
+            <h3><span class="idx">L</span>&nbsp; Lösungen</h3>
+        </div>
+        <div class="sol-wrap" id="solWrap"></div>
     </section>
 
     <footer class="foot">
@@ -976,7 +1078,14 @@ function readSeed() {
 var currentDiff = 'medium';
 var mathSolution = 0;
 var wordSolution = '';
-var mazeGrid = [], mazeW = 10, mazeH = 10, mazeCell = 32;
+var wordSolution2 = '';
+var wordScramble = '';
+var wordScramble2 = '';
+var mazeGrid = [], mazeW = 16, mazeH = 10, mazeCell = 32;
+var mathPuzzle = null;
+var mathPuzzle2 = null;
+var mathSolution2 = 0;
+var lastCwPlan = null;
 var playerX = 0, playerY = 0, mazeSteps = 0, mazeTrail = [];
 var printing = false;
 
@@ -1009,7 +1118,7 @@ function unmarkSolved(seed, diff, p) {
     if (el) el.classList.add('hidden');
 }
 function updateSolvedPills(seed, diff) {
-    ['math', 'word', 'crossword', 'maze', 'sudoku'].forEach(function(p) {
+    ['math', 'word', 'word2', 'crossword', 'maze', 'sudoku', 'math2'].forEach(function(p) {
         var el = document.getElementById('solved-' + p);
         if (el) el.classList.toggle('hidden', !isSolved(seed, diff, p));
     });
@@ -1020,12 +1129,16 @@ function updateSolvedPills(seed, diff) {
 // ============================================================
 function draftKey() { return 'riddler-draft|' + solKey(curSeed, curDiff); }
 function saveDraft() {
-    var d = { cw: {}, math: '', word: '', sdk: {} };
+    var d = { cw: {}, math: '', word: '', word2: '', math2: '', sdk: {} };
     cwLetterInputs.forEach(function(i) { if (i.value) d.cw[i.dataset.r + ',' + i.dataset.c] = i.value; });
     var mi = document.getElementById('mathInput');
     if (mi) d.math = mi.value;
     var wi = document.getElementById('wordInput');
     if (wi) d.word = wi.value;
+    var mi2 = document.getElementById('mathInput2');
+    if (mi2) d.math2 = mi2.value;
+    var wi2 = document.getElementById('wordInput2');
+    if (wi2) d.word2 = wi2.value;
     sdkUserCells.forEach(function(c, ci) { if (c.value) d.sdk[ci] = c.value; });
     try { localStorage.setItem(draftKey(), JSON.stringify(d)); } catch (e) {}
 }
@@ -1046,6 +1159,10 @@ function restoreDraft() {
     if (mi && d.math) mi.value = d.math;
     var wi = document.getElementById('wordInput');
     if (wi && d.word) wi.value = d.word;
+    var mi2 = document.getElementById('mathInput2');
+    if (mi2 && d.math2) mi2.value = d.math2;
+    var wi2 = document.getElementById('wordInput2');
+    if (wi2 && d.word2) wi2.value = d.word2;
     sdkUserCells.forEach(function(c, ci) {
         var dc = d.sdk && d.sdk[ci];
         if (dc) {
@@ -1069,10 +1186,12 @@ function generate() {
     var seed = readSeed();
     var diff = currentDiff;
     genMath(mulberry32(seed + 100), diff, seed);
+    genMath2(mulberry32(seed + 600), diff);
     genWord(mulberry32(seed + 200), diff);
     genCrossword(seed);
     genMaze(mulberry32(seed + 400));
     genSudoku(mulberry32(seed + 500), diff);
+    renderSolutions();
     updateSolvedPills(seed, diff);
     reveal();
 }
@@ -1100,18 +1219,53 @@ function genMath(rng, diff, seed) {
     var v1 = randInt(rng, 2, maxV);
     var v2 = randInt(rng, 2, maxV);
     mathSolution = v1 + v2;
-    function row(l, op, r, val, isQ) {
-        return '<div class="tafel-row"><span class="sym">' + l + '</span><span class="op">' + op +
-            '</span><span class="sym">' + r + '</span><span class="eq">=</span>' +
-            '<span class="val' + (isQ ? ' q' : '') + '">' + (isQ ? '?' : val) + '</span></div>';
-    }
+    mathPuzzle = { s1: s1, s2: s2, v1: v1, v2: v2 };
     document.getElementById('mathDisplay').innerHTML =
-        row(s1, '+', s1, v1 + v1) +
-        row(s1, '×', s2, v1 * v2) +
-        row(s1, '+', s2, null, true);
+        mathRow(s1, '+', s1, v1 + v1) +
+        mathRow(s1, '×', s2, v1 * v2) +
+        mathRow(s1, '+', s2, null, true);
     var res = document.getElementById('mathResult');
     res.textContent = ''; res.className = 'result';
     document.getElementById('mathInput').value = '';
+}
+function genMath2(rng, diff) {
+    var emojis = ['🦋', '🌵', '⚙️', '🎯', '🛰️', '🧠', '🪐', '🎲'];
+    var s1 = emojis[randInt(rng, 0, Math.floor(emojis.length / 2) - 1)];
+    var s2 = emojis[randInt(rng, Math.ceil(emojis.length / 2), emojis.length - 1)];
+    var maxV = diff === 'easy' ? 8 : diff === 'medium' ? 15 : diff === 'hard' ? 30 : 60;
+    var v1 = randInt(rng, 2, maxV);
+    var v2 = randInt(rng, 2, maxV);
+    mathSolution2 = v1 + v2;
+    mathPuzzle2 = { s1: s1, s2: s2, v1: v1, v2: v2 };
+    var el = document.getElementById('mathDisplay2');
+    if (el) {
+        el.innerHTML = mathRow(s1, '+', s1, v1 + v1) +
+            mathRow(s1, '×', s2, v1 * v2) +
+            mathRow(s1, '+', s2, null, true);
+    }
+    var res = document.getElementById('mathResult2');
+    if (res) { res.textContent = ''; res.className = 'result'; }
+    var inp = document.getElementById('mathInput2');
+    if (inp) inp.value = '';
+}
+function mathRow(l, op, r, val, isQ) {
+    return '<div class="tafel-row"><span class="sym">' + l + '</span><span class="op">' + op +
+        '</span><span class="sym">' + r + '</span><span class="eq">=</span>' +
+        '<span class="val' + (isQ ? ' q' : '') + '">' + (isQ ? '?' : val) + '</span></div>';
+}
+function checkMath2() {
+    var v = parseInt(document.getElementById('mathInput2').value, 10);
+    var res = document.getElementById('mathResult2');
+    if (v === mathSolution2) {
+        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        flash(document.getElementById('p-math2'), 'pop');
+        SFX.tick();
+        markSolved(curSeed, curDiff, 'math2');
+    } else {
+        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        flash(document.getElementById('p-math2'), 'shake');
+        SFX.buzz();
+    }
 }
 function checkMath() {
     var v = parseInt(document.getElementById('mathInput').value, 10);
@@ -1140,19 +1294,33 @@ var WORD_POOLS = {
 function genWord(rng, diff) {
     var pool = WORD_POOLS[diff] || WORD_POOLS.medium;
     wordSolution = pool[randInt(rng, 0, pool.length - 1)];
+    var alt = pool[randInt(rng, 0, pool.length - 1)];
+    wordSolution2 = (alt === wordSolution) ? pool[(pool.indexOf(wordSolution) + 1) % pool.length] : alt;
     var chars = wordSolution.split('');
     shuffle(chars, rng);
+    wordScramble = chars.join('');
+    var chars2 = wordSolution2.split('');
+    shuffle(chars2, mulberry32(wordSolution2.length * 37 + 7));
+    wordScramble2 = chars2.join('');
     var el = document.getElementById('wordTiles');
-    el.innerHTML = '';
-    chars.forEach(function(ch) {
-        var s = document.createElement('span');
-        s.className = 'tile';
-        s.textContent = ch;
-        el.appendChild(s);
-    });
+    renderTiles(el, chars);
+    var el2 = document.getElementById('wordTiles2');
+    renderTiles(el2, chars2);
     var res = document.getElementById('wordResult');
     res.textContent = ''; res.className = 'result';
     document.getElementById('wordInput').value = '';
+    var res2 = document.getElementById('wordResult2');
+    if (res2) { res2.textContent = ''; res2.className = 'result'; }
+    var wi2 = document.getElementById('wordInput2');
+    if (wi2) wi2.value = '';
+}
+function renderTiles(el, chars) {
+    for (var i = 0; i < chars.length; i++) {
+        var s = document.createElement('span');
+        s.className = 'tile';
+        s.textContent = chars[i];
+        el.appendChild(s);
+    }
 }
 function reshuffleTiles() {
     var el = document.getElementById('wordTiles');
@@ -1161,6 +1329,28 @@ function reshuffleTiles() {
     el.innerHTML = '';
     tiles.forEach(function(t) { el.appendChild(t); });
     flash(el, 'pop');
+}
+function reshuffleTiles2() {
+    var el = document.getElementById('wordTiles2');
+    var tiles = Array.prototype.slice.call(el.children);
+    shuffle(tiles, mulberry32(Math.floor(Math.random() * 1e9)));
+    el.innerHTML = '';
+    tiles.forEach(function(t) { el.appendChild(t); });
+    flash(el, 'pop');
+}
+function checkWord2() {
+    var v = document.getElementById('wordInput2').value.trim().toUpperCase();
+    var res = document.getElementById('wordResult2');
+    if (v === wordSolution2) {
+        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        flash(document.getElementById('p-word2'), 'pop');
+        SFX.tick();
+        markSolved(curSeed, curDiff, 'word2');
+    } else {
+        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        flash(document.getElementById('p-word2'), 'shake');
+        SFX.buzz();
+    }
 }
 function checkWord() {
     var v = document.getElementById('wordInput').value.trim().toUpperCase();
@@ -1258,6 +1448,7 @@ function cwToggleLang(l) {
     cwSyncLangUI();
     unmarkSolved(curSeed, curDiff, 'crossword');
     genCrossword(curSeed);
+    renderSolutions();
 }
 function cwBindLangButtons() {
     var els = document.querySelectorAll('#p-crossword .cw-lang');
@@ -1947,6 +2138,7 @@ function genCrossword(seed) {
     if (typeof window.cwGenTest !== 'undefined' && window.cwGenTest.generate) {
         plan = window.cwGenTest.generate(cwLang, seed);
     }
+    lastCwPlan = plan;
     renderCrossword(plan);
     cwState.hints = 3;
     var hintEl = document.getElementById('cwHintsLeft');
@@ -2005,22 +2197,34 @@ function genMaze(rng) {
 }
 function drawMaze() {
     var cvs = document.getElementById('mazeCanvas');
+    var cols = mazeW;
+    var rows = mazeH;
+    if (cvs.width !== cols * mazeCell || cvs.height !== rows * mazeCell) {
+        cvs.width = cols * mazeCell;
+        cvs.height = rows * mazeCell;
+    }
     var ctx = cvs.getContext('2d');
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.fillStyle = printing ? '#fff' : '#0E1019';
     ctx.fillRect(0, 0, cvs.width, cvs.height);
 
     var wc = printing ? '#000' : '#2E3554';
+    ctx.strokeStyle = wc;
+    ctx.lineWidth = printing ? 3 : 2;
     for (var y = 0; y < mazeH; y++) {
         for (var x = 0; x < mazeW; x++) {
-            var c = mazeGrid[y][x], px = x * mazeCell, py = y * mazeCell;
-            ctx.strokeStyle = wc; ctx.lineWidth = printing ? 1.5 : 2;
+            var c = mazeGrid[y][x];
+            var px = x * mazeCell;
+            var py = y * mazeCell;
             if (c.walls.t) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + mazeCell, py); ctx.stroke(); }
             if (c.walls.r) { ctx.beginPath(); ctx.moveTo(px + mazeCell, py); ctx.lineTo(px + mazeCell, py + mazeCell); ctx.stroke(); }
             if (c.walls.b) { ctx.beginPath(); ctx.moveTo(px, py + mazeCell); ctx.lineTo(px + mazeCell, py + mazeCell); ctx.stroke(); }
             if (c.walls.l) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py + mazeCell); ctx.stroke(); }
         }
     }
+
+    drawMazeMarker(ctx, 0, 0, 'S', printing ? '#000' : '#10B981', printing ? '#fff' : '#fff');
+    drawMazeMarker(ctx, mazeW - 1, mazeH - 1, 'Z', printing ? '#000' : '#FBBF24', printing ? '#fff' : '#0B0D14');
 
     if (!printing) {
         mazeTrail.forEach(function(t) {
@@ -2029,19 +2233,6 @@ function drawMaze() {
             ctx.arc(t.x * mazeCell + mazeCell / 2, t.y * mazeCell + mazeCell / 2, mazeCell / 6, 0, Math.PI * 2);
             ctx.fill();
         });
-        ctx.fillStyle = printing ? '#000' : '#10B981';
-        ctx.beginPath();
-        ctx.arc(mazeCell / 2, mazeCell / 2, mazeCell / 2.9, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#fff'; ctx.font = 'bold 12px Arial';
-        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        ctx.fillText('S', mazeCell / 2, mazeCell / 2 + 1);
-        ctx.fillStyle = printing ? '#000' : '#FBBF24';
-        ctx.beginPath();
-        ctx.arc((mazeW - 1) * mazeCell + mazeCell / 2, (mazeH - 1) * mazeCell + mazeCell / 2, mazeCell / 2.9, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = '#0B0D14'; ctx.font = 'bold 12px Arial';
-        ctx.fillText('Z', (mazeW - 1) * mazeCell + mazeCell / 2, (mazeH - 1) * mazeCell + mazeCell / 2 + 1);
 
         ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5;
         ctx.beginPath();
@@ -2052,6 +2243,146 @@ function drawMaze() {
         ctx.arc(playerX * mazeCell + mazeCell / 2, playerY * mazeCell + mazeCell / 2, mazeCell / 3.7, 0, Math.PI * 2);
         ctx.fill();
     }
+}
+function drawMazeMarker(ctx, gx, gy, ch, fill, txtFill) {
+    var px = gx * mazeCell;
+    var py = gy * mazeCell;
+    var cx = px + mazeCell / 2, cy = py + mazeCell / 2;
+    if (printing) {
+        ctx.fillStyle = fill;
+        ctx.fillRect(px + 2, py + 2, mazeCell - 4, mazeCell - 4);
+        ctx.fillStyle = txtFill;
+        ctx.font = 'bold ' + Math.round(mazeCell * .56) + 'px Arial';
+    } else {
+        ctx.fillStyle = fill;
+        ctx.beginPath();
+        ctx.arc(cx, cy, mazeCell / 2.9, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.fillStyle = txtFill;
+        ctx.font = 'bold 12px Arial';
+    }
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillText(ch, cx, cy + 1);
+}
+
+// ============================================================
+//  LÖSUNGSLEISTE (Print-only: #01–#05, auf dem Kopf)
+//  Eager bei generate() gerendert — kein onbeforeprint-Abhängigkeit.
+// ============================================================
+function mazeSolutionPath() {
+    var prev = {}, q = [[0, 0]];
+    prev['0,0'] = null;
+    var dirs = [['t', 0, -1], ['r', 1, 0], ['b', 0, 1], ['l', -1, 0]];
+    while (q.length > 0) {
+        var c = q.shift();
+        if (c[0] === mazeW - 1 && c[1] === mazeH - 1) break;
+        var cell = mazeGrid[c[1]][c[0]];
+        for (var i = 0; i < 4; i++) {
+            if (cell.walls[dirs[i][0]]) continue;
+            var nx = c[0] + dirs[i][1], ny = c[1] + dirs[i][2];
+            if (nx < 0 || ny < 0 || nx >= mazeW || ny >= mazeH) continue;
+            var k = nx + ',' + ny;
+            if (k in prev) continue;
+            prev[k] = c[0] + ',' + c[1];
+            if (nx === mazeW - 1 && ny === mazeH - 1) { q.unshift([nx, ny]); break; }
+            q.push([nx, ny]);
+        }
+    }
+    var path = [], cur = (mazeW - 1) + ',' + (mazeH - 1);
+    if (!(cur in prev)) return path;
+    while (cur) {
+        var p = cur.split(',');
+        path.push([parseInt(p[0], 10), parseInt(p[1], 10)]);
+        cur = prev[cur];
+    }
+    path.reverse();
+    return path;
+}
+function escHtml(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+}
+function solTiles(w) {
+    var out = '';
+    for (var i = 0; i < w.length; i++) out += '<span class="sol-tile">' + escHtml(w.charAt(i)) + '</span>';
+    return out;
+}
+function renderSolutions() {
+    var wrap = document.getElementById('solWrap');
+    if (!wrap) return;
+    var h = [];
+    function wordRow(scr, ans) {
+        var html = '<div class="sol-scram">';
+        for (var wi = 0; wi < scr.length; wi++) html += '<span class="sol-tile">' + scr.charAt(wi) + '</span>';
+        html += '</div><div class="sol-ans">' + escHtml(ans) + '</div>';
+        return html;
+    }
+    // #01 Symbol (links oben)
+    if (mathPuzzle) {
+        h.push('<div class="sol-card" data-sol="01"><h4>01 · Symbol</h4>' +
+            '<div class="sol-math"><span class="sym">' + mathPuzzle.s1 + '</span><span class="eq">=</span><b>' + mathPuzzle.v1 + '</b></div>' +
+            '<div class="sol-math"><span class="sym">' + mathPuzzle.s2 + '</span><span class="eq">=</span><b>' + mathPuzzle.v2 + '</b></div>' +
+            '<div class="sol-math"><span class="sym">' + mathPuzzle.s1 + '</span><span class="op">+</span><span class="sym">' + mathPuzzle.s2 + '</span><span class="eq">=</span><b>' + mathSolution + '</b></div></div>');
+    }
+    // #07 Symbol 2 (mitte oben)
+    if (mathPuzzle2) {
+        h.push('<div class="sol-card" data-sol="07"><h4>07 · Symbol 2</h4>' +
+            '<div class="sol-math"><span class="sym">' + mathPuzzle2.s1 + '</span><span class="eq">=</span><b>' + mathPuzzle2.v1 + '</b></div>' +
+            '<div class="sol-math"><span class="sym">' + mathPuzzle2.s2 + '</span><span class="eq">=</span><b>' + mathPuzzle2.v2 + '</b></div>' +
+            '<div class="sol-math"><span class="sym">' + mathPuzzle2.s1 + '</span><span class="op">+</span><span class="sym">' + mathPuzzle2.s2 + '</span><span class="eq">=</span><b>' + mathSolution2 + '</b></div></div>');
+    }
+    // #02/#03 Wörter (rechts oben: Wort 1, direkt darunter Wort 2)
+    if (wordSolution || wordSolution2) {
+        var verbs = wordScramble || wordSolution;
+        var verbs2 = wordScramble2 || wordSolution2;
+        var wCard = '<div class="sol-card" data-sol="02"><h4>02 · Wort</h4>';
+        if (wordSolution) wCard += wordRow(verbs, wordSolution);
+        wCard += '<div class="sol-h4b">03 · Wort 2</div>';
+        if (wordSolution2) wCard += wordRow(verbs2, wordSolution2);
+        wCard += '</div>';
+        h.push(wCard);
+    }
+    // #05 Labyrinth: BFS-Pfad auf derselben mazeGrid (links, zweite Reihe)
+    var path = mazeSolutionPath();
+    var pSet = {};
+    for (var pi = 0; pi < path.length; pi++) pSet[path[pi][0] + ',' + path[pi][1]] = true;
+    var mazeHtml = '<div class="sol-maze" style="--maze-w:' + mazeW + '">';
+    for (var my = 0; my < mazeH; my++) {
+        for (var mx = 0; mx < mazeW; mx++) {
+            var onP = pSet[mx + ',' + my] ? ' sol-onpath' : '';
+            mazeHtml += '<div class="sol-maze-cell' + onP + '">' +
+                (mx === 0 && my === 0 ? 'S' : (mx === mazeW - 1 && my === mazeH - 1 ? 'Z' : '')) + '</div>';
+        }
+    }
+    mazeHtml += '</div>';
+    h.push('<div class="sol-card" data-sol="05"><h4>05 · Labyrinth</h4>' + mazeHtml + '</div>');
+    // #06 Sudoku (mitte, zweite Reihe)
+    var sdkEl = document.getElementById('sudokuGrid');
+    var sdkHtml = '<div class="sol-sdk">';
+    if (sdkEl) {
+        var cells = sdkEl.querySelectorAll('input');
+        for (var si = 0; si < 81; si++) {
+            var sv = cells[si] && cells[si].dataset.solution ? cells[si].dataset.solution : '';
+            sdkHtml += '<div class="sol-sdk-cell">' + sv + '</div>';
+        }
+    }
+    sdkHtml += '</div>';
+    h.push('<div class="sol-card" data-sol="06"><h4>06 · Sudoku</h4>' + sdkHtml + '</div>');
+    // #04 Kreuzwort (ganz rechts, zweite Reihe)
+    if (lastCwPlan && lastCwPlan.grid) {
+        var g = lastCwPlan.grid;
+        var n = g[0].length;
+        var cwHtml = '<div class="sol-cw" style="grid-template-columns:repeat(' + n + ',13px)">';
+        for (var r = 0; r < g.length; r++) {
+            for (var cc = 0; cc < n; cc++) {
+                var ch0 = g[r].charAt(cc);
+                if (ch0 === '#' || ch0 === '.') cwHtml += '<div class="sol-cw-blk"></div>';
+                else cwHtml += '<div class="sol-cw-cell">' + ch0.toUpperCase() + '</div>';
+            }
+        }
+        cwHtml += '</div>';
+        h.push('<div class="sol-card" data-sol="04"><h4>04 · Kreuzwort (' + cwLang + ')</h4>' + cwHtml + '</div>');
+    }
+    wrap.innerHTML = h.join('');
 }
 function mazeMove(dx, dy) {
     if (playerX + dx < 0 || playerY + dy < 0 || playerX + dx >= mazeW || playerY + dy >= mazeH) return;
@@ -2182,9 +2513,14 @@ function hint(msg) {
 document.getElementById('mathCheck').addEventListener('click', checkMath);
 document.getElementById('wordCheck').addEventListener('click', checkWord);
 document.getElementById('wordShuffle').addEventListener('click', reshuffleTiles);
+document.getElementById('mathCheck2').addEventListener('click', checkMath2);
+document.getElementById('wordCheck2').addEventListener('click', checkWord2);
+document.getElementById('wordShuffle2').addEventListener('click', reshuffleTiles2);
 document.getElementById('mazeReset').addEventListener('click', mazeReset);
 document.getElementById('mathInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkMath(); });
 document.getElementById('wordInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord(); });
+document.getElementById('mathInput2').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkMath2(); });
+document.getElementById('wordInput2').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord2(); });
 
 var cvs = document.getElementById('mazeCanvas');
 cvs.addEventListener('keydown', function(e) {
