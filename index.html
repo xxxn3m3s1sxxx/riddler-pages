@@ -1322,6 +1322,7 @@ function genWord(rng, diff) {
     if (wi2) wi2.value = '';
 }
 function renderTiles(el, chars) {
+    el.innerHTML = '';
     for (var i = 0; i < chars.length; i++) {
         var s = document.createElement('span');
         s.className = 'tile';
