@@ -301,13 +301,15 @@
         /* ---------- Print ---------- */
         .print-line { display: none; }
         @media print {
+            @page { size: A4; margin: 14mm 12mm 16mm; }
             body { background: #fff; color: #000; }
-            .wrap { max-width: 100%; padding: 10px; }
+            .wrap { max-width: 100%; padding: 0; }
             header .daily-pill, .panel, .btn, .icon-btn, input.ans, .ans-row, #seedInput, .seg, .result, .puzzle .pill { display: none !important; }
-            .card { background: #fff; border: 1px solid #999; box-shadow: none; break-inside: avoid; }
+            .card { background: #fff; border: 1px solid #bbb; box-shadow: none; break-inside: avoid; border-radius: 4px; }
             .card-head h3, .idx { color: #000 !important; }
             .idx { border-color: #000; background: #eee; }
             .sub { color: #444; }
+            #mazeCanvas { background: #fff !important; box-shadow: none !important; border: 1.2px solid #000 !important; }
             .tafel { background: #fff; border: 1px solid #bbb; }
             .sym { border: 1px solid #666; background: #eee; }
             .val { color: #000; }
@@ -1091,6 +1093,9 @@ var printing = false;
 
 window.onbeforeprint = function() { printing = true; drawMaze(); };
 window.onafterprint  = function() { printing = false; drawMaze(); };
+if (window.matchMedia) {
+    window.matchMedia('print').addEventListener('change', function(mql) { printing = mql.matches; drawMaze(); });
+}
 
 // ============================================================
 //  FORTSCHRITT (localStorage, pro Seed + Schwierigkeit)
