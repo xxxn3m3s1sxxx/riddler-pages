@@ -13,7 +13,7 @@ Seed-basierte Rätselbox — 5 Rätseltypen, deterministisch generiert aus einem
 - **Gleicher Seed = gleiches Rätsel** — deterministisch über `Mulberry32`
 - **Rätsel des Tages**: leeres Eingabefeld lädt automatisch den aktuellen Datums-Seed (YYYYMMDD)
 - **Schwierigkeitsgrade**: Easy → Extreme steuern Zahlenräume, Wortlängen und sichtbare Sudoku-Zellen
-- **Drucken / PDF**: Sauberes DIN-A4-Print-Layout mit kompakter Lösungsleiste (auf dem Kopf gedruckt) und hochkantem Labyrinth
+- **Drucken / PDF**: Sauberes DIN-A4-Print-Layout mit kompakter Lösungsleiste (aufrecht) und hochkantem Labyrinth
 
 ## Live
 https://xxxn3m3s1sxxx.github.io/riddler-pages/

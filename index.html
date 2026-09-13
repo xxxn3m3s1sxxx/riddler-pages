@@ -616,7 +616,7 @@
             .cw-num { font: 750 11px var(--sans); }
         }
 
-        /* ---------- Lösungsleiste: Screen versteckt, Print-only, auf dem Kopf ---------- */
+        /* ---------- Lösungsleiste: Screen versteckt, Print-only, aufrecht ---------- */
         #solutions { display: none; }
         @media print {
             #solutions {
@@ -652,18 +652,18 @@
                 width: 13px; height: 13px; border: 1px solid #000; background: #fff;
                 font: 700 7.5px var(--mono); text-transform: uppercase; text-align: center; line-height: 13px;
             }
-            #solutions .sol-cw-blk { width: 13px; height: 13px; background: #000; }
+            #solutions .sol-cw-blk { width: 13px; height: 13px; background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             #solutions .sol-maze {
                 display: grid; grid-template-columns: repeat(var(--maze-w, 16), minmax(0, 1fr));
                 gap: 1px; width: min(100%, 230px); margin: 0 auto; border: 1px solid #000;
-                background: #000;
+                background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact;
             }
             #solutions .sol-maze-cell {
                 aspect-ratio: 1 / 1; font: 700 9px var(--mono); text-align: center; line-height: 14px;
-                background: #fff; color: #000;
+                background: #fff; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact;
             }
-            #solutions .sol-maze-cell.sol-onpath { background: #999; }
-            #solutions .sol-maze-cell.sol-sz { background: #000; color: #fff; }
+            #solutions .sol-maze-cell.sol-onpath { background: #999; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #solutions .sol-maze-cell.sol-sz { background: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             #solutions .sol-sdk {
                 display: grid; grid-template-columns: repeat(9, 15px); gap: 0; width: max-content; margin: 0 auto;
                 border: 1px solid #000;
@@ -971,7 +971,7 @@
         <div class="print-line">Ergebnis: ______</div>
     </section>
 
-    <!-- #L LÖSUNGSLEISTE (Print-only, auf dem Kopf) -->
+    <!-- #L LÖSUNGSLEISTE (Print-only, aufrecht) -->
     <section class="card solutions" id="solutions" aria-label="Lösungen zu allen Rätseln">
         <div class="card-head">
             <h3><span class="idx">L</span>&nbsp; Lösungen</h3>
@@ -1196,7 +1196,7 @@ function generate() {
     var diff = currentDiff;
     genMath(mulberry32(seed + 100), diff, seed);
     genMath2(mulberry32(seed + 600), diff);
-    genWord(mulberry32(seed + 200), diff);
+    genWord(mulberry32(seed + 200), mulberry32(seed + 250), diff);
     genCrossword(seed);
     genMaze(mulberry32(seed + 400));
     genSudoku(mulberry32(seed + 500), diff);
@@ -1294,22 +1294,37 @@ function checkMath() {
 // ============================================================
 //  #2 WORD
 // ============================================================
-var WORD_POOLS = {
-    easy:    ['CODE', 'MAUS', 'BAUM', 'BROT', 'HAUS', 'SPIEL', 'LAMPE', 'TIGER'],
-    medium:  ['DOTNET', 'GITHUB', 'ZUFALL', 'REGEN', 'COMPUTER', 'LASER', 'RAETSEL'],
-    hard:    ['PROGRAMMIEREN', 'ALGORITHMUS', 'COMPILER', 'SPEICHER', 'VERSCHLUESSELN'],
-    extreme: ['QUANTENCOMPUTER', 'KRYPTOGRAPHIE', 'SYNCHRONISATION']
-};
-function genWord(rng, diff) {
-    var pool = WORD_POOLS[diff] || WORD_POOLS.medium;
+// Task-Fix: Lexikon-Wortwahl statt hardcoded WORD_POOLS (CW_LEX_DE/CW_LEX_EN-Keys).
+// Baender = legacy-Pool-Ranges ∩ Lexikon-Coverage (Keys nur 3..13 Buchstaben): easy 4-5, medium 5-8, hard 8-13, extreme 13-13.
+var WORD_BANDS = { easy: [4, 5], medium: [5, 8], hard: [8, 13], extreme: [13, 13] };
+var WORD_CACHE = {};
+function wordPool(diff) {
+    var lang = (typeof cwLang !== 'undefined' && cwLang === 'EN') ? 'EN' : 'DE';
+    var lex = (lang === 'EN') ? CW_LEX_EN : CW_LEX_DE;
+    var key = lang + '|' + (diff || 'medium');
+    if (WORD_CACHE[key]) return WORD_CACHE[key];
+    var band = WORD_BANDS[diff] || WORD_BANDS.medium;
+    var pool = [];
+    if (lex) {
+        for (var k in lex) {
+            if (Object.prototype.hasOwnProperty.call(lex, k) && k.length >= band[0] && k.length <= band[1]) pool.push(k);
+        }
+    }
+    WORD_CACHE[key] = pool;
+    return pool;
+}
+function genWord(rng, rng2, diff) {
+    if (typeof rng2 === 'string') { diff = rng2; rng2 = null; } // Kompat: genWord(rng, diff)
+    var pool = wordPool(diff);
     wordSolution = pool[randInt(rng, 0, pool.length - 1)];
-    var alt = pool[randInt(rng, 0, pool.length - 1)];
+    var alt = pool[randInt(rng2 || rng, 0, pool.length - 1)];
     wordSolution2 = (alt === wordSolution) ? pool[(pool.indexOf(wordSolution) + 1) % pool.length] : alt;
     var chars = wordSolution.split('');
     shuffle(chars, rng);
     wordScramble = chars.join('');
+    if (!rng2) rng2 = mulberry32(Math.floor(rng() * 4294967296)); // seed-abgeleiteter Stream (2-Arg-Pfad)
     var chars2 = wordSolution2.split('');
-    shuffle(chars2, mulberry32(wordSolution2.length * 37 + 7));
+    shuffle(chars2, rng2);
     wordScramble2 = chars2.join('');
     var el = document.getElementById('wordTiles');
     renderTiles(el, chars);
@@ -2215,7 +2230,7 @@ function drawMaze() {
         cvs.height = rows * mazeCell * scale;
     }
     var ctx = cvs.getContext('2d');
-    if (printing) ctx.scale(scale, scale);
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
     ctx.clearRect(0, 0, cvs.width, cvs.height);
     ctx.fillStyle = printing ? '#fff' : '#0E1019';
     ctx.fillRect(0, 0, cvs.width, cvs.height);
@@ -2278,7 +2293,7 @@ function drawMazeMarker(ctx, gx, gy, ch, fill, txtFill) {
 }
 
 // ============================================================
-//  LÖSUNGSLEISTE (Print-only: #01–#05, auf dem Kopf)
+//  LÖSUNGSLEISTE (Print-only: #01–#05, aufrecht)
 //  Eager bei generate() gerendert — kein onbeforeprint-Abhängigkeit.
 // ============================================================
 function mazeSolutionPath() {
