@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#070A0F">
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2064%2064'%3E%3Cdefs%3E%3Cfilter%20id='qglow'%20x='-40%25'%20y='-40%25'%20width='180%25'%20height='180%25'%3E%3CfeGaussianBlur%20stdDeviation='2.2'%20result='b'/%3E%3CfeMerge%3E%3CfeMergeNode%20in='b'/%3E%3CfeMergeNode%20in='SourceGraphic'/%3E%3C/feMerge%3E%3C/filter%3E%3C/defs%3E%3Crect%20x='3'%20y='3'%20width='58'%20height='58'%20rx='13'%20fill='%23B026FF'/%3E%3Crect%20x='3'%20y='3'%20width='58'%20height='58'%20rx='13'%20fill='none'%20stroke='%236EFF3A'%20stroke-opacity='.55'%20stroke-width='5'/%3E%3Ctext%20x='32'%20y='48'%20font-family='Arial%20Black,Impact,sans-serif'%20font-size='46'%20font-weight='900'%20text-anchor='middle'%20fill='%236EFF3A'%20stroke='%23000'%20stroke-width='2'%20paint-order='stroke'%20filter='url(%23qglow)'%3E?%3C/text%3E%3C/svg%3E">
     <meta name="riddler:payload" content="UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ==">
     <title>Riddler — Seed-basierte Rätselbox</title>
     <meta name="description" content="Seed-basierte Rätselbox: Symbol-Arithmetik, Buchstabensalat, Kreuzworträtsel, Labyrinth und ein tägliches Rätsel. Deterministisch, offline, ein Seed = ein Zustand.">
@@ -2641,7 +2642,7 @@ function drawMazeMarkerSvg(svg, ns, gx, gy, ch, fill, txtFill) {
         svg.appendChild(ci);
     }
     var t = document.createElementNS(ns,'text');
-    t.setAttribute('x',cx); t.setAttribute('y',cy);
+    t.setAttribute('x',cx); t.setAttribute('y',cy-1);
     t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
     t.setAttribute('fill',txtFill);
     t.setAttribute('font','bold '+(printing?Math.round(mazeCell*.56):12)+'px Arial');
@@ -2752,8 +2753,8 @@ function renderSolutions() {
         }
     }
     // S/Z Marker
-    mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="8" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
-    mazeSvg += '<rect x="'+((mazeW-1)*16+1)+'" y="'+((mazeH-1)*16+1)+'" width="14" height="14" fill="#000"/><text x="'+((mazeW-1)*16+8)+'" y="'+((mazeH-1)*16+8)+'" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">Z</text>';
+    mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="7" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
+    mazeSvg += '<rect x="'+((mazeW-1)*16+1)+'" y="'+((mazeH-1)*16+1)+'" width="14" height="14" fill="#000"/><text x="'+((mazeW-1)*16+8)+'" y="'+((mazeH-1)*16+7)+'" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">Z</text>';
     mazeSvg += '</svg>';
     h.push('<div class="sol-card" data-sol="05"><h4>' + T('sol05') + '</h4>' + mazeSvg + '</div>');
     // #06 Sudoku (mitte, zweite Reihe)
