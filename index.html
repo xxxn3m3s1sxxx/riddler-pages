@@ -702,20 +702,7 @@ header { margin-bottom: 12px; }
                 display: flex; align-items: center; justify-content: center;
             }
             #solutions .sol-cw-blk { width: 13px; background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            #solutions .sol-maze {
-                display: grid; grid-template-columns: repeat(var(--maze-w, 16), minmax(0, 1fr));
-                grid-template-rows: repeat(var(--maze-h, 10), 1fr);
-                gap: 0; width: min(100%, 280px); margin: 0 auto;
-                -webkit-print-color-adjust: exact; print-color-adjust: exact;
-            }
-            #solutions .sol-maze-cell {
-                aspect-ratio: 1 / 1; font: 700 9px var(--mono);
-                display: flex; align-items: center; justify-content: center;
-                background: #fff; color: #000;
-                -webkit-print-color-adjust: exact; print-color-adjust: exact;
-            }
-            #solutions .sol-maze-cell.sol-onpath { background: #999; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
-            #solutions .sol-maze-cell.sol-sz { background: #000; color: #fff; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .sol-maze-svg { display: block; width: min(100%, 280px); height: auto; }
             #solutions .sol-sdk {
                 display: grid; grid-template-columns: repeat(9, 15px); gap: 0; width: max-content; margin: 0 auto;
                 border: 1px solid #000;
@@ -871,23 +858,23 @@ header { margin-bottom: 12px; }
 <!-- Subtile Grundlinie entfernt (seher-Note v2: Mockup hat keine Line) -->
 </svg>
         <img class="print-logo" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20640%20170%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Ctext%20x%3D%2214%22%20y%3D%22102%22%20font-family%3D%22'Anton'%2C'Impact'%2C'Arial%20Black'%2C'Barlow%20Condensed'%2Csans-serif%22%0A%20%20%20%20%20%20%20%20%20%20font-size%3D%2282%22%20font-weight%3D%22900%22%20font-stretch%3D%22condensed%22%20letter-spacing%3D%22-1.0%22%0A%20%20%20%20%20%20%20%20%20%20stroke-width%3D%224%22%3ERIDDLER%3C%2Ftext%3E%0A%20%20%20%20%3Cg%20transform%3D%22rotate(7%20400%20118)%22%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22320%22%20y%3D%22136%22%20font-family%3D%22'Arial%20Black'%2C'Arial%20Bold'%2CGadget%2Csans-serif%22%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3D%22158%22%20font-weight%3D%22900%22%20stroke-width%3D%225%22%3E%3F%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(370%2C%20151)%20scale(1.05)%20rotate(7)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200%20L16%20-9.242%20L32%200%20L16%209.242%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200%20L16%209.242%20L16%2027.728%20L0%2018.485%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%209.242%20L32%200%20L32%2018.485%20L16%2027.728%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E" alt="Riddler" width="420" height="112">
-        <p class="kicker">Seed-basierte Rätselbox · 8 Rätsel · deterministisch</p>
-        <div class="daily-pill"><span class="dot"></span>Rätsel des Tages &nbsp;·&nbsp; <span id="dailyDate">—</span></div>
-        <div class="visit-badge" title="Aufrufe auf diesem Gerät (lokal gespeichert, kein Tracking)"><span class="vdot"></span>Aufruf <b id="visitCount">#…</b> <span class="vlocal">lokal</span></div>
+        <p class="kicker" data-i18n="kicker">Seed-basierte Rätselbox · 8 Rätsel · deterministisch</p>
+        <div class="daily-pill"><span class="dot"></span><span data-i18n="dailyPill">Rätsel des Tages</span> &nbsp;·&nbsp; <span id="dailyDate">—</span></div>
+        <div class="visit-badge" data-i18n="visitTitle" data-i18n-title title="Aufrufe auf diesem Gerät (lokal gespeichert, kein Tracking)"><span class="vdot"></span><span data-i18n="visitPrefix">Aufruf</span> <b id="visitCount">#…</b> <span class="vlocal" data-i18n="visitLocal">lokal</span></div>
     </header>
 
     <!-- CONTROLS -->
     <section class="card panel">
         <div class="fgrid">
             <div class="frow">
-                <label>Seed <span class="hint">— leer = heutiges Datum</span></label>
+                <label><span data-i18n="seedLabel">Seed</span> <span class="hint" data-i18n="seedHint">— leer = heutiges Datum</span></label>
                 <div class="seed-wrap">
                     <input type="number" id="seedInput" inputmode="numeric">
-                    <button class="icon-btn" id="diceBtn" title="Zufälliger Seed">🎲</button>
+                    <button class="icon-btn" id="diceBtn" data-i18n="diceTitle" data-i18n-title title="Zufälliger Seed">🎲</button>
                 </div>
             </div>
             <div class="frow">
-                <label>Schwierigkeit</label>
+                <label data-i18n="diffLabel">Schwierigkeit</label>
                 <div class="seg" id="diffSeg">
                     <button type="button" data-d="easy">Easy</button>
                     <button type="button" data-d="medium" class="active">Medium</button>
@@ -897,18 +884,25 @@ header { margin-bottom: 12px; }
             </div>
         </div>
         <div class="frow mode-row">
-            <label>Sammlung</label>
+            <label data-i18n="modeLabel">Sammlung</label>
             <div class="seg" id="modeSeg">
-                <button type="button" data-mode="math" class="active">01 RIDDLER'S RIDDLES</button>
-                <button type="button" data-mode="ark">02 THE PUZZLE ARK</button>
+                <button type="button" data-mode="math" class="active" data-i18n="modeMath">01 RIDDLER'S RIDDLES</button>
+                <button type="button" data-mode="ark" data-i18n="modeArk">02 THE PUZZLE ARK</button>
+            </div>
+        </div>
+        <div class="frow">
+            <label data-i18n="langLabel">Sprache</label>
+            <div class="seg" id="langSeg">
+                <button type="button" data-lang="DE" class="active" data-i18n="langDE">DE</button>
+                <button type="button" data-lang="EN" data-i18n="langEN">EN</button>
             </div>
         </div>
         <div class="actions">
-            <button class="btn primary" id="genBtn">⟳ Riddles neu generieren</button>
-            <button class="btn" id="shareBtn">🔗 Link kopieren</button>
+            <button class="btn primary" id="genBtn" data-i18n="genBtn">⟳ Riddles neu generieren</button>
+            <button class="btn" id="shareBtn" data-i18n="shareBtn">🔗 Link kopieren</button>
             <span class="spacer"></span>
-            <button class="btn" id="printBtn">🖨 PDF / Drucken</button>
-            <button class="btn" id="motionBtn" aria-pressed="true" title="Animierten Hintergrund an- oder ausschalten">✨ Motion: An</button>
+            <button class="btn" id="printBtn" data-i18n="printBtn">🖨 PDF / Drucken</button>
+            <button class="btn" id="motionBtn" aria-pressed="true" data-i18n="motionTitle" data-i18n-title title="Animierten Hintergrund an- oder ausschalten">✨ Motion: An</button>
         </div>
         <div class="url-hint" id="urlHint"></div>
     </section>
@@ -917,148 +911,148 @@ header { margin-bottom: 12px; }
     <div class="puzzle-col">
     <section class="card puzzle" id="p-math" data-zone="math">
         <div class="card-head">
-            <h3><span class="idx">01</span>&nbsp; Symbol-Arithmetik</h3>
-            <span class="pill hidden" id="solved-math">Gelöst ✓</span>
+            <h3><span class="idx">01</span>&nbsp; <span data-i18n="tMath">Symbol-Arithmetik</span></h3>
+            <span class="pill hidden" id="solved-math" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Jedes Symbol steht für eine Zahl. Finde die Werte und löse die letzte Zeile.</p>
+        <p class="sub" data-i18n="subMath">Jedes Symbol steht für eine Zahl. Finde die Werte und löse die letzte Zeile.</p>
         <div class="tafel" id="mathDisplay"></div>
         <div class="ans-row">
-            <input type="number" class="ans" id="mathInput" inputmode="numeric" placeholder="Ergebnis">
-            <button class="btn small" id="mathCheck">Prüfen</button>
+            <input type="number" class="ans" id="mathInput" inputmode="numeric" data-i18n="phResult" placeholder="Ergebnis">
+            <button class="btn small" id="mathCheck" data-i18n="checkBtn">Prüfen</button>
         </div>
         <div class="result" id="mathResult"></div>
-        <div class="print-line">Ergebnis: ______</div>
+        <div class="print-line" data-i18n="printMath">Ergebnis: ______</div>
     </section>
 
     <!-- #2 WORD -->
     <section class="card puzzle" id="p-word" data-zone="ark">
         <div class="card-head">
-            <h3><span class="idx">02</span>&nbsp; Buchstabensalat</h3>
-            <span class="pill hidden" id="solved-word">Gelöst ✓</span>
+            <h3><span class="idx">02</span>&nbsp; <span data-i18n="tWord">Buchstabensalat</span></h3>
+            <span class="pill hidden" id="solved-word" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Bringe die Buchstaben in die richtige Reihenfolge.</p>
+        <p class="sub" data-i18n="subWord">Bringe die Buchstaben in die richtige Reihenfolge.</p>
         <div class="tiles" id="wordTiles"></div>
         <div class="topic-row">
-            <input type="text" class="ans" id="wordInput" maxlength="40" placeholder="Lösung" autocomplete="off">
-            <button class="btn small" id="wordCheck">Prüfen</button>
-            <button class="icon-btn" id="wordShuffle" title="Kacheln mischen">🔀</button>
+            <input type="text" class="ans" id="wordInput" maxlength="40" data-i18n="phSolution" placeholder="Lösung" autocomplete="off">
+            <button class="btn small" id="wordCheck" data-i18n="checkBtn">Prüfen</button>
+            <button class="icon-btn" id="wordShuffle" data-i18n="shuffleTitle" data-i18n-title title="Kacheln mischen">🔀</button>
         </div>
         <div class="result" id="wordResult"></div>
-        <div class="print-line">Lösung: ______</div>
+        <div class="print-line" data-i18n="printWord">Lösung: ______</div>
     </section>
 
     <!-- #3 WORD 2 -->
     <section class="card puzzle" id="p-word2" data-zone="ark">
         <div class="card-head">
-            <h3><span class="idx">03</span>&nbsp; Buchstabensalat 2</h3>
-            <span class="pill hidden" id="solved-word2">Gelöst ✓</span>
+            <h3><span class="idx">03</span>&nbsp; <span data-i18n="tWord2">Buchstabensalat 2</span></h3>
+            <span class="pill hidden" id="solved-word2" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Bring auch diese Buchstaben in die richtige Reihenfolge.</p>
+        <p class="sub" data-i18n="subWord2">Bring auch diese Buchstaben in die richtige Reihenfolge.</p>
         <div class="tiles" id="wordTiles2"></div>
         <div class="topic-row">
-            <input type="text" class="ans" id="wordInput2" maxlength="40" placeholder="Lösung" autocomplete="off">
-            <button class="btn small" id="wordCheck2">Prüfen</button>
-            <button class="icon-btn" id="wordShuffle2" title="Kacheln mischen">🔀</button>
+            <input type="text" class="ans" id="wordInput2" maxlength="40" data-i18n="phSolution" placeholder="Lösung" autocomplete="off">
+            <button class="btn small" id="wordCheck2" data-i18n="checkBtn">Prüfen</button>
+            <button class="icon-btn" id="wordShuffle2" data-i18n="shuffleTitle" data-i18n-title title="Kacheln mischen">🔀</button>
         </div>
         <div class="result" id="wordResult2"></div>
-        <div class="print-line">Lösung: ______</div>
+        <div class="print-line" data-i18n="printWord">Lösung: ______</div>
     </section>
 
     <!-- #4 CROSSWORD -->
     <section class="card puzzle" id="p-crossword" data-zone="ark">
         <div class="card-head">
-            <h3><span class="idx">04</span>&nbsp; Kreuzworträtsel</h3>
+            <h3><span class="idx">04</span>&nbsp; <span data-i18n="tCw">Kreuzworträtsel</span></h3>
             <span class="cw-langs">
                 <button class="cw-lang active" type="button" data-lang="DE" title="Deutsch">DE</button>
                 <button class="cw-lang" type="button" data-lang="EN" title="English">EN</button>
             </span>
-            <span class="pill hidden" id="solved-crossword">Gelöst ✓</span>
+            <span class="pill hidden" id="solved-crossword" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <div class="cw-bar"><span class="cw-active" id="cwActive">Tippe eine Zelle an, um zu starten</span></div>
+        <div class="cw-bar"><span class="cw-active" id="cwActive" data-i18n="cwStart">Tippe eine Zelle an, um zu starten</span></div>
         <div class="cw-scroll">
-            <div class="cw-grid" id="cwGrid" role="grid" aria-label="Kreuzworträtsel"></div>
+            <div class="cw-grid" id="cwGrid" role="grid" data-i18n="ariaCw" data-i18n-aria aria-label="Kreuzworträtsel"></div>
         </div>
         <div class="cw-bar">
-            <button class="btn small" id="cwHintBtn" type="button">💡 Hinweis <span class="cw-hint" id="cwHintsLeft">3</span></button>
-            <span class="keystroke">Eingabe = Auto-Sprung · Backspace = zurück · Pfeile = bewegen · Leertaste = Richtung</span>
+            <button class="btn small" id="cwHintBtn" type="button">💡 <span data-i18n="hintBtn">Hinweis</span> <span class="cw-hint" id="cwHintsLeft">3</span></button>
+            <span class="keystroke" data-i18n="cwKeys">Eingabe = Auto-Sprung · Backspace = zurück · Pfeile = bewegen · Leertaste = Richtung</span>
         </div>
-        <div class="cw-thumbkb" id="cwThumbKB" aria-label="Virtuelle Tastatur" hidden>
+        <div class="cw-thumbkb" id="cwThumbKB" data-i18n="ariaTkb" data-i18n-aria aria-label="Virtuelle Tastatur" hidden>
             <div class="cw-tkb-row" id="cwTkbRow"></div>
             <div class="cw-tkb-row cw-tkb-ctl">
-                <button type="button" class="tkb-key tkb-special" id="cwTkbDir" aria-label="Richtung wechseln">⇄ Richtung</button>
-                <button type="button" class="tkb-key tkb-special tkb-del" id="cwTkbDel" aria-label="Zeichen löschen">⌫</button>
+                <button type="button" class="tkb-key tkb-special" id="cwTkbDir" data-i18n="ariaTkbDir" data-i18n-aria aria-label="Richtung wechseln" data-i18n-text="tkbDirText">⇄ Richtung</button>
+                <button type="button" class="tkb-key tkb-special tkb-del" id="cwTkbDel" data-i18n="ariaTkbDel" data-i18n-aria aria-label="Zeichen löschen">⌫</button>
             </div>
         </div>
         <div class="clues" id="cwClues"></div>
-        <div class="print-line">Hinweise und Lösung: siehe Legende</div>
+        <div class="print-line" data-i18n="printCw">Hinweise und Lösung: siehe Legende</div>
     </section>
 
     <!-- #5 MAZE -->
     <section class="card puzzle" id="p-maze" data-zone="ark">
         <div class="card-head">
-            <h3><span class="idx">05</span>&nbsp; Labyrinth</h3>
-            <span class="pill hidden" id="solved-maze">Gelöst ✓</span>
+            <h3><span class="idx">05</span>&nbsp; <span data-i18n="tMaze">Labyrinth</span></h3>
+            <span class="pill hidden" id="solved-maze" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Finde den Weg vom grünen <b>S</b> zum gelben <b>Z</b> — per Pfeiltasten oder Wischen.</p>
-        <svg id="mazeSvg" width="512" height="320" tabindex="0" role="application" aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu." style="display:block;margin:14px auto 0;width:min(100%,560px);height:auto;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);outline:none;touch-action:none;cursor:crosshair;"></svg>
+        <p class="sub" data-i18n="subMaze" data-i18n-html>Finde den Weg vom grünen <b>S</b> zum gelben <b>Z</b> — per Pfeiltasten oder Wischen.</p>
+        <svg id="mazeSvg" width="512" height="320" tabindex="0" role="application" data-i18n="ariaMaze" data-i18n-aria aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu." style="display:block;margin:14px auto 0;width:min(100%,560px);height:auto;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);outline:none;touch-action:none;cursor:crosshair;"></svg>
         <div class="maze-bar">
-            <span class="steps">Schritte: <b id="mazeSteps">0</b></span>
+            <span class="steps"><span data-i18n="stepsLabel">Schritte:</span> <b id="mazeSteps">0</b></span>
             <span class="keystroke">↑ ↓ ← →</span>
-            <button class="btn small" id="mazeReset">↺ Reset</button>
+            <button class="btn small" id="mazeReset" data-i18n="resetBtn">↺ Reset</button>
         </div>
         <div class="result" id="mazeResult"></div>
-        <div class="print-line">Ausgang (Z): ______</div>
+        <div class="print-line" data-i18n="printMaze">Ausgang (Z): ______</div>
     </section>
 
     <!-- #6 SUDOKU -->
     <section class="card puzzle" id="p-sudoku" data-zone="ark">
         <div class="card-head">
-            <h3><span class="idx">06</span>&nbsp; Sudoku</h3>
-            <span class="pill hidden" id="solved-sudoku">Gelöst ✓</span>
+            <h3><span class="idx">06</span>&nbsp; <span data-i18n="tSudoku">Sudoku</span></h3>
+            <span class="pill hidden" id="solved-sudoku" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Jede Ziffer 1–9 genau einmal pro Zeile, Spalte und 3×3-Block. Gedruckte Zellen sind vorgegeben.</p>
-        <div class="sdk-grid" id="sudokuGrid" role="grid" aria-label="Sudoku"></div>
+        <p class="sub" data-i18n="subSudoku">Jede Ziffer 1–9 genau einmal pro Zeile, Spalte und 3×3-Block. Gedruckte Zellen sind vorgegeben.</p>
+        <div class="sdk-grid" id="sudokuGrid" role="grid" data-i18n="ariaSudoku" data-i18n-aria aria-label="Sudoku"></div>
     </section>
 
     <!-- #7 MATH 2 -->
     <section class="card puzzle" id="p-math2" data-zone="math">
         <div class="card-head">
-            <h3><span class="idx">07</span>&nbsp; Symbol-Arithmetik 2</h3>
-            <span class="pill hidden" id="solved-math2">Gelöst ✓</span>
+            <h3><span class="idx">07</span>&nbsp; <span data-i18n="tMath2">Symbol-Arithmetik 2</span></h3>
+            <span class="pill hidden" id="solved-math2" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Auch hier: Finde die Werte der Symbole und löse die letzte Zeile.</p>
+        <p class="sub" data-i18n="subMath2">Auch hier: Finde die Werte der Symbole und löse die letzte Zeile.</p>
         <div class="tafel" id="mathDisplay2"></div>
         <div class="ans-row">
-            <input type="number" class="ans" id="mathInput2" inputmode="numeric" placeholder="Ergebnis">
-            <button class="btn small" id="mathCheck2">Prüfen</button>
+            <input type="number" class="ans" id="mathInput2" inputmode="numeric" data-i18n="phResult" placeholder="Ergebnis">
+            <button class="btn small" id="mathCheck2" data-i18n="checkBtn">Prüfen</button>
         </div>
         <div class="result" id="mathResult2"></div>
-        <div class="print-line">Ergebnis: ______</div>
+        <div class="print-line" data-i18n="printMath">Ergebnis: ______</div>
     </section>
 
     <!-- #8 WORD 3 -->
     <section class="card puzzle" id="p-word3" data-zone="ark">
         <div class="card-head">
-            <h3><span class="idx">08</span>&nbsp; Buchstabensalat 3</h3>
-            <span class="pill hidden" id="solved-word3">Gelöst ✓</span>
+            <h3><span class="idx">08</span>&nbsp; <span data-i18n="tWord3">Buchstabensalat 3</span></h3>
+            <span class="pill hidden" id="solved-word3" data-i18n="solvedPill">Gelöst ✓</span>
         </div>
-        <p class="sub">Und noch einer: Bringe auch diese Buchstaben in die richtige Reihenfolge.</p>
+        <p class="sub" data-i18n="subWord3">Und noch einer: Bringe auch diese Buchstaben in die richtige Reihenfolge.</p>
         <div class="tiles" id="wordTiles3"></div>
         <div class="topic-row">
-            <input type="text" class="ans" id="wordInput3" maxlength="40" placeholder="Lösung" autocomplete="off">
-            <button class="btn small" id="wordCheck3">Prüfen</button>
-            <button class="icon-btn" id="wordShuffle3" title="Kacheln mischen">🔀</button>
+            <input type="text" class="ans" id="wordInput3" maxlength="40" data-i18n="phSolution" placeholder="Lösung" autocomplete="off">
+            <button class="btn small" id="wordCheck3" data-i18n="checkBtn">Prüfen</button>
+            <button class="icon-btn" id="wordShuffle3" data-i18n="shuffleTitle" data-i18n-title title="Kacheln mischen">🔀</button>
         </div>
         <div class="result" id="wordResult3"></div>
-        <div class="print-line">Lösung: ______</div>
+        <div class="print-line" data-i18n="printWord">Lösung: ______</div>
     </section>
 
     <div class="salad-spacer" aria-hidden="true"></div>
 
     <!-- #L LÖSUNGSLEISTE (Print-only, aufrecht) -->
-    <section class="card solutions" id="solutions" aria-label="Lösungen zu allen Rätseln">
+    <section class="card solutions" id="solutions" data-i18n="ariaSolutions" data-i18n-aria aria-label="Lösungen zu allen Rätseln">
         <div class="card-head">
-            <h3><span class="idx">L</span>&nbsp; Lösungen</h3>
+            <h3><span class="idx">L</span>&nbsp; <span data-i18n="tSolutions">Lösungen</span></h3>
         </div>
         <div class="sol-wrap" id="solWrap"></div>
     </section>
@@ -1359,12 +1353,12 @@ function checkMath2() {
     var v = parseInt(document.getElementById('mathInput2').value, 10);
     var res = document.getElementById('mathResult2');
     if (v === mathSolution2) {
-        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        res.textContent = T('correctMsg'); res.className = 'result ok'; res.dataset.rk = 'ok';
         flash(document.getElementById('p-math2'), 'pop');
         SFX.tick();
         markSolved(curSeed, curDiff, 'math2');
     } else {
-        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        res.textContent = T('wrongMsg'); res.className = 'result err'; res.dataset.rk = 'err';
         flash(document.getElementById('p-math2'), 'shake');
         SFX.buzz();
     }
@@ -1610,15 +1604,72 @@ var RIDDLER_I18N = {
     'genBtn': '⟳ Riddles neu generieren',
     'shareBtn': '🔗 Link kopieren',
     'printBtn': '🖨 PDF / Drucken',
+    'motionOn': '✨ Motion: An',
+    'motionOff': 'Motion: Aus',
+    'motionTitle': 'Animierten Hintergrund an- oder ausschalten',
     'langLabel': 'Sprache',
     'langDE': 'DE',
     'langEN': 'EN',
-    'kicker': 'Seed-basierte Rätselbox · 8 Rätsel · determinstisch',
+    'kicker': 'Seed-basierte Rätselbox · 8 Rätsel · deterministisch',
     'dailyPill': 'Rätsel des Tages',
     'visitTitle': 'Aufrufe auf diesem Gerät (lokal gespeichert, kein Tracking)',
     'visitPrefix': 'Aufruf',
     'visitLocal': 'lokal',
-    'copyOk': 'Link mit Seed kopiert ✓'
+    'copyOk': 'Link mit Seed {seed} kopiert ✓',
+    'tMath': 'Symbol-Arithmetik',
+    'tMath2': 'Symbol-Arithmetik 2',
+    'tWord': 'Buchstabensalat',
+    'tWord2': 'Buchstabensalat 2',
+    'tWord3': 'Buchstabensalat 3',
+    'tCw': 'Kreuzworträtsel',
+    'tMaze': 'Labyrinth',
+    'tSudoku': 'Sudoku',
+    'tSolutions': 'Lösungen',
+    'solvedPill': 'Gelöst ✓',
+    'subMath': 'Jedes Symbol steht für eine Zahl. Finde die Werte und löse die letzte Zeile.',
+    'subMath2': 'Auch hier: Finde die Werte der Symbole und löse die letzte Zeile.',
+    'subWord': 'Bringe die Buchstaben in die richtige Reihenfolge.',
+    'subWord2': 'Bring auch diese Buchstaben in die richtige Reihenfolge.',
+    'subWord3': 'Und noch einer: Bringe auch diese Buchstaben in die richtige Reihenfolge.',
+    'subMaze': 'Finde den Weg vom grünen <b>S</b> zum gelben <b>Z</b> — per Pfeiltasten oder Wischen.',
+    'subSudoku': 'Jede Ziffer 1–9 genau einmal pro Zeile, Spalte und 3×3-Block. Gedruckte Zellen sind vorgegeben.',
+    'checkBtn': 'Prüfen',
+    'shuffleTitle': 'Kacheln mischen',
+    'phResult': 'Ergebnis',
+    'phSolution': 'Lösung',
+    'printMath': 'Ergebnis: ______',
+    'printWord': 'Lösung: ______',
+    'printCw': 'Hinweise und Lösung: siehe Legende',
+    'printMaze': 'Ausgang (Z): ______',
+    'stepsLabel': 'Schritte:',
+    'resetBtn': '↺ Reset',
+    'hintBtn': 'Hinweis',
+    'cwStart': 'Tippe eine Zelle an, um zu starten',
+    'cwKeys': 'Eingabe = Auto-Sprung · Backspace = zurück · Pfeile = bewegen · Leertaste = Richtung',
+    'ariaCw': 'Kreuzworträtsel',
+    'ariaTkb': 'Virtuelle Tastatur',
+    'ariaTkbDir': 'Richtung wechseln',
+    'tkbDirText': '⇄ Richtung',
+    'ariaTkbDel': 'Zeichen löschen',
+    'ariaMaze': 'Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu.',
+    'ariaSudoku': 'Sudoku',
+    'ariaSolutions': 'Lösungen zu allen Rätseln',
+    'letterIs': 'Buchstabe {ch}',
+    'cellPos': 'Zeile {r}, Spalte {c}',
+    'cellPosNum': 'Zeile {r}, Spalte {c}, Nummer {n}',
+    'across': 'Waagerecht',
+    'down': 'Senkrecht',
+    'correctMsg': 'Richtig! 🎉',
+    'wrongMsg': 'Falsch — versuch es nochmal.',
+    'mazeDone': 'Ziel erreicht in {n} Schritten! 🎉',
+    'sol01': '01 · Symbol',
+    'sol07': '07 · Symbol 2',
+    'sol02': '02 · Wort',
+    'sol03': '03 · Wort 2',
+    'sol08': '08 · Wort 3',
+    'sol05': '05 · Labyrinth',
+    'sol06': '06 · Sudoku',
+    'sol04': '04 · Kreuzwort ({lang})'
   },
   'EN': {
     'seedLabel': 'Seed',
@@ -1631,17 +1682,96 @@ var RIDDLER_I18N = {
     'genBtn': '⟳ Generate new riddles',
     'shareBtn': '🔗 Copy link',
     'printBtn': '🖨 PDF / Print',
+    'motionOn': '✨ Motion: On',
+    'motionOff': 'Motion: Off',
+    'motionTitle': 'Toggle animated background',
     'langLabel': 'Language',
     'langDE': 'DE',
     'langEN': 'EN',
     'kicker': 'Seed-based puzzle box · 8 puzzles · deterministic',
     'dailyPill': 'Puzzle of the day',
-    'visitTitle': 'Visits on this device (stored locally, no tracking)',
+    'visitTitle': 'Views on this device (stored locally, no tracking)',
     'visitPrefix': 'Visit',
     'visitLocal': 'local',
-    'copyOk': 'Link with seed copied ✓'
+    'copyOk': 'Link with seed {seed} copied ✓',
+    'tMath': 'Symbol Arithmetic',
+    'tMath2': 'Symbol Arithmetic 2',
+    'tWord': 'Word Salad',
+    'tWord2': 'Word Salad 2',
+    'tWord3': 'Word Salad 3',
+    'tCw': 'Crossword',
+    'tMaze': 'Maze',
+    'tSudoku': 'Sudoku',
+    'tSolutions': 'Solutions',
+    'solvedPill': 'Solved ✓',
+    'subMath': 'Each symbol stands for a number. Find the values and solve the last row.',
+    'subMath2': 'Same here: find the symbol values and solve the last row.',
+    'subWord': 'Put the letters in the right order.',
+    'subWord2': 'Put these letters in the right order too.',
+    'subWord3': 'One more: put these letters in the right order too.',
+    'subMaze': 'Find the way from the green <b>S</b> to the yellow <b>Z</b> — via arrow keys or swipe.',
+    'subSudoku': 'Each digit 1–9 exactly once per row, column and 3×3 box. Printed cells are givens.',
+    'checkBtn': 'Check',
+    'shuffleTitle': 'Shuffle tiles',
+    'phResult': 'Result',
+    'phSolution': 'Solution',
+    'printMath': 'Result: ______',
+    'printWord': 'Solution: ______',
+    'printCw': 'Hints and solution: see legend',
+    'printMaze': 'Exit (Z): ______',
+    'stepsLabel': 'Steps:',
+    'resetBtn': '↺ Reset',
+    'hintBtn': 'Hint',
+    'cwStart': 'Tap a cell to start',
+    'cwKeys': 'Enter = auto-jump · Backspace = back · Arrows = move · Space = direction',
+    'ariaCw': 'Crossword',
+    'ariaTkb': 'Virtual keyboard',
+    'ariaTkbDir': 'Switch direction',
+    'tkbDirText': '⇄ Direction',
+    'ariaTkbDel': 'Delete character',
+    'ariaMaze': 'Maze. Move with arrow keys or gestures. R restarts.',
+    'ariaSudoku': 'Sudoku',
+    'ariaSolutions': 'Solutions to all puzzles',
+    'letterIs': 'Letter {ch}',
+    'cellPos': 'Row {r}, column {c}',
+    'cellPosNum': 'Row {r}, column {c}, number {n}',
+    'across': 'Across',
+    'down': 'Down',
+    'correctMsg': 'Correct! 🎉',
+    'wrongMsg': 'Wrong — try again.',
+    'mazeDone': 'Goal reached in {n} steps! 🎉',
+    'sol01': '01 · Symbols',
+    'sol07': '07 · Symbols 2',
+    'sol02': '02 · Word',
+    'sol03': '03 · Word 2',
+    'sol08': '08 · Word 3',
+    'sol05': '05 · Maze',
+    'sol06': '06 · Sudoku',
+    'sol04': '04 · Crossword ({lang})'
   }
 };
+function T(k, vars) {
+  var D = rlDict(rlLang);
+  var s = (D && D[k] !== undefined) ? D[k] : RIDDLER_I18N.DE[k];
+  if (s === undefined) return '';
+  if (vars) { for (var p in vars) { if (Object.prototype.hasOwnProperty.call(vars, p)) s = s.split('{' + p + '}').join(vars[p]); } }
+  return s;
+}
+function rlRefreshDynamic() {
+  var rs = document.querySelectorAll('.result[data-rk]');
+  for (var i = 0; i < rs.length; i++) {
+    var k = rs[i].getAttribute('data-rk');
+    if (k === 'ok') rs[i].textContent = T('correctMsg');
+    else if (k === 'err') rs[i].textContent = T('wrongMsg');
+    else if (k === 'maze') rs[i].textContent = T('mazeDone', { n: rs[i].getAttribute('data-steps') || '0' });
+  }
+  try {
+    var ca = document.getElementById('cwActive');
+    if (ca && (!cwState || !cwState.active || cwState.active.r < 0)) ca.textContent = T('cwStart');
+  } catch (e) {}
+  var tks = document.querySelectorAll('#cwTkbRow .tkb-key[data-ch]');
+  for (var j = 0; j < tks.length; j++) tks[j].setAttribute('aria-label', T('letterIs', { ch: tks[j].getAttribute('data-ch') }));
+}
 var rlLang = 'DE';
 function rlSyncLangUI() {
   var tabs = document.querySelectorAll('#langSeg button');
@@ -1661,11 +1791,16 @@ function rlApplyLang(l) {
     if (D[k] !== undefined) {
       if (els[i].tagName === 'INPUT') { els[i].placeholder = D[k]; }
       else if (els[i].hasAttribute('data-i18n-title')) { els[i].title = D[k]; }
+      else if (els[i].hasAttribute('data-i18n-aria')) { els[i].setAttribute('aria-label', D[k]); var tk = els[i].getAttribute('data-i18n-text'); if (tk && D[tk] !== undefined) els[i].textContent = D[tk]; }
+      else if (els[i].hasAttribute('data-i18n-html')) { els[i].innerHTML = D[k]; }
       else { els[i].textContent = D[k]; }
     }
   }
   rlSyncLangUI();
   cwSyncLangUI();
+  try { if (typeof curSeed !== 'undefined') { unmarkSolved(curSeed, curDiff, 'crossword'); genCrossword(curSeed); } } catch (e) {}
+  try { if (typeof renderSolutions === 'function') renderSolutions(); } catch (e) {}
+  rlRefreshDynamic();
 }
 function rlBindLangButtons() {
   var tabs = document.querySelectorAll('#langSeg button');
@@ -2589,27 +2724,34 @@ function renderSolutions() {
         wCard += '</div>';
         h.push(wCard);
     }
-    // #05 Labyrinth: BFS-Pfad auf derselben mazeGrid (links, zweite Reihe)
+    // #05 Labyrinth: BFS-Pfad auf derselben mazeGrid (SVG-Lösung)
     var path = mazeSolutionPath();
     var pSet = {};
     for (var pi = 0; pi < path.length; pi++) pSet[path[pi][0] + ',' + path[pi][1]] = true;
-    var mazeHtml = '<div class="sol-maze" style="--maze-w:' + mazeW + ';--maze-h:' + mazeH + '">';
+    var sw = mazeW * 16, sh = mazeH * 16;
+    var mazeSvg = '<svg class="sol-maze-svg" viewBox="0 0 ' + sw + ' ' + sh + '" width="' + sw + '" height="' + sh + '">';
+    mazeSvg += '<rect width="' + sw + '" height="' + sh + '" fill="#fff"/>';
+    // Wände zeichnen (nur wo mazeGrid Wände hat)
     for (var my = 0; my < mazeH; my++) {
         for (var mx = 0; mx < mazeW; mx++) {
-            var onP = pSet[mx + ',' + my] ? ' sol-onpath' : '';
-            var isSz = (mx === 0 && my === 0) || (mx === mazeW - 1 && my === mazeH - 1);
             var c = mazeGrid[my][mx];
-            var b = '';
-            if (c.walls.t) b += 'border-top:1px solid #000;';
-            if (c.walls.l) b += 'border-left:1px solid #000;';
-            if (my === mazeH - 1 && c.walls.b) b += 'border-bottom:1px solid #000;';
-            if (mx === mazeW - 1 && c.walls.r) b += 'border-right:1px solid #000;';
-            mazeHtml += '<div class="sol-maze-cell' + onP + (isSz ? ' sol-sz' : '') + '"' + (b ? ' style="' + b + '"' : '') + '>' +
-                (mx === 0 && my === 0 ? 'S' : (mx === mazeW - 1 && my === mazeH - 1 ? 'Z' : '')) + '</div>';
+            var px = mx * 16, py = my * 16;
+            if (c.walls.t) mazeSvg += '<line x1="'+px+'" y1="'+py+'" x2="'+(px+16)+'" y2="'+py+'" stroke="#000" stroke-width="1"/>';
+            if (c.walls.b) mazeSvg += '<line x1="'+px+'" y1="'+(py+16)+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
+            if (c.walls.l) mazeSvg += '<line x1="'+px+'" y1="'+py+'" x2="'+px+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
+            if (c.walls.r) mazeSvg += '<line x1="'+(px+16)+'" y1="'+py+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
         }
     }
-    mazeHtml += '</div>';
-    h.push('<div class="sol-card" data-sol="05"><h4>05 · Labyrinth</h4>' + mazeHtml + '</div>');
+    // Pfad-Füllung
+    for (var pi2 = 0; pi2 < path.length; pi2++) {
+        var pp = path[pi2];
+        mazeSvg += '<rect x="'+(pp[0]*16+1)+'" y="'+(pp[1]*16+1)+'" width="14" height="14" fill="#999"/>';
+    }
+    // S/Z Marker
+    mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="9" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
+    mazeSvg += '<rect x="'+((mazeW-1)*16+1)+'" y="'+((mazeH-1)*16+1)+'" width="14" height="14" fill="#000"/><text x="'+((mazeW-1)*16+8)+'" y="'+((mazeH-1)*16+9)+'" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">Z</text>';
+    mazeSvg += '</svg>';
+    h.push('<div class="sol-card" data-sol="05"><h4>05 · Labyrinth</h4>' + mazeSvg + '</div>');
     // #06 Sudoku (mitte, zweite Reihe)
     var sdkEl = document.getElementById('sudokuGrid');
     var sdkHtml = '<div class="sol-sdk">';
