@@ -297,13 +297,13 @@
 
         /* ---------- #5 Sudoku ---------- */
         .sdk-grid {
-            display: grid; grid-template-columns: repeat(9, 34px); gap: 0; width: max-content; margin: 14px auto;
+            display: grid; grid-template-columns: repeat(9, 1fr); gap: 0; width: min(100%, 310px); margin: 14px auto;
             border: 2px solid rgba(110, 255, 58, .45); border-radius: 10px; overflow: hidden; background: #070A0F;
         }
         .sdk-cell {
-            width: 34px; height: 34px; padding: 0; min-width: 0; min-height: 0; max-width: 34px;
+            aspect-ratio: 1 / 1; width: 100%; height: auto; padding: 0; min-width: 0; min-height: 0;
             border: 1px solid #3A4A3B; background: #161A24; text-align: center;
-            font: 700 16px var(--mono); color: #F1F5F9; cursor: pointer;
+            font: 700 clamp(12px, 4.5vw, 16px) var(--mono); color: #F1F5F9; cursor: pointer;
         }
         .sdk-given { background: #141B16; color: #A8B5A0; font-weight: 750; cursor: default; }
         .sdk-cell:disabled { background: #141B16; }
