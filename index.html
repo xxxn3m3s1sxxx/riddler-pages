@@ -648,7 +648,7 @@ header { margin-bottom: 12px; }
             h1 { color: #000; text-shadow: none; }
             .brand .mark { color: #000; filter: none; }
             .hero-logo { display: none; }
-            .print-logo { display: block; width: min(420px, 80%); height: auto; margin: 0 auto 6px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .print-logo { display: block; width: min(420px, 80%); height: auto; margin: 0 auto 14px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .pill { color: #000; border-color: #999; background: #eee; }
             .idx { color: #000; text-shadow: none; border-color: #000; background: #eee; }
             .puzzle:hover { box-shadow: none; }
@@ -696,13 +696,13 @@ header { margin-bottom: 12px; }
             #solutions .sol-ans {
                 font: 700 9px var(--mono); letter-spacing: .18em; text-transform: uppercase; color: #000;
             }
-            #solutions .sol-cw { display: grid; gap: 1px; width: max-content; height: 136px; margin: 0 auto; }
+            #solutions .sol-cw { display: grid; gap: 1px; width: max-content; height: auto; margin: 0 auto; }
             #solutions .sol-cw-cell {
-                width: 13px; border: 1px solid #000; background: #fff;
-                font: 700 7.5px var(--mono); text-transform: uppercase; color: #000;
-                display: flex; align-items: center; justify-content: center;
+                border: 1px solid #000; background: #fff;
+                font-family: var(--mono); font-weight: 700; font-size: inherit; text-transform: uppercase; color: #000;
+                display: flex; align-items: center; justify-content: center; overflow: hidden;
             }
-            #solutions .sol-cw-blk { width: 13px; background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            #solutions .sol-cw-blk { background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             .sol-maze-svg { display: block; width: min(100%, 280px); height: auto; }
             #solutions .sol-sdk {
                 display: grid; grid-template-columns: repeat(9, 15px); gap: 0; width: max-content; margin: 0 auto;
@@ -2774,7 +2774,8 @@ function renderSolutions() {
         var g = lastCwPlan.grid;
         var n = g[0].length;
         var m = g.length;
-        var cwHtml = '<div class="sol-cw" style="grid-template-columns:repeat(' + n + ',13px);grid-template-rows:repeat(' + m + ',1fr)">';
+        var cwCell = Math.max(7, Math.floor(Math.min(200 / n, 132 / m)));
+        var cwHtml = '<div class="sol-cw" style="grid-template-columns:repeat(' + n + ',' + cwCell + 'px);grid-template-rows:repeat(' + m + ',' + cwCell + 'px);font-size:' + Math.max(6, cwCell - 1) + 'px">';
         for (var r = 0; r < g.length; r++) {
             for (var cc = 0; cc < n; cc++) {
                 var ch0 = g[r].charAt(cc);
