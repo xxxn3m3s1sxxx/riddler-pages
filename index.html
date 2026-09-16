@@ -39,14 +39,14 @@
             --txt: #F1F5F9;
             --txt2: #A8B5A0;
             --txt3: #7A8A72;
-            --indigo: #A412DB;
+            --indigo: #B026FF;
             --indigo2: #B026FF;
-            --indigo-dim: rgba(164, 18, 219, .14);
-            --green: #7FFF2A;
+            --indigo-dim: rgba(176, 38, 255, .14);
+            --green: #6EFF3A;
             --red: #F43F5E;
             --amber: #FBBF24;
-            --neon-green: #7FFF2A;
-            --neon-purple: #A412DB;
+            --neon-green: #6EFF3A;
+            --neon-purple: #B026FF;
             --neon-purple-text: #D946FF;
             --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
             --sans: Geist, -apple-system, BlinkMacSystemFont, 'Segoe UI', Inter, Roboto, sans-serif;
@@ -61,6 +61,27 @@
             -webkit-font-smoothing: antialiased;
         }
         .wrap { max-width: 720px; margin: 0 auto; padding: 34px 18px 70px; }
+        /* Two-column Hybrid-Layout: Control-Panel links (sticky) / Puzzle-Säule rechts */
+        @media (min-width: 900px) {
+            .wrap { display: grid; grid-template-columns: 280px 1fr; gap: 0 24px; max-width: 960px; align-items: start; }
+            header { grid-column: 1 / -1; }
+            .panel { grid-column: 1; grid-row: 2; position: sticky; top: 20px; }
+            .puzzle-col { grid-column: 2; grid-row: 2/4; display: flex; flex-direction: column; gap: 16px; }
+            .foot { grid-column: 1 / -1; grid-row: 4; }
+        }
+        /* Mode-Switching: 01 Riddler's Riddles (MATH) / 02 The Puzzle Ark */
+        /* opacity:0 (nicht visibility/display) → hält innerText des Fingerprints über Versionsgrenzen deterministisch (Smoke-Vertrag) */
+        body.mode-math [data-zone="ark"] { opacity: 0; }
+        body.mode-ark [data-zone="math"] { opacity: 0; }
+        @media print {
+            body.mode-math [data-zone="ark"],
+            body.mode-ark [data-zone="math"] { opacity: 1 !important; }
+            .wrap { display: block !important; max-width: 100%; padding: 0; }
+            .puzzle-col { display: block !important; }
+        }
+        /* Leere Fläche in Salat-Höhe vor den Lösungen (Screen + Print, gemessen: 231px) */
+        .salad-spacer { height: 231px; break-inside: avoid; page-break-inside: avoid; }
+        @media print { .salad-spacer { height: 207px; } }
 
         /* ---------- Header ---------- */
         header { text-align: center; margin-bottom: 26px; }
@@ -75,6 +96,18 @@
             text-transform: uppercase; color: var(--txt2);
         }
         .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); }
+        /* Besuchs-Zähler: Terminal-Chip im Neon-Look (geräte-lokal via localStorage, kein Tracking) */
+        .visit-badge {
+            margin: 10px auto 0; width: max-content; display: inline-flex; align-items: center; gap: 8px;
+            background: #0A0F0A; border: 1px dashed var(--neon-green, #6EFF3A); border-radius: 8px;
+            padding: 5px 12px; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: 1.5px;
+            text-transform: uppercase; color: var(--neon-green, #6EFF3A);
+            text-shadow: 0 0 8px rgba(110, 255, 58, .6);
+        }
+        .visit-badge .vdot { width: 7px; height: 7px; border-radius: 50%; background: var(--neon-green, #6EFF3A); box-shadow: 0 0 8px var(--neon-green, #6EFF3A); animation: vblink 1.6s infinite; }
+        @keyframes vblink { 0%, 100% { opacity: 1; } 50% { opacity: .25; } }
+        .visit-badge .vlocal { color: var(--txt2); font-size: 9px; letter-spacing: 1px; text-shadow: none; }
+        .visit-badge b { font-size: 13px; letter-spacing: 2px; }
 
         /* ---------- Cards ---------- */
         .card {
@@ -176,7 +209,7 @@
         }
         .op { color: var(--txt3); font-weight: 700; font-size: 15px; }
         .eq { color: var(--txt3); font-weight: 700; }
-        .val { font: 700 18px var(--mono); color: var(--neon-green); text-shadow: 0 0 6px rgba(127, 255, 42, .6); min-width: 4ch; text-align: center; }
+        .val { font: 700 18px var(--mono); color: var(--neon-green); text-shadow: 0 0 6px rgba(110, 255, 58, .6); min-width: 4ch; text-align: center; }
         .val.q { color: var(--neon-purple-text); text-shadow: 0 0 6px rgba(217, 70, 255, .4); border: 1px dashed rgba(176, 38, 255, .55); border-radius: 8px; padding: 3px 8px; }
 
         /* ---------- #2 Word ---------- */
@@ -187,7 +220,7 @@
             font: 700 24px var(--mono); color: var(--txt); user-select: none;
             transition: transform .15s ease, border-color .15s ease, box-shadow .15s ease;
         }
-        .tile:hover { transform: translateY(-2px); border-color: rgba(127, 255, 42, .55); box-shadow: 0 0 12px rgba(127, 255, 42, .18); }
+        .tile:hover { transform: translateY(-2px); border-color: rgba(110, 255, 58, .55); box-shadow: 0 0 12px rgba(110, 255, 58, .18); }
         .topic-row { display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 10px; }
 
         /* ---------- #3 Crossword ---------- */
@@ -226,7 +259,7 @@
         .current { outline: 2px solid var(--indigo2); outline-offset: -1px; box-shadow: 0 0 0 4px var(--indigo-dim); }
         .cw-num { position: absolute; top: 0; left: 4px; z-index: 2; font: 750 calc(var(--cw) * .26) var(--sans); color: var(--txt3); pointer-events: none; line-height: 1.1; }
         .cw-block { background: var(--bg); border-radius: 4px; box-shadow: inset 0 0 0 1px rgba(255,255,255,.05); }
-        .cw-cell.ok { background: rgba(127, 255, 42, .22); border-color: rgba(127, 255, 42, .6); }
+        .cw-cell.ok { background: rgba(110, 255, 58, .22); border-color: rgba(110, 255, 58, .6); }
         .cw-cell.bad { background: rgba(244, 63, 94, .22); border-color: rgba(244, 63, 94, .6); }
         .cw-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; flex-wrap: wrap; }
         .cw-active {
@@ -252,7 +285,7 @@
         /* ---------- #5 Sudoku ---------- */
         .sdk-grid {
             display: grid; grid-template-columns: repeat(9, 34px); gap: 0; width: max-content; margin: 14px auto;
-            border: 2px solid rgba(127, 255, 42, .45); border-radius: 10px; overflow: hidden; background: #070A0F;
+            border: 2px solid rgba(110, 255, 58, .45); border-radius: 10px; overflow: hidden; background: #070A0F;
         }
         .sdk-cell {
             width: 34px; height: 34px; padding: 0; min-width: 0; min-height: 0; max-width: 34px;
@@ -262,9 +295,9 @@
         .sdk-given { background: #141B16; color: #A8B5A0; font-weight: 750; cursor: default; }
         .sdk-cell:disabled { background: #141B16; }
         .sdk-cell:focus { outline: 2px solid var(--indigo); outline-offset: -1px; }
-        .sdk-cell.b3 { border-right: 2px solid rgba(127, 255, 42, .45); }
-        .sdk-cell.b6 { border-bottom: 2px solid rgba(127, 255, 42, .45); }
-        .sdk-cell.ok { background: rgba(127, 255, 42, .22); }
+        .sdk-cell.b3 { border-right: 2px solid rgba(110, 255, 58, .45); }
+        .sdk-cell.b6 { border-bottom: 2px solid rgba(110, 255, 58, .45); }
+        .sdk-cell.ok { background: rgba(110, 255, 58, .22); }
         .sdk-cell.bad { background: rgba(244, 63, 94, .22); }
 
         /* ---------- Micro interactions ---------- */
@@ -283,16 +316,16 @@
 
         /* ---------- A11y Fokus-Ring WCAG 2.4.11 ---------- */
         :focus-visible {
-            outline: 3px solid #A412DB;
+            outline: 3px solid #B026FF;
             outline-offset: 2px;
-            box-shadow: 0 0 0 6px rgba(164, 18, 219, .35);
+            box-shadow: 0 0 0 6px rgba(176, 38, 255, .35);
         }
         input.cw-cell:focus-visible { outline-offset: -2px; box-shadow: none; }
-        .current { outline: 3px solid #A412DB !important; outline-offset: -1px; box-shadow: 0 0 0 6px rgba(164, 18, 219, .35) !important; }
-        #mazeCanvas:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #A412DB, 0 0 0 6px rgba(164, 18, 219, .35); }
+        .current { outline: 3px solid #B026FF !important; outline-offset: -1px; box-shadow: 0 0 0 6px rgba(176, 38, 255, .35) !important; }
+        #mazeCanvas:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #B026FF, 0 0 0 6px rgba(176, 38, 255, .35); }
         .sdk-cell:focus-visible { outline-offset: -1px; }
-        .clue:focus-visible { border-color: #A412DB; box-shadow: 0 0 0 4px rgba(164, 18, 219, .30); }
-        .btn:focus-visible, .icon-btn:focus-visible, .seg button:focus-visible, .cw-lang:focus-visible { box-shadow: 0 0 0 3px rgba(164, 18, 219, .45); }
+        .clue:focus-visible { border-color: #B026FF; box-shadow: 0 0 0 4px rgba(176, 38, 255, .30); }
+        .btn:focus-visible, .icon-btn:focus-visible, .seg button:focus-visible, .cw-lang:focus-visible { box-shadow: 0 0 0 3px rgba(176, 38, 255, .45); }
 
         /* ---------- Print ---------- */
         .print-line { display: none; }
@@ -300,11 +333,13 @@
             @page { size: A4; margin: 14mm 12mm 16mm; }
             body { background: #fff; color: #000; }
             .wrap { max-width: 100%; padding: 0; }
-            header .daily-pill, .panel, .btn, .icon-btn, input.ans, .ans-row, #seedInput, .seg, .result, .puzzle .pill { display: none !important; }
-            .card { background: #fff; border: 1px solid #bbb; box-shadow: none; break-inside: avoid; border-radius: 4px; }
+header { margin-bottom: 12px; }
+            header .daily-pill, header .visit-badge, .panel, .btn, .icon-btn, input.ans, .ans-row, #seedInput, .seg, .result, .puzzle .pill { display: none !important; }
+            .card { background: #fff; border: 1px solid #bbb; box-shadow: none; break-inside: avoid; border-radius: 4px; margin-bottom: 10px; }
             .card-head h3, .idx { color: #000 !important; }
+.card-head { margin-bottom: 3px; }
             .idx { border-color: #000; background: #eee; }
-            .sub { color: #444; }
+            .sub { color: #444; margin: 2px 0 5px; }
             #mazeCanvas { background: #fff !important; box-shadow: none !important; border: 1.2px solid #000 !important; }
             .tafel { background: #fff; border: 1px solid #bbb; }
             .sym { border: 1px solid #666; background: #eee; }
@@ -335,7 +370,7 @@
             .sdk-cell.b3 { border-right: 2px solid #000; }
             .sdk-cell.b6 { border-bottom: 2px solid #000; }
             #mazeCanvas { box-shadow: none; border: 1px solid #000; width: min(90%, 512px); height: auto; }
-            .print-line { display: block !important; margin-top: 10px; border-bottom: 1px solid #000; width: 240px; height: 30px; font-size: 12px; color: #666; }
+            .print-line { display: block !important; margin-top: 6px; border-bottom: 1px solid #000; width: 240px; height: 24px; font-size: 12px; color: #666; }
             .foot { display: none; }
         }
 
@@ -377,11 +412,11 @@
             background-color: #070A0F;
             background-image:
                 radial-gradient(120% 120% at 50% 42%, transparent 55%, rgba(0, 0, 0, .48) 100%),
-                url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20220%20160%22%3E%3Cg%20fill%3D%22%237CFF2A%22%20opacity%3D%220.07%22%3E%3Cpath%20d%3D%22M110%2014%20C98%208%2082%2014%2082%2030%20C70%2026%2056%2033%2044%2042%20C28%2052%2018%2063%2015%2076%20C13%2086%2024%2087%2030%2081%20C38%2073%2041%2066%2049%2072%20C57%2078%2061%2088%2071%2084%20C81%2080%2082%2073%2090%2078%20C97%2081%20101%2086%20110%2084%20C119%2086%20123%2081%20130%2078%20C138%2073%20139%2080%20149%2084%20C159%2088%20163%2078%20171%2072%20C179%2066%20182%2073%20190%2081%20C196%2087%20207%2086%20205%2076%20C202%2063%20192%2052%20176%2042%20C164%2033%20150%2026%20138%2030%20C138%2014%20122%208%20110%2014%20Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
+                url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20192.76%20192.76%22%3E%3Cg%20fill%3D%22%236EFF3A%22%20opacity%3D%220.07%22%3E%3Cpath%20d%3D%22M96.21%2C74.78C98.68%2C74.78%2099.66%2C75.27%2099.66%2C75.27C99.66%2C75.27%20101.14%2C69.03%20101.14%2C69.03C101.14%2C69.03%20102.29%2C73.79%20102.78%2C78.06C103.28%2C82.33%20110.83%2C79.54%20117.24%2C78.23C123.64%2C76.91%20124.96%2C66.57%20124.96%2C66.57C124.96%2C66.57%20184.25%2C66.57%20184.25%2C66.57C184.25%2C66.57%20148.45%2C77.41%20157.48%2C101.22C157.48%2C101.22%20104.59%2C93.18%2096.38%2C126.19C96.38%2C126.19%2096.38%2C126.19%2096.38%2C126.19C88.16%2C93.18%2035.28%2C101.22%2035.28%2C101.22C44.31%2C77.41%208.5%2C66.57%208.5%2C66.57C8.5%2C66.57%2067.8%2C66.57%2067.8%2C66.57C67.8%2C66.57%2069.11%2C76.91%2075.52%2C78.23C81.92%2C79.54%2089.48%2C82.33%2089.97%2C78.06C90.46%2C73.79%2091.61%2C69.03%2091.61%2C69.03C91.61%2C69.03%2093.09%2C75.27%2093.09%2C75.27C93.09%2C75.27%2094.08%2C74.78%2096.54%2C74.78C96.54%2C74.78%2096.21%2C74.78%2096.21%2C74.78Z%22%2F%3E%3C%2Fg%3E%3C%2Fsvg%3E"),
                 repeating-linear-gradient(0deg, rgba(0, 0, 0, .28) 0 1.5px, transparent 1.5px 4px),
-                radial-gradient(900px 380px at 50% -140px, rgba(127, 255, 42, .07), transparent 70%);
+                radial-gradient(900px 380px at 50% -140px, rgba(110, 255, 58, .07), transparent 70%);
             background-attachment: fixed, fixed, scroll, scroll;
-            background-size: cover, 280px 204px, auto, auto;
+            background-size: cover, 300px 300px, auto, auto;
             background-position: center, right 24px center, left top, center;
             background-repeat: no-repeat, no-repeat, repeat, no-repeat;
         }
@@ -449,23 +484,23 @@
 
         /* .btn.primary + .seg button.active: purple gradient + glow */
         .btn.primary {
-            background: linear-gradient(180deg, #B026FF, #A412DB);
-            border-color: #A412DB;
-            box-shadow: 0 4px 16px rgba(164, 18, 219, .42);
+            background: linear-gradient(180deg, #B026FF, #B026FF);
+            border-color: #B026FF;
+            box-shadow: 0 4px 16px rgba(176, 38, 255, .42);
         }
         .btn.primary:hover {
-            box-shadow: 0 6px 22px rgba(164, 18, 219, .5);
+            box-shadow: 0 6px 22px rgba(176, 38, 255, .5);
         }
         .seg button.active {
-            background: linear-gradient(180deg, #B026FF, #A412DB);
-            box-shadow: 0 2px 10px rgba(164, 18, 219, .5);
+            background: linear-gradient(180deg, #B026FF, #B026FF);
+            box-shadow: 0 2px 10px rgba(176, 38, 255, .5);
         }
 
         /* override hardcoded indigo rgba in .sym and inputs */
         .sym {
-            background: rgba(127, 255, 42, .09);
-            border-color: rgba(127, 255, 42, .45);
-            box-shadow: 0 0 10px rgba(127, 255, 42, .14);
+            background: rgba(110, 255, 58, .09);
+            border-color: rgba(110, 255, 58, .45);
+            box-shadow: 0 0 10px rgba(110, 255, 58, .14);
         }
         input:focus-visible {
             box-shadow: 0 0 0 3px rgba(176, 38, 255, .25);
@@ -542,7 +577,7 @@
                 z-index: -1;
                 pointer-events: none;
                 opacity: .9;
-                background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22620%22 viewBox=%220 0 300 620%22%3E %3Cg fill=%22none%22 stroke=%22%237CFF2A%22 stroke-linejoin=%22round%22%3E     %3Ctext x=%22150%22 y=%22120%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22120%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.34%22           filter=%22url(%23g1)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22230%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22150%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.26%22           filter=%22url(%23g2)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22360%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22190%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.18%22           filter=%22url(%23g3)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22515%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22230%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223.5%22 opacity=%220.13%22           filter=%22url(%23g4)%22%3E?%3C/text%3E   %3C/g%3E %3Ccircle cx=%22150%22 cy=%22585%22 r=%2216%22 fill=%22none%22 stroke=%22%237CFF2A%22 stroke-width=%222.5%22 opacity=%220.22%22/%3E   %3Ccircle cx=%22150%22 cy=%22585%22 r=%228%22 fill=%22none%22 stroke=%22%237CFF2A%22 stroke-width=%221.5%22 opacity=%220.30%22/%3E   %3Cdefs%3E     %3Cfilter id=%22g1%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%223%22/%3E%3C/filter%3E     %3Cfilter id=%22g2%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%224%22/%3E%3C/filter%3E     %3Cfilter id=%22g3%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%225%22/%3E%3C/filter%3E     %3Cfilter id=%22g4%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%226%22/%3E%3C/filter%3E   %3C/defs%3E %3C/svg%3E");
+                background-image: url("data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22300%22 height=%22620%22 viewBox=%220 0 300 620%22%3E %3Cg fill=%22none%22 stroke=%22%236EFF3A%22 stroke-linejoin=%22round%22%3E     %3Ctext x=%22150%22 y=%22120%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22120%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.34%22           filter=%22url(%23g1)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22230%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22150%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.26%22           filter=%22url(%23g2)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22360%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22190%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223%22 opacity=%220.18%22           filter=%22url(%23g3)%22%3E?%3C/text%3E     %3Ctext x=%22150%22 y=%22515%22 font-family=%22Arial Black, Impact, sans-serif%22 font-size=%22230%22 font-weight=%22900%22           text-anchor=%22middle%22 stroke-width=%223.5%22 opacity=%220.13%22           filter=%22url(%23g4)%22%3E?%3C/text%3E   %3C/g%3E %3Ccircle cx=%22150%22 cy=%22585%22 r=%2216%22 fill=%22none%22 stroke=%22%236EFF3A%22 stroke-width=%222.5%22 opacity=%220.22%22/%3E   %3Ccircle cx=%22150%22 cy=%22585%22 r=%228%22 fill=%22none%22 stroke=%22%236EFF3A%22 stroke-width=%221.5%22 opacity=%220.30%22/%3E   %3Cdefs%3E     %3Cfilter id=%22g1%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%223%22/%3E%3C/filter%3E     %3Cfilter id=%22g2%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%224%22/%3E%3C/filter%3E     %3Cfilter id=%22g3%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%225%22/%3E%3C/filter%3E     %3Cfilter id=%22g4%22 x=%22-60%%22 y=%22-60%%22 width=%22220%%22 height=%22220%%22%3E%3CfeGaussianBlur stdDeviation=%226%22/%3E%3C/filter%3E   %3C/defs%3E %3C/svg%3E");
                 background-size: 330px 682px;
                 background-repeat: no-repeat;
             }
@@ -560,7 +595,7 @@
             z-index: -1;
             pointer-events: none;
             opacity: .45;
-            background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%3Cdefs%3E%0A%20%20%3Cpattern%20id%3D%22dotGrid%22%20width%3D%2232%22%20height%3D%2232%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%220.7%22%20fill%3D%22%237CFF2A%22%20opacity%3D%220.038%22%2F%3E%0A%20%20%3C%2Fpattern%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22url(%23dotGrid)%22%2F%3E%0A%3Cg%20id%3D%22traces%22%20fill%3D%22none%22%20stroke%3D%22%237CFF2A%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%220.19%22%3E%0A%20%20%3Cpath%20d%3D%22M%20512%2084%20H%20424%20V%20112%20H%20376%20V%20168%20H%20328%20V%20136%20H%20284%20V%20168%20H%20224%22%20stroke-width%3D%221.35%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20102%20H%20440%20V%20148%20H%20392%20V%20104%20H%20348%20V%20188%20H%20260%20V%20148%20H%20196%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20292%20H%20448%20V%20348%20H%20392%20V%20412%20H%20344%20V%20360%20H%20300%20V%20412%20H%20240%20V%20360%20H%20184%22%20stroke-width%3D%221.25%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20312%20H%20464%20V%20372%20H%20416%20V%20432%20H%20368%20V%20384%20H%20320%20V%20456%20H%20268%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20316%20H%2064%20V%20372%20H%20112%20V%20420%20H%20168%20V%20368%20H%20204%20V%20432%22%20stroke-width%3D%221.0%22%20opacity%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%200%20V%2048%20H%20144%20V%2092%20H%2096%20V%20140%22%20stroke-width%3D%221.15%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20196%200%20V%2056%20H%20240%20V%20104%20H%20288%20V%2056%20H%20332%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20380%200%20V%2032%20H%20332%20V%2068%20H%20284%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%2096%20H%2056%20V%2064%20H%20120%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20128%20H%2040%20V%20176%20H%2088%20V%20128%20H%20136%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20424%20212%20L%20404%20232%20H%20360%20V%20268%20L%20380%20288%20H%20424%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%20212%20L%2076%20232%20H%2032%20V%20268%20L%2052%20288%20H%2096%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20432%20H%2048%20V%20476%20H%20128%20V%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20384%20512%20V%20464%20H%20432%20V%20432%20H%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20468%20H%2028%20V%20492%20H%2064%22%20stroke-width%3D%220.9%22%2F%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22nodes%22%20opacity%3D%221%22%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.26%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22424%22%20cy%3D%2284%22%20r%3D%222.3%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22376%22%20cy%3D%22112%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22148%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22448%22%20cy%3D%22292%22%20r%3D%222.1%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22348%22%20r%3D%222.2%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22240%22%20cy%3D%22104%22%20r%3D%221.8%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22144%22%20cy%3D%2248%22%20r%3D%221.7%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2296%22%20cy%3D%2292%22%20r%3D%221.6%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%22232%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2248%22%20cy%3D%22432%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22432%22%20cy%3D%22464%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2228%22%20cy%3D%22468%22%20r%3D%221.5%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23B026FF%22%20stroke-width%3D%220.95%22%20opacity%3D%220.20%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Crect%20x%3D%22402%22%20y%3D%22396%22%20width%3D%2228%22%20height%3D%2226%22%20rx%3D%221.2%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22366%22%20y%3D%22210%22%20width%3D%2222%22%20height%3D%2218%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2218%22%20y%3D%22340%22%20width%3D%2224%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22248%22%20y%3D%22430%22%20width%3D%2226%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20stroke%3D%22%237CFF2A%22%20stroke-width%3D%220.85%22%20opacity%3D%220.14%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M402%20404%20H397%20M402%20411%20H397%20M402%20418%20H397%20M430%20404%20H435%20M430%20411%20H435%20M430%20418%20H435%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M366%20216%20H361%20M366%20222%20H361%20M388%20216%20H393%20M388%20222%20H393%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.18%22%3E%0A%20%20%20%20%3Crect%20x%3D%22282%22%20y%3D%22134%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22324%22%20y%3D%22166%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22342%22%20y%3D%22358%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22trace-glow%22%20fill%3D%22none%22%20stroke%3D%22%237CFF2A%22%20stroke-width%3D%222.6%22%20opacity%3D%220.018%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%3Cpath%20d%3D%22M512%2084%20H424%20V112%20H376%20V168%20H328%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M512%20292%20H448%20V348%20H392%20V412%20H344%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E");
+            background-image: url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22512%22%20height%3D%22512%22%20viewBox%3D%220%200%20512%20512%22%3E%0A%3Cdefs%3E%0A%20%20%3Cpattern%20id%3D%22dotGrid%22%20width%3D%2232%22%20height%3D%2232%22%20patternUnits%3D%22userSpaceOnUse%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2216%22%20cy%3D%2216%22%20r%3D%220.7%22%20fill%3D%22%236EFF3A%22%20opacity%3D%220.038%22%2F%3E%0A%20%20%3C%2Fpattern%3E%0A%3C%2Fdefs%3E%0A%3Crect%20width%3D%22512%22%20height%3D%22512%22%20fill%3D%22url(%23dotGrid)%22%2F%3E%0A%3Cg%20id%3D%22traces%22%20fill%3D%22none%22%20stroke%3D%22%236EFF3A%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%20opacity%3D%220.19%22%3E%0A%20%20%3Cpath%20d%3D%22M%20512%2084%20H%20424%20V%20112%20H%20376%20V%20168%20H%20328%20V%20136%20H%20284%20V%20168%20H%20224%22%20stroke-width%3D%221.35%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20102%20H%20440%20V%20148%20H%20392%20V%20104%20H%20348%20V%20188%20H%20260%20V%20148%20H%20196%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20292%20H%20448%20V%20348%20H%20392%20V%20412%20H%20344%20V%20360%20H%20300%20V%20412%20H%20240%20V%20360%20H%20184%22%20stroke-width%3D%221.25%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20512%20312%20H%20464%20V%20372%20H%20416%20V%20432%20H%20368%20V%20384%20H%20320%20V%20456%20H%20268%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20316%20H%2064%20V%20372%20H%20112%20V%20420%20H%20168%20V%20368%20H%20204%20V%20432%22%20stroke-width%3D%221.0%22%20opacity%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%200%20V%2048%20H%20144%20V%2092%20H%2096%20V%20140%22%20stroke-width%3D%221.15%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20196%200%20V%2056%20H%20240%20V%20104%20H%20288%20V%2056%20H%20332%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20380%200%20V%2032%20H%20332%20V%2068%20H%20284%22%20stroke-width%3D%221.0%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%2096%20H%2056%20V%2064%20H%20120%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20128%20H%2040%20V%20176%20H%2088%20V%20128%20H%20136%22%20stroke-width%3D%220.95%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20424%20212%20L%20404%20232%20H%20360%20V%20268%20L%20380%20288%20H%20424%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%2096%20212%20L%2076%20232%20H%2032%20V%20268%20L%2052%20288%20H%2096%22%20stroke-width%3D%221.05%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20432%20H%2048%20V%20476%20H%20128%20V%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%20384%20512%20V%20464%20H%20432%20V%20432%20H%20512%22%20stroke-width%3D%221.1%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M%200%20468%20H%2028%20V%20492%20H%2064%22%20stroke-width%3D%220.9%22%2F%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22nodes%22%20opacity%3D%221%22%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.26%22%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22424%22%20cy%3D%2284%22%20r%3D%222.3%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22376%22%20cy%3D%22112%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22148%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22448%22%20cy%3D%22292%22%20r%3D%222.1%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22392%22%20cy%3D%22348%22%20r%3D%222.2%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22240%22%20cy%3D%22104%22%20r%3D%221.8%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22144%22%20cy%3D%2248%22%20r%3D%221.7%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2296%22%20cy%3D%2292%22%20r%3D%221.6%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2232%22%20cy%3D%22232%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2248%22%20cy%3D%22432%22%20r%3D%222.0%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%22432%22%20cy%3D%22464%22%20r%3D%221.9%22%2F%3E%0A%20%20%20%20%3Ccircle%20cx%3D%2228%22%20cy%3D%22468%22%20r%3D%221.5%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23B026FF%22%20stroke-width%3D%220.95%22%20opacity%3D%220.20%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Crect%20x%3D%22402%22%20y%3D%22396%22%20width%3D%2228%22%20height%3D%2226%22%20rx%3D%221.2%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22366%22%20y%3D%22210%22%20width%3D%2222%22%20height%3D%2218%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%2218%22%20y%3D%22340%22%20width%3D%2224%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22248%22%20y%3D%22430%22%20width%3D%2226%22%20height%3D%2220%22%20rx%3D%221.0%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20stroke%3D%22%236EFF3A%22%20stroke-width%3D%220.85%22%20opacity%3D%220.14%22%20stroke-linecap%3D%22round%22%3E%0A%20%20%20%20%3Cpath%20d%3D%22M402%20404%20H397%20M402%20411%20H397%20M402%20418%20H397%20M430%20404%20H435%20M430%20411%20H435%20M430%20418%20H435%22%2F%3E%0A%20%20%20%20%3Cpath%20d%3D%22M366%20216%20H361%20M366%20222%20H361%20M388%20216%20H393%20M388%20222%20H393%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%20%20%3Cg%20fill%3D%22%23B026FF%22%20opacity%3D%220.18%22%3E%0A%20%20%20%20%3Crect%20x%3D%22282%22%20y%3D%22134%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22324%22%20y%3D%22166%22%20width%3D%225.5%22%20height%3D%225.5%22%20rx%3D%221.0%22%2F%3E%0A%20%20%20%20%3Crect%20x%3D%22342%22%20y%3D%22358%22%20width%3D%226%22%20height%3D%226%22%20rx%3D%221.1%22%2F%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fg%3E%0A%3Cg%20id%3D%22trace-glow%22%20fill%3D%22none%22%20stroke%3D%22%236EFF3A%22%20stroke-width%3D%222.6%22%20opacity%3D%220.018%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%3Cpath%20d%3D%22M512%2084%20H424%20V112%20H376%20V168%20H328%22%2F%3E%0A%20%20%3Cpath%20d%3D%22M512%20292%20H448%20V348%20H392%20V412%20H344%22%2F%3E%0A%3C%2Fg%3E%0A%3C%2Fsvg%3E");
             background-size: 512px;
         }
 
@@ -629,20 +664,21 @@
                 border: none;
             }
             #solutions .card-head { display: none; }
-            #solutions .sol-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px; align-items: start; }
+            #solutions .sol-wrap { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; align-items: start; }
             #solutions .sol-card {
                 background: #fff; border: 1px solid #000; border-radius: 3px;
-                padding: 4px; break-inside: avoid; color: #000;
+                padding: 3px; break-inside: avoid; color: #000;
             }
             #solutions .sol-card h4 { margin: 0 0 2px; font: 750 8px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #000; }
             #solutions .sol-card .sol-h4b { font: 750 8px var(--mono); letter-spacing: .06em; text-transform: uppercase; color: #000; border-top: 1px dashed #999; margin: 4px 0 2px; padding-top: 3px; }
-            #solutions .sol-math { display: flex; align-items: center; gap: 3px; font: 700 9px var(--mono); margin: 1px 0; }
+            #solutions .sol-math { display: flex; align-items: center; justify-content: center; gap: 3px; font: 700 9px var(--mono); margin: 1px 0; }
             #solutions .sol-card { text-align: center; }
             #solutions .sol-scram { display: flex; flex-wrap: wrap; gap: 1px; margin: 2px 0 3px; justify-content: center; }
             #solutions .sol-scram .sol-tile { border: 1px dashed #888; background: #fff; }
             #solutions .sol-tile {
                 width: 12px; height: 12px; border: 1px solid #000; background: #fff;
-                font: 700 8px var(--mono); text-transform: uppercase; text-align: center; line-height: 12px; color: #000;
+                font: 700 8px var(--mono); text-transform: uppercase; color: #000;
+                display: flex; align-items: center; justify-content: center;
             }
             #solutions .sol-ans {
                 font: 700 9px var(--mono); letter-spacing: .18em; text-transform: uppercase; color: #000;
@@ -650,7 +686,8 @@
             #solutions .sol-cw { display: grid; gap: 1px; width: max-content; margin: 0 auto; }
             #solutions .sol-cw-cell {
                 width: 13px; height: 13px; border: 1px solid #000; background: #fff;
-                font: 700 7.5px var(--mono); text-transform: uppercase; text-align: center; line-height: 13px;
+                font: 700 7.5px var(--mono); text-transform: uppercase; color: #000;
+                display: flex; align-items: center; justify-content: center;
             }
             #solutions .sol-cw-blk { width: 13px; height: 13px; background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
             #solutions .sol-maze {
@@ -659,7 +696,8 @@
                 background: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact;
             }
             #solutions .sol-maze-cell {
-                aspect-ratio: 1 / 1; font: 700 9px var(--mono); text-align: center; line-height: 14px;
+                aspect-ratio: 1 / 1; font: 700 9px var(--mono);
+                display: flex; align-items: center; justify-content: center;
                 background: #fff; color: #000; -webkit-print-color-adjust: exact; print-color-adjust: exact;
             }
             #solutions .sol-maze-cell.sol-onpath { background: #999; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
@@ -669,11 +707,13 @@
                 border: 1px solid #000;
             }
             #solutions .sol-sdk-cell {
-                width: 15px; height: 15px; border: 1px solid #999; background: #fff;
-                font: 700 8px var(--mono); text-align: center; line-height: 15px; color: #000;
+                width: 15px; height: 15px; border: none; border-right: 1px solid #999; border-bottom: 1px solid #999; background: #fff;
+                font: 700 8px var(--mono); color: #000;
+                display: flex; align-items: center; justify-content: center;
             }
-            #solutions .sol-sdk .sol-sdk-cell:nth-child(3n) { border-right: 2px solid #000; }
-            #solutions .sol-sdk .sol-sdk-cell:nth-child(9n) { border-right: 1px solid #999; }
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(9n) { border-right: none; }
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(n+73) { border-bottom: none; }
+            #solutions .sol-sdk .sol-sdk-cell:nth-child(3n):not(:nth-child(9n)) { border-right: 2px solid #000; }
             #solutions .sol-sdk .sol-sdk-cell:nth-child(n+19):nth-child(-n+27),
             #solutions .sol-sdk .sol-sdk-cell:nth-child(n+46):nth-child(-n+54) { border-bottom: 2px solid #000; }
         }
@@ -712,7 +752,7 @@
   <!-- Lime neon-glow v2: stdDeviation 2.0 -> 1.35, opacity 0.55 -> 0.42, DOPPEL-MERGE ENTFERNT -->
   <filter id="lg-glow-lime" x="-20%" y="-30%" width="140%" height="160%" color-interpolation-filters="sRGB">
     <feGaussianBlur in="SourceAlpha" stdDeviation="1.35" result="blur"/>
-    <feFlood flood-color="#7CFF2A" flood-opacity="0.42" result="color"/>
+    <feFlood flood-color="#6EFF3A" flood-opacity="0.42" result="color"/>
     <feComposite in="color" in2="blur" operator="in" result="glow"/>
     <feMerge>
       <feMergeNode in="glow"/>
@@ -722,7 +762,7 @@
   <!-- v3: HINTERGRUND-GLOW hinter scharfer Kontur: output = NUR blurred lime-halo, kein SourceGraphic -->
   <filter id="lg-bg-glow-lime" x="-30%" y="-35%" width="160%" height="170%" color-interpolation-filters="sRGB">
     <feGaussianBlur in="SourceGraphic" stdDeviation="5.5" result="blur"/>
-    <feFlood flood-color="#7CFF2A" flood-opacity="1" result="color"/>
+    <feFlood flood-color="#6EFF3A" flood-opacity="1" result="color"/>
     <feComposite in="color" in2="blur" operator="in" result="glow"/>
     <feMerge><feMergeNode in="glow"/></feMerge>
   </filter>
@@ -749,14 +789,14 @@
   <!-- STARKE GLOW-SCHICHT DAHINTER (blurry, lime), liegt hinter der scharfen Kontur -->
   <text aria-hidden="true" x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
         font-size="82" font-weight="900" font-stretch="condensed" letter-spacing="-1.0"
-        fill="none" stroke="#7CFF2A" stroke-width="16" stroke-linejoin="round"
+        fill="none" stroke="#6EFF3A" stroke-width="16" stroke-linejoin="round"
         filter="url(#lg-bg-glow-lime)" opacity="0.95">RIDDLER</text>
 
   <!-- SCHARFES WORTMARKEN-BILD vorn: Breite schwarze Kontur, darin lime Fill -->
   <text x="14" y="102" font-family="'Anton','Impact','Arial Black','Barlow Condensed',sans-serif"
         font-size="82" font-weight="900" font-stretch="condensed"
         letter-spacing="-1.0" word-spacing="0"
-        fill="#7CFF2A" filter="url(#lg-distress)"
+        fill="#6EFF3A" filter="url(#lg-distress)"
         paint-order="stroke" stroke="#0A0A14" stroke-width="5.5" stroke-linejoin="round">RIDDLER</text>
 
   <!-- Stencil-Breaks v2: SEGMENTIERT, nicht durchgehend -->
@@ -809,15 +849,16 @@
   <text x="24" y="13.5" font-family="'Anton','Arial Black',sans-serif" font-size="9.5" font-weight="900" fill="#FFFFFF" text-anchor="middle" dominant-baseline="middle">?</text>
   <text x="16" y="-3.2" font-family="'Anton','Arial Black',sans-serif" font-size="7.5" font-weight="900" fill="#070A0F" text-anchor="middle" dominant-baseline="middle">?</text>
   <!-- Lime / dark pips -->
-  <circle cx="9.5" cy="20.5" r="1.15" fill="#7CFF2A" opacity="0.95"/>
+  <circle cx="9.5" cy="20.5" r="1.15" fill="#6EFF3A" opacity="0.95"/>
   <circle cx="23.5" cy="8.8" r="1.05" fill="#070A0F" opacity="0.55"/>
 </g>
 
 <!-- Subtile Grundlinie entfernt (seher-Note v2: Mockup hat keine Line) -->
 </svg>
         <img class="print-logo" src="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20640%20170%22%3E%0A%20%20%3Cg%20fill%3D%22none%22%20stroke%3D%22%23000%22%20stroke-linejoin%3D%22round%22%3E%0A%20%20%20%20%3Ctext%20x%3D%2214%22%20y%3D%22102%22%20font-family%3D%22'Anton'%2C'Impact'%2C'Arial%20Black'%2C'Barlow%20Condensed'%2Csans-serif%22%0A%20%20%20%20%20%20%20%20%20%20font-size%3D%2282%22%20font-weight%3D%22900%22%20font-stretch%3D%22condensed%22%20letter-spacing%3D%22-1.0%22%0A%20%20%20%20%20%20%20%20%20%20stroke-width%3D%224%22%3ERIDDLER%3C%2Ftext%3E%0A%20%20%20%20%3Cg%20transform%3D%22rotate(7%20400%20118)%22%3E%0A%20%20%20%20%20%20%3Ctext%20x%3D%22320%22%20y%3D%22136%22%20font-family%3D%22'Arial%20Black'%2C'Arial%20Bold'%2CGadget%2Csans-serif%22%0A%20%20%20%20%20%20%20%20%20%20%20%20font-size%3D%22158%22%20font-weight%3D%22900%22%20stroke-width%3D%225%22%3E%3F%3C%2Ftext%3E%0A%20%20%20%20%3C%2Fg%3E%0A%20%20%20%20%3Cg%20transform%3D%22translate(370%2C%20151)%20scale(1.05)%20rotate(7)%22%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200%20L16%20-9.242%20L32%200%20L16%209.242%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M0%200%20L16%209.242%20L16%2027.728%20L0%2018.485%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%20%20%3Cpath%20d%3D%22M16%209.242%20L32%200%20L32%2018.485%20L16%2027.728%20Z%22%20stroke-width%3D%222.6%22%2F%3E%0A%20%20%20%20%3C%2Fg%3E%0A%20%20%3C%2Fg%3E%0A%3C%2Fsvg%3E" alt="Riddler" width="420" height="112">
-        <p class="kicker">Seed-basierte Rätselbox · 5 Rätsel · deterministisch</p>
+        <p class="kicker">Seed-basierte Rätselbox · 8 Rätsel · deterministisch</p>
         <div class="daily-pill"><span class="dot"></span>Rätsel des Tages &nbsp;·&nbsp; <span id="dailyDate">—</span></div>
+        <div class="visit-badge" title="Aufrufe auf diesem Gerät (lokal gespeichert, kein Tracking)"><span class="vdot"></span>Aufruf <b id="visitCount">#…</b> <span class="vlocal">lokal</span></div>
     </header>
 
     <!-- CONTROLS -->
@@ -840,6 +881,13 @@
                 </div>
             </div>
         </div>
+        <div class="frow mode-row">
+            <label>Sammlung</label>
+            <div class="seg" id="modeSeg">
+                <button type="button" data-mode="math" class="active">01 RIDDLER'S RIDDLES</button>
+                <button type="button" data-mode="ark">02 THE PUZZLE ARK</button>
+            </div>
+        </div>
         <div class="actions">
             <button class="btn primary" id="genBtn">⟳ Riddles neu generieren</button>
             <button class="btn" id="shareBtn">🔗 Link kopieren</button>
@@ -850,7 +898,8 @@
     </section>
 
     <!-- #1 MATH -->
-    <section class="card puzzle" id="p-math">
+    <div class="puzzle-col">
+    <section class="card puzzle" id="p-math" data-zone="math">
         <div class="card-head">
             <h3><span class="idx">01</span>&nbsp; Symbol-Arithmetik</h3>
             <span class="pill hidden" id="solved-math">Gelöst ✓</span>
@@ -866,7 +915,7 @@
     </section>
 
     <!-- #2 WORD -->
-    <section class="card puzzle" id="p-word">
+    <section class="card puzzle" id="p-word" data-zone="ark">
         <div class="card-head">
             <h3><span class="idx">02</span>&nbsp; Buchstabensalat</h3>
             <span class="pill hidden" id="solved-word">Gelöst ✓</span>
@@ -883,7 +932,7 @@
     </section>
 
     <!-- #3 WORD 2 -->
-    <section class="card puzzle" id="p-word2">
+    <section class="card puzzle" id="p-word2" data-zone="ark">
         <div class="card-head">
             <h3><span class="idx">03</span>&nbsp; Buchstabensalat 2</h3>
             <span class="pill hidden" id="solved-word2">Gelöst ✓</span>
@@ -900,7 +949,7 @@
     </section>
 
     <!-- #4 CROSSWORD -->
-    <section class="card puzzle" id="p-crossword">
+    <section class="card puzzle" id="p-crossword" data-zone="ark">
         <div class="card-head">
             <h3><span class="idx">04</span>&nbsp; Kreuzworträtsel</h3>
             <span class="cw-langs">
@@ -929,7 +978,7 @@
     </section>
 
     <!-- #5 MAZE -->
-    <section class="card puzzle" id="p-maze">
+    <section class="card puzzle" id="p-maze" data-zone="ark">
         <div class="card-head">
             <h3><span class="idx">05</span>&nbsp; Labyrinth</h3>
             <span class="pill hidden" id="solved-maze">Gelöst ✓</span>
@@ -946,7 +995,7 @@
     </section>
 
     <!-- #6 SUDOKU -->
-    <section class="card puzzle" id="p-sudoku">
+    <section class="card puzzle" id="p-sudoku" data-zone="ark">
         <div class="card-head">
             <h3><span class="idx">06</span>&nbsp; Sudoku</h3>
             <span class="pill hidden" id="solved-sudoku">Gelöst ✓</span>
@@ -956,7 +1005,7 @@
     </section>
 
     <!-- #7 MATH 2 -->
-    <section class="card puzzle" id="p-math2">
+    <section class="card puzzle" id="p-math2" data-zone="math">
         <div class="card-head">
             <h3><span class="idx">07</span>&nbsp; Symbol-Arithmetik 2</h3>
             <span class="pill hidden" id="solved-math2">Gelöst ✓</span>
@@ -971,6 +1020,25 @@
         <div class="print-line">Ergebnis: ______</div>
     </section>
 
+    <!-- #8 WORD 3 -->
+    <section class="card puzzle" id="p-word3" data-zone="ark">
+        <div class="card-head">
+            <h3><span class="idx">08</span>&nbsp; Buchstabensalat 3</h3>
+            <span class="pill hidden" id="solved-word3">Gelöst ✓</span>
+        </div>
+        <p class="sub">Und noch einer: Bringe auch diese Buchstaben in die richtige Reihenfolge.</p>
+        <div class="tiles" id="wordTiles3"></div>
+        <div class="topic-row">
+            <input type="text" class="ans" id="wordInput3" maxlength="40" placeholder="Lösung" autocomplete="off">
+            <button class="btn small" id="wordCheck3">Prüfen</button>
+            <button class="icon-btn" id="wordShuffle3" title="Kacheln mischen">🔀</button>
+        </div>
+        <div class="result" id="wordResult3"></div>
+        <div class="print-line">Lösung: ______</div>
+    </section>
+
+    <div class="salad-spacer" aria-hidden="true"></div>
+
     <!-- #L LÖSUNGSLEISTE (Print-only, aufrecht) -->
     <section class="card solutions" id="solutions" aria-label="Lösungen zu allen Rätseln">
         <div class="card-head">
@@ -978,8 +1046,10 @@
         </div>
         <div class="sol-wrap" id="solWrap"></div>
     </section>
+    </div>
 
     <footer class="foot">
+        A Riddle A Day Keeps The Knight Away... (c) E. Nigma<br>
         Deterministisch via <code>Mulberry32</code> · gleicher Seed = gleiche Rätsel für alle<br>
         Kreuzwort-Lexika: <code>OpenThesaurus</code> (LGPL, <code>openthesaurus.de</code>) · <code>WordNet 3.1</code> (Princeton, <code>wordnet.princeton.edu</code>); Themen-Deck aus <code>davidak/wortliste</code> (offen lizenziert)<br>
         Kein Tracking, keine Cookies · Mach dir die Vorlage als PDF und spiel offline
@@ -1085,8 +1155,10 @@ var currentDiff = 'medium';
 var mathSolution = 0;
 var wordSolution = '';
 var wordSolution2 = '';
+var wordSolution3 = '';
 var wordScramble = '';
 var wordScramble2 = '';
+var wordScramble3 = '';
 var mazeGrid = [], mazeW = 16, mazeH = 10, mazeCell = 32;
 var mathPuzzle = null;
 var mathPuzzle2 = null;
@@ -1127,7 +1199,7 @@ function unmarkSolved(seed, diff, p) {
     if (el) el.classList.add('hidden');
 }
 function updateSolvedPills(seed, diff) {
-    ['math', 'word', 'word2', 'crossword', 'maze', 'sudoku', 'math2'].forEach(function(p) {
+    ['math', 'word', 'word2', 'word3', 'crossword', 'maze', 'sudoku', 'math2'].forEach(function(p) {
         var el = document.getElementById('solved-' + p);
         if (el) el.classList.toggle('hidden', !isSolved(seed, diff, p));
     });
@@ -1138,7 +1210,7 @@ function updateSolvedPills(seed, diff) {
 // ============================================================
 function draftKey() { return 'riddler-draft|' + solKey(curSeed, curDiff); }
 function saveDraft() {
-    var d = { cw: {}, math: '', word: '', word2: '', math2: '', sdk: {} };
+    var d = { cw: {}, math: '', word: '', word2: '', word3: '', math2: '', sdk: {} };
     cwLetterInputs.forEach(function(i) { if (i.value) d.cw[i.dataset.r + ',' + i.dataset.c] = i.value; });
     var mi = document.getElementById('mathInput');
     if (mi) d.math = mi.value;
@@ -1148,6 +1220,8 @@ function saveDraft() {
     if (mi2) d.math2 = mi2.value;
     var wi2 = document.getElementById('wordInput2');
     if (wi2) d.word2 = wi2.value;
+    var wi3 = document.getElementById('wordInput3');
+    if (wi3) d.word3 = wi3.value;
     sdkUserCells.forEach(function(c, ci) { if (c.value) d.sdk[ci] = c.value; });
     try { localStorage.setItem(draftKey(), JSON.stringify(d)); } catch (e) {}
 }
@@ -1172,6 +1246,8 @@ function restoreDraft() {
     if (mi2 && d.math2) mi2.value = d.math2;
     var wi2 = document.getElementById('wordInput2');
     if (wi2 && d.word2) wi2.value = d.word2;
+    var wi3 = document.getElementById('wordInput3');
+    if (wi3 && d.word3) wi3.value = d.word3;
     sdkUserCells.forEach(function(c, ci) {
         var dc = d.sdk && d.sdk[ci];
         if (dc) {
@@ -1185,7 +1261,7 @@ function restoreDraft() {
 }
 window.addEventListener('input', function(e) {
     var t = e.target;
-    if (t && (t.classList.contains('cw-letter') || t.id === 'mathInput' || t.id === 'wordInput' || t.classList.contains('sdk-cell'))) saveDraft();
+    if (t && (t.classList.contains('cw-letter') || t.id === 'mathInput' || t.id === 'wordInput' || t.id === 'wordInput3' || t.classList.contains('sdk-cell'))) saveDraft();
 });
 
 // ============================================================
@@ -1197,6 +1273,7 @@ function generate() {
     genMath(mulberry32(seed + 100), diff, seed);
     genMath2(mulberry32(seed + 600), diff);
     genWord(mulberry32(seed + 200), mulberry32(seed + 250), diff);
+    genWord3(mulberry32(seed + 275), diff);
     genCrossword(seed);
     genMaze(mulberry32(seed + 400));
     genSudoku(mulberry32(seed + 500), diff);
@@ -1392,6 +1469,45 @@ function checkWord() {
     }
 }
 
+function genWord3(rng3, diff) {
+    var pool = wordPool(diff);
+    var pick = pool[randInt(rng3, 0, pool.length - 1)];
+    if (pick === wordSolution) pick = pool[(pool.indexOf(pick) + 1) % pool.length];
+    if (pick === wordSolution2) pick = pool[(pool.indexOf(pick) + 1) % pool.length];
+    wordSolution3 = pick;
+    var chars3 = wordSolution3.split('');
+    shuffle(chars3, rng3);
+    wordScramble3 = chars3.join('');
+    var el3 = document.getElementById('wordTiles3');
+    if (el3) renderTiles(el3, chars3);
+    var res3 = document.getElementById('wordResult3');
+    if (res3) { res3.textContent = ''; res3.className = 'result'; }
+    var wi3 = document.getElementById('wordInput3');
+    if (wi3) wi3.value = '';
+}
+function reshuffleTiles3() {
+    var el = document.getElementById('wordTiles3');
+    var tiles = Array.prototype.slice.call(el.children);
+    shuffle(tiles, mulberry32(Math.floor(Math.random() * 1e9)));
+    el.innerHTML = '';
+    tiles.forEach(function(t) { el.appendChild(t); });
+    flash(el, 'pop');
+}
+function checkWord3() {
+    var v = document.getElementById('wordInput3').value.trim().toUpperCase();
+    var res = document.getElementById('wordResult3');
+    if (v === wordSolution3) {
+        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        flash(document.getElementById('p-word3'), 'pop');
+        SFX.tick();
+        markSolved(curSeed, curDiff, 'word3');
+    } else {
+        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        flash(document.getElementById('p-word3'), 'shake');
+        SFX.buzz();
+    }
+}
+
 // ============================================================
 //  #3 CROSSWORD
 // ============================================================
@@ -1462,6 +1578,85 @@ CW_DECK.forEach(function(d) { CW_DECK_MAP[d.w] = d.clue; });
 // ---- language toggle (DE/EN) ---------------------------------------------
 var cwLang = 'DE';
 try { if (localStorage.getItem('riddler-lang') === 'EN') cwLang = 'EN'; } catch (e) {}
+// ---- GLOBAL I18N (DE/EN) — deterministisch, Default DE = byte-identisch zum Ist-Stand.
+// Dict deckt die sichtbare Shell ab (Labels, Buttons, Pills, Sub-Texte, Print-Zeilen).
+// Regel: applyLang('DE') MUTIERT NICHTS am DOM (kein Eingriff -> Smoke-Fingerprints
+// und Print-Baseline bleiben unverändert). applyLang('EN') ersetzt data-i18n-Texte.
+var RIDDLER_I18N = {
+  'DE': {
+    'seedLabel': 'Seed',
+    'seedHint': '— leer = heutiges Datum',
+    'diceTitle': 'Zufälliger Seed',
+    'diffLabel': 'Schwierigkeit',
+    'modeLabel': 'Sammlung',
+    'modeMath': '01 RIDDLER\'S RIDDLES',
+    'modeArk': '02 THE PUZZLE ARK',
+    'genBtn': '⟳ Riddles neu generieren',
+    'shareBtn': '🔗 Link kopieren',
+    'printBtn': '🖨 PDF / Drucken',
+    'langLabel': 'Sprache',
+    'langDE': 'DE',
+    'langEN': 'EN',
+    'kicker': 'Seed-basierte Rätselbox · 8 Rätsel · determinstisch',
+    'dailyPill': 'Rätsel des Tages',
+    'visitTitle': 'Aufrufe auf diesem Gerät (lokal gespeichert, kein Tracking)',
+    'visitPrefix': 'Aufruf',
+    'visitLocal': 'lokal',
+    'copyOk': 'Link mit Seed kopiert ✓'
+  },
+  'EN': {
+    'seedLabel': 'Seed',
+    'seedHint': '— empty = today\'s date',
+    'diceTitle': 'Random seed',
+    'diffLabel': 'Difficulty',
+    'modeLabel': 'Collection',
+    'modeMath': '01 RIDDLER\'S RIDDLES',
+    'modeArk': '02 THE PUZZLE ARK',
+    'genBtn': '⟳ Generate new riddles',
+    'shareBtn': '🔗 Copy link',
+    'printBtn': '🖨 PDF / Print',
+    'langLabel': 'Language',
+    'langDE': 'DE',
+    'langEN': 'EN',
+    'kicker': 'Seed-based puzzle box · 8 puzzles · deterministic',
+    'dailyPill': 'Puzzle of the day',
+    'visitTitle': 'Visits on this device (stored locally, no tracking)',
+    'visitPrefix': 'Visit',
+    'visitLocal': 'local',
+    'copyOk': 'Link with seed copied ✓'
+  }
+};
+var rlLang = 'DE';
+function rlSyncLangUI() {
+  var tabs = document.querySelectorAll('#langSeg button');
+  for (var i = 0; i < tabs.length; i++) tabs[i].classList.toggle('active', tabs[i].getAttribute('data-lang') === rlLang);
+  var cs = document.querySelectorAll('#p-crossword .cw-lang');
+  for (var j = 0; j < cs.length; j++) cs[j].classList.toggle('active', cs[j].getAttribute('data-lang') === rlLang);
+}
+function rlDict(l) { return (l === 'EN') ? RIDDLER_I18N.EN : RIDDLER_I18N.DE; }
+function rlApplyLang(l) {
+  if (l === rlLang) return;
+  rlLang = l;
+  try { localStorage.setItem('riddler-lang', rlLang); } catch (e) {}
+  if (cwLang !== rlLang) cwLang = rlLang;
+  var D = rlDict(rlLang), els = document.querySelectorAll('[data-i18n]');
+  for (var i = 0; i < els.length; i++) {
+    var k = els[i].getAttribute('data-i18n');
+    if (D[k] !== undefined) {
+      if (els[i].tagName === 'INPUT') { els[i].placeholder = D[k]; }
+      else if (els[i].hasAttribute('data-i18n-title')) { els[i].title = D[k]; }
+      else { els[i].textContent = D[k]; }
+    }
+  }
+  rlSyncLangUI();
+  cwSyncLangUI();
+}
+function rlBindLangButtons() {
+  var tabs = document.querySelectorAll('#langSeg button');
+  for (var i = 0; i < tabs.length; i++) {
+    tabs[i].addEventListener('click', (function (l) { return function () { rlApplyLang(l); }; })(tabs[i].getAttribute('data-lang')));
+  }
+}
 function cwSyncLangUI() {
     var els = document.querySelectorAll('#p-crossword .cw-lang');
     for (var i = 0; i < els.length; i++) els[i].classList.toggle('active', els[i].getAttribute('data-lang') === cwLang);
@@ -2358,13 +2553,16 @@ function renderSolutions() {
             '<div class="sol-math"><span class="sym">' + mathPuzzle2.s1 + '</span><span class="op">+</span><span class="sym">' + mathPuzzle2.s2 + '</span><span class="eq">=</span><b>' + mathSolution2 + '</b></div></div>');
     }
     // #02/#03 Wörter (rechts oben: Wort 1, direkt darunter Wort 2)
-    if (wordSolution || wordSolution2) {
+    if (wordSolution || wordSolution2 || wordSolution3) {
         var verbs = wordScramble || wordSolution;
         var verbs2 = wordScramble2 || wordSolution2;
+        var verbs3 = wordScramble3 || wordSolution3;
         var wCard = '<div class="sol-card" data-sol="02"><h4>02 · Wort</h4>';
         if (wordSolution) wCard += wordRow(verbs, wordSolution);
         wCard += '<div class="sol-h4b">03 · Wort 2</div>';
         if (wordSolution2) wCard += wordRow(verbs2, wordSolution2);
+        wCard += '<div class="sol-h4b">08 · Wort 3</div>';
+        if (wordSolution3) wCard += wordRow(verbs3, wordSolution3);
         wCard += '</div>';
         h.push(wCard);
     }
@@ -2511,6 +2709,18 @@ document.getElementById('diffSeg').querySelectorAll('button').forEach(function(b
         generate();
     });
 });
+/* Mode-Switch: 01 Riddler's Riddles (MATH) / 02 The Puzzle Ark */
+/* body.mode-* togglen → CSS blendet die inaktive Zone per visibility (innerText bleibt → Smoke-Fingerprint deterministisch) */
+document.getElementById('modeSeg').querySelectorAll('button[data-mode]').forEach(function(b) {
+    b.addEventListener('click', function() {
+        document.getElementById('modeSeg').querySelectorAll('button').forEach(function(x) { x.classList.remove('active'); });
+        b.classList.add('active');
+        var m = b.getAttribute('data-mode');
+        document.body.classList.remove('mode-math', 'mode-ark');
+        if (m === 'math') document.body.classList.add('mode-math');
+        else document.body.classList.add('mode-ark');
+    });
+});
 document.getElementById('genBtn').addEventListener('click', generate);
 document.getElementById('diceBtn').addEventListener('click', function() {
     document.getElementById('seedInput').value = 1000000 + Math.floor(Math.random() * 9000000);
@@ -2544,11 +2754,14 @@ document.getElementById('wordShuffle').addEventListener('click', reshuffleTiles)
 document.getElementById('mathCheck2').addEventListener('click', checkMath2);
 document.getElementById('wordCheck2').addEventListener('click', checkWord2);
 document.getElementById('wordShuffle2').addEventListener('click', reshuffleTiles2);
+document.getElementById('wordCheck3').addEventListener('click', checkWord3);
+document.getElementById('wordShuffle3').addEventListener('click', reshuffleTiles3);
 document.getElementById('mazeReset').addEventListener('click', mazeReset);
 document.getElementById('mathInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkMath(); });
 document.getElementById('wordInput').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord(); });
 document.getElementById('mathInput2').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkMath2(); });
 document.getElementById('wordInput2').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord2(); });
+document.getElementById('wordInput3').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord3(); });
 
 var cvs = document.getElementById('mazeCanvas');
 cvs.addEventListener('keydown', function(e) {
@@ -2568,6 +2781,18 @@ cvs.addEventListener('pointerup', function(e) {
     else mazeMove(0, dy > 0 ? 1 : -1);
 });
 
+// Besuchs-Zähler (geräte-lokal): +1 pro Seitenaufruf, Anzeige im #0001-Format
+function bumpVisitCounter() {
+    var n = 0;
+    try { n = parseInt(localStorage.getItem('riddler-visits') || '0', 10) || 0; } catch (e) {}
+    n += 1;
+    try { localStorage.setItem('riddler-visits', String(n)); } catch (e) {}
+    var s = String(n);
+    while (s.length < 4) s = '0' + s;
+    var el = document.getElementById('visitCount');
+    if (el) el.textContent = '#' + s;
+}
+
 // ============================================================
 //  INIT
 // ============================================================
@@ -2576,6 +2801,7 @@ window.addEventListener('DOMContentLoaded', function() {
     var m = location.search.match(/[?&]seed=(\d+)/);
     if (m) document.getElementById('seedInput').value = m[1];
     document.getElementById('dailyDate').textContent = todayStr();
+    bumpVisitCounter();
     cwBindLangButtons();
     cwSyncLangUI();
     generate();
