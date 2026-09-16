@@ -64,8 +64,16 @@
         /* Ambient HTML5 background: fixed canvas behind content; puzzles stay above. */
         #bgFx { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; opacity: .9; }
         .wrap { position: relative; z-index: 1; }
-        @media print { #bgFx { display: none !important; } }
-        @media (prefers-reduced-motion: reduce) { #bgFx { display: none !important; } }
+        /* C: GPU-only scanline drift + vignette pulse (transform/opacity only) */
+        html::before { content: ""; position: fixed; inset: -12px 0; z-index: 0; pointer-events: none; opacity: .5; background: repeating-linear-gradient(0deg, rgba(0,0,0,.25) 0 1.5px, transparent 1.5px 4px); animation: bgScanDrift 14s linear infinite; }
+        @keyframes bgScanDrift { from { transform: translateY(0); } to { transform: translateY(8px); } }
+        html::after { content: ""; position: fixed; inset: 0; z-index: 0; pointer-events: none; background: radial-gradient(120% 120% at 50% 42%, transparent 60%, rgba(0,0,0,.38) 100%); animation: bgVignettePulse 9s ease-in-out infinite; }
+        @keyframes bgVignettePulse { 0%, 100% { opacity: .55; } 50% { opacity: .9; } }
+        /* D: manual motion toggle */
+        html.bgfx-off #bgFx, html.bgfx-off::before, html.bgfx-off::after { display: none !important; }
+        .btn[aria-pressed="false"] { opacity: .55; }
+        @media print { #bgFx { display: none !important; } html::before, html::after { display: none !important; } }
+        @media (prefers-reduced-motion: reduce) { #bgFx, html::before, html::after { display: none !important; } }
         /* Two-column Hybrid-Layout: Control-Panel links (sticky) / Puzzle-Säule rechts */
         @media (min-width: 900px) {
             .wrap { display: grid; grid-template-columns: 280px 1fr; gap: 0 24px; max-width: 960px; align-items: start; }
@@ -697,7 +705,7 @@ header { margin-bottom: 12px; }
             #solutions .sol-maze {
                 display: grid; grid-template-columns: repeat(var(--maze-w, 16), minmax(0, 1fr));
                 grid-template-rows: repeat(var(--maze-h, 10), 1fr);
-                gap: 0; width: min(100%, 280px); margin: 0 auto; border: 1px solid #000;
+                gap: 0; width: min(100%, 280px); margin: 0 auto;
                 -webkit-print-color-adjust: exact; print-color-adjust: exact;
             }
             #solutions .sol-maze-cell {
@@ -900,6 +908,7 @@ header { margin-bottom: 12px; }
             <button class="btn" id="shareBtn">🔗 Link kopieren</button>
             <span class="spacer"></span>
             <button class="btn" id="printBtn">🖨 PDF / Drucken</button>
+            <button class="btn" id="motionBtn" aria-pressed="true" title="Animierten Hintergrund an- oder ausschalten">✨ Motion: An</button>
         </div>
         <div class="url-hint" id="urlHint"></div>
     </section>
@@ -2824,7 +2833,7 @@ function bumpVisitCounter() {
 // ============================================================
 //  BG-FX — ambient HTML5 canvas background (behind puzzles)
 //  Deterministic layout seed; animation time only. No puzzle state,
-//  no localStorage, no fingerprint/text changes.
+//  no fingerprint/text changes. Only key: 'riddler-bgfx' motion pref.
 // ============================================================
 (function() {
     var c = document.getElementById('bgFx');
@@ -2838,6 +2847,30 @@ function bumpVisitCounter() {
     var W = 0, H = 0, dots = [], marks = [], raf = 0, last = 0, running = true, resizeTimer = null;
     var coarse = false;
     try { coarse = (window.matchMedia && (window.matchMedia('(pointer: coarse)').matches || window.matchMedia('(hover: none)').matches)) || ('ontouchstart' in window); } catch (e) {}
+    /* A: pre-rendered '?' sprites (one raster per color, then drawImage only) */
+    var sprites = null;
+    try {
+        sprites = {};
+        var scols = ['#6EFF3A', '#B026FF'];
+        for (var si = 0; si < scols.length; si++) {
+            var sp = document.createElement('canvas');
+            sp.width = 220; sp.height = 220;
+            var sx = sp.getContext('2d');
+            sx.font = '900 200px Arial Black, Impact, sans-serif';
+            sx.textAlign = 'center'; sx.textBaseline = 'middle';
+            sx.fillStyle = scols[si];
+            sx.fillText('?', 110, 118);
+            sprites[scols[si]] = sp;
+        }
+    } catch (e) { sprites = null; }
+    /* B: cursor-reactive particles (fine pointers / desktop only) */
+    var finePointer = false;
+    try { finePointer = !!(window.matchMedia && window.matchMedia('(pointer: fine)').matches); } catch (e) {}
+    var mx = -9999, my = -9999, hasMouse = false;
+    if (finePointer) {
+        document.addEventListener('pointermove', function(e) { if (e.pointerType && e.pointerType !== 'mouse') return; mx = e.clientX; my = e.clientY; hasMouse = true; });
+        document.addEventListener('mouseleave', function() { hasMouse = false; });
+    }
     function fxRand(seed) { return function() { seed |= 0; seed = seed + 0x6D2B79F5 | 0; var t = Math.imul(seed ^ seed >>> 15, 1 | seed); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
     function build() {
         var r = fxRand(20260916);
@@ -2867,9 +2900,9 @@ function bumpVisitCounter() {
         if (dt > 0.05) dt = 0.05;
         ctx.clearRect(0, 0, W, H);
         var i, p, tw;
-        for (i = 0; i < dots.length; i++) { p = dots[i]; p.x += p.vx*dt; p.y += p.vy*dt; p.tw += p.ts*dt; if (p.y < -6) { p.y = H+6; p.x = (p.x+W)%W; } if (p.x < -6) p.x = W+6; else if (p.x > W+6) p.x = -6; tw = 0.55 + 0.45*Math.sin(p.tw); ctx.globalAlpha = p.a*tw; ctx.fillStyle = p.g ? '#6EFF3A' : '#D8B4FE'; ctx.fillRect(p.x, p.y, p.s, p.s); }
+        for (i = 0; i < dots.length; i++) { p = dots[i]; p.x += p.vx*dt; p.y += p.vy*dt; if (hasMouse) { var mdx = p.x-mx, mdy = p.y-my, md2 = mdx*mdx+mdy*mdy; if (md2 < 19600 && md2 > 1) { var md = Math.sqrt(md2); var mf = (140-md)/140*70; p.x += mdx/md*mf*dt; p.y += mdy/md*mf*dt; } } p.tw += p.ts*dt; if (p.y < -6) { p.y = H+6; p.x = (p.x+W)%W; } if (p.x < -6) p.x = W+6; else if (p.x > W+6) p.x = -6; tw = 0.55 + 0.45*Math.sin(p.tw); ctx.globalAlpha = p.a*tw; ctx.fillStyle = p.g ? '#6EFF3A' : '#D8B4FE'; ctx.fillRect(p.x, p.y, p.s, p.s); }
         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-        for (i = 0; i < marks.length; i++) { var q = marks[i]; q.x += q.vx*dt; q.ph += q.ps*dt; if (q.x > W+q.s) q.x = -q.s; ctx.globalAlpha = q.a*(0.72+0.28*Math.sin(q.ph)); ctx.fillStyle = q.c ? '#6EFF3A' : '#B026FF'; ctx.font = q.f; ctx.fillText('?', q.x, q.y); }
+        for (i = 0; i < marks.length; i++) { var q = marks[i]; q.x += q.vx*dt; q.ph += q.ps*dt; if (q.x > W+q.s) q.x = -q.s; ctx.globalAlpha = q.a*(0.72+0.28*Math.sin(q.ph)); var qcol = q.c ? '#6EFF3A' : '#B026FF'; var qsp = sprites ? sprites[qcol] : null; if (qsp) { ctx.drawImage(qsp, q.x-q.s/2, q.y-q.s/2, q.s, q.s); } else { ctx.fillStyle = qcol; ctx.font = q.f; ctx.fillText('?', q.x, q.y); } }
         ctx.globalAlpha = 1;
         raf = window.requestAnimationFrame(frame);
     }
@@ -2879,6 +2912,21 @@ function bumpVisitCounter() {
     window.addEventListener('beforeprint', stop);
     window.addEventListener('afterprint', function() { running = true; start(); });
     window.addEventListener('resize', function() { if (resizeTimer) clearTimeout(resizeTimer); resizeTimer = setTimeout(function() { resize(); start(); }, 120); });
+    /* D: manual motion toggle (persisted, OS reduced-motion always wins) */
+    var motionOn = true;
+    try { motionOn = localStorage.getItem('riddler-bgfx') !== 'off'; } catch (e) {}
+    var motionBtn = document.getElementById('motionBtn');
+    function paintMotionBtn() { if (!motionBtn) return; motionBtn.setAttribute('aria-pressed', motionOn ? 'true' : 'false'); motionBtn.textContent = motionOn ? '✨ Motion: An' : 'Motion: Aus'; }
+    if (motionBtn) motionBtn.addEventListener('click', function() {
+        motionOn = !motionOn;
+        try { localStorage.setItem('riddler-bgfx', motionOn ? 'on' : 'off'); } catch (e) {}
+        document.documentElement.classList.toggle('bgfx-off', !motionOn);
+        if (motionOn) { running = true; start(); } else { stop(); }
+        paintMotionBtn();
+    });
+    document.documentElement.classList.toggle('bgfx-off', !motionOn);
+    paintMotionBtn();
+    if (!motionOn) running = false;
     resize(); start();
 })();
 
