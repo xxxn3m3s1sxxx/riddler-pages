@@ -2735,7 +2735,12 @@ function renderSolutions() {
     var sw = mazeW * 16, sh = mazeH * 16;
     var mazeSvg = '<svg class="sol-maze-svg" viewBox="0 0 ' + sw + ' ' + sh + '" width="' + sw + '" height="' + sh + '" stroke-linecap="square">';
     mazeSvg += '<rect width="' + sw + '" height="' + sh + '" fill="#fff"/>';
-    // Wände zeichnen (nur wo mazeGrid Wände hat)
+    // Pfad-Füllung zuerst (volle Zellen, damit Weg nahtlos ist)
+    for (var pi2 = 0; pi2 < path.length; pi2++) {
+        var pp = path[pi2];
+        mazeSvg += '<rect x="'+(pp[0]*16)+'" y="'+(pp[1]*16)+'" width="16" height="16" fill="#999"/>';
+    }
+    // Wände danach drüber (nur wo mazeGrid Wände hat)
     for (var my = 0; my < mazeH; my++) {
         for (var mx = 0; mx < mazeW; mx++) {
             var c = mazeGrid[my][mx];
@@ -2745,11 +2750,6 @@ function renderSolutions() {
             if (my === mazeH-1 && c.walls.b) mazeSvg += '<line x1="'+px+'" y1="'+(py+16)+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
             if (mx === mazeW-1 && c.walls.r) mazeSvg += '<line x1="'+(px+16)+'" y1="'+py+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
         }
-    }
-    // Pfad-Füllung
-    for (var pi2 = 0; pi2 < path.length; pi2++) {
-        var pp = path[pi2];
-        mazeSvg += '<rect x="'+(pp[0]*16+1)+'" y="'+(pp[1]*16+1)+'" width="14" height="14" fill="#999"/>';
     }
     // S/Z Marker
     mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="9" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
