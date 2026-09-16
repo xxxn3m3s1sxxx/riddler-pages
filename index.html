@@ -385,11 +385,14 @@ header { margin-bottom: 12px; }
             #mazeSvg { background: #fff !important; box-shadow: none !important; width: min(90%, 512px); height: auto; }
             .print-line { display: block !important; margin-top: 6px; border-bottom: 1px solid #000; width: 240px; height: 24px; font-size: 12px; color: #666; }
             .foot { display: none; }
+            /* Kein Geister-Blatt: kein Trailing-Margin nach der letzten Karte, kein Touch-Keyboard im Druck */
+            #solutions { margin-bottom: 0 !important; }
+            #cwThumbKB { display: none !important; }
         }
 
         /* ---------- Mobile (suckz-Region) ---------- */
         .cw-thumbkb { display: none; }
-        @media (hover: none), (pointer: coarse) {
+        @media screen and (hover: none), screen and (pointer: coarse) {
             .cw-grid { --cw: clamp(40px, 10.4vw, 44px); }
             #p-crossword .cw-bar:has(.cw-active) {
                 position: sticky; top: 0; z-index: 6; background: var(--card);
