@@ -17,3 +17,7 @@ Seed-basierte Rätselbox — 5 Rätseltypen, deterministisch generiert aus einem
 
 ## Live
 https://xxxn3m3s1sxxx.github.io/riddler-pages/
+
+## Direkt-Links
+- **Spielen (Seed 17071986):** https://xxxn3m3s1sxxx.github.io/riddler-pages/index.html?seed=17071986
+- **Drucken / PDF (Seed 17071986):** https://xxxn3m3s1sxxx.github.io/riddler-pages/index.html?seed=17071986&print=1
