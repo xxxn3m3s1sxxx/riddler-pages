@@ -88,7 +88,7 @@
         body.mode-ark [data-zone="math"] { opacity: 0; }
         @media print {
             [data-zone] { opacity: 1 !important; }
-            .wrap { display: block !important; max-width: 100%; padding: 0; }
+            .wrap { display: block !important; max-width: 100%; padding: 0 4mm; }
             .puzzle-col { display: block !important; }
         }
         /* Leere Fläche in Salat-Höhe vor den Lösungen (Screen + Print, gemessen: 231px) */
@@ -344,7 +344,7 @@
         @media print {
             @page { size: A4; margin: 14mm 12mm 16mm; }
             body { background: #fff; color: #000; }
-            .wrap { max-width: 100%; padding: 0; }
+            .wrap { max-width: 100%; padding: 0 4mm; }
 header { margin-bottom: 12px; }
             header .daily-pill, header .visit-badge, .panel, .btn, .icon-btn, input.ans, .ans-row, #seedInput, .seg, .result, .puzzle .pill { display: none !important; }
             .card { background: #fff; border: 1px solid #bbb; box-shadow: none; break-inside: avoid; border-radius: 4px; margin-bottom: 10px; overflow: hidden; }
@@ -2641,7 +2641,7 @@ function drawMazeMarkerSvg(svg, ns, gx, gy, ch, fill, txtFill) {
         svg.appendChild(ci);
     }
     var t = document.createElementNS(ns,'text');
-    t.setAttribute('x',cx); t.setAttribute('y',cy+1);
+    t.setAttribute('x',cx); t.setAttribute('y',cy);
     t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
     t.setAttribute('fill',txtFill);
     t.setAttribute('font','bold '+(printing?Math.round(mazeCell*.56):12)+'px Arial');
@@ -2752,8 +2752,8 @@ function renderSolutions() {
         }
     }
     // S/Z Marker
-    mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="9" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
-    mazeSvg += '<rect x="'+((mazeW-1)*16+1)+'" y="'+((mazeH-1)*16+1)+'" width="14" height="14" fill="#000"/><text x="'+((mazeW-1)*16+8)+'" y="'+((mazeH-1)*16+9)+'" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">Z</text>';
+    mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="8" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
+    mazeSvg += '<rect x="'+((mazeW-1)*16+1)+'" y="'+((mazeH-1)*16+1)+'" width="14" height="14" fill="#000"/><text x="'+((mazeW-1)*16+8)+'" y="'+((mazeH-1)*16+8)+'" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">Z</text>';
     mazeSvg += '</svg>';
     h.push('<div class="sol-card" data-sol="05"><h4>' + T('sol05') + '</h4>' + mazeSvg + '</div>');
     // #06 Sudoku (mitte, zweite Reihe)
