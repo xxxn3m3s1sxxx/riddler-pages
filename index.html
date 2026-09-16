@@ -62,7 +62,7 @@
         }
         .wrap { max-width: 720px; margin: 0 auto; padding: 34px 18px 70px; }
         /* Ambient HTML5 background: fixed canvas behind content; puzzles stay above. */
-        #bgFx { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; opacity: .6; }
+        #bgFx { position: fixed; inset: 0; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; opacity: .9; }
         .wrap { position: relative; z-index: 1; }
         @media print { #bgFx { display: none !important; } }
         @media (prefers-reduced-motion: reduce) { #bgFx { display: none !important; } }
@@ -276,12 +276,12 @@
         .cw-hint { font: 700 12px var(--mono); color: var(--amber); }
 
         /* ---------- #4 Maze ---------- */
-        #mazeCanvas {
+        #mazeSvg {
             display: block; margin: 14px auto 0;
             width: min(100%, 560px); height: auto; background: var(--bg2);
             box-shadow: inset 0 0 0 1px var(--line); outline: none; touch-action: none; cursor: crosshair;
         }
-        #mazeCanvas:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
+        #mazeSvg:focus { box-shadow: inset 0 0 0 2px var(--indigo); }
         .maze-bar { display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 10px; flex-wrap: wrap; }
         .steps { font: 600 12px var(--mono); color: var(--txt2); letter-spacing: .5px; }
         .keystroke { font-size: 10px; color: var(--txt3); letter-spacing: 1px; text-transform: uppercase; }
@@ -326,7 +326,7 @@
         }
         input.cw-cell:focus-visible { outline-offset: -2px; box-shadow: none; }
         .current { outline: 3px solid #B026FF !important; outline-offset: -1px; box-shadow: 0 0 0 6px rgba(176, 38, 255, .35) !important; }
-        #mazeCanvas:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #B026FF, 0 0 0 6px rgba(176, 38, 255, .35); }
+        #mazeSvg:focus-visible { outline: none; box-shadow: inset 0 0 0 3px #B026FF, 0 0 0 6px rgba(176, 38, 255, .35); }
         .sdk-cell:focus-visible { outline-offset: -1px; }
         .clue:focus-visible { border-color: #B026FF; box-shadow: 0 0 0 4px rgba(176, 38, 255, .30); }
         .btn:focus-visible, .icon-btn:focus-visible, .seg button:focus-visible, .cw-lang:focus-visible { box-shadow: 0 0 0 3px rgba(176, 38, 255, .45); }
@@ -344,7 +344,7 @@ header { margin-bottom: 12px; }
 .card-head { margin-bottom: 3px; }
             .idx { border-color: #000; background: #eee; }
             .sub { color: #444; margin: 2px 0 5px; }
-            /* #mazeCanvas print-rule merged into line below — no double border */
+            /* #mazeSvg print-rule: bg + box-shadow handled inline */
             .tafel { background: #fff; border: 1px solid #bbb; }
             .sym { border: 1px solid #666; background: #eee; }
             .val { color: #000; }
@@ -373,7 +373,7 @@ header { margin-bottom: 12px; }
             .sdk-cell.ok, .sdk-cell.bad { background: #fff; }
             .sdk-cell.b3 { border-right: 2px solid #000; }
             .sdk-cell.b6 { border-bottom: 2px solid #000; }
-            #mazeCanvas { background: #fff !important; box-shadow: none !important; width: min(90%, 512px); height: auto; }
+            #mazeSvg { background: #fff !important; box-shadow: none !important; width: min(90%, 512px); height: auto; }
             .print-line { display: block !important; margin-top: 6px; border-bottom: 1px solid #000; width: 240px; height: 24px; font-size: 12px; color: #666; }
             .foot { display: none; }
         }
@@ -991,7 +991,7 @@ header { margin-bottom: 12px; }
             <span class="pill hidden" id="solved-maze">Gelöst ✓</span>
         </div>
         <p class="sub">Finde den Weg vom grünen <b>S</b> zum gelben <b>Z</b> — per Pfeiltasten oder Wischen.</p>
-        <canvas id="mazeCanvas" width="512" height="320" tabindex="0" role="application" aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu."></canvas>
+        <svg id="mazeSvg" width="512" height="320" tabindex="0" role="application" aria-label="Labyrinth. Mit Pfeiltasten oder Gesten bewegen. R startet neu." style="display:block;margin:14px auto 0;width:min(100%,560px);height:auto;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line);outline:none;touch-action:none;cursor:crosshair;"></svg>
         <div class="maze-bar">
             <span class="steps">Schritte: <b id="mazeSteps">0</b></span>
             <span class="keystroke">↑ ↓ ← →</span>
@@ -2423,75 +2423,82 @@ function genMaze(rng) {
     drawMaze();
 }
 function drawMaze() {
-    var cvs = document.getElementById('mazeCanvas');
-    var cols = mazeW;
-    var rows = mazeH;
-    var scale = printing ? 2 : 1;
-    if (cvs.width !== cols * mazeCell * scale || cvs.height !== rows * mazeCell * scale) {
-        cvs.width = cols * mazeCell * scale;
-        cvs.height = rows * mazeCell * scale;
-    }
-    var ctx = cvs.getContext('2d');
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
-    ctx.clearRect(0, 0, cvs.width, cvs.height);
-    ctx.fillStyle = printing ? '#fff' : '#0E1019';
-    ctx.fillRect(0, 0, cvs.width, cvs.height);
+    var svg = document.getElementById('mazeSvg');
+    var cols = mazeW, rows = mazeH;
+    var w = cols * mazeCell, h = rows * mazeCell;
+    svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
+    svg.setAttribute('width', w);
+    svg.setAttribute('height', h);
+    var ns = 'http://www.w3.org/2000/svg';
+    svg.innerHTML = '';
+
+    var bg = document.createElementNS(ns, 'rect');
+    bg.setAttribute('width', w); bg.setAttribute('height', h);
+    bg.setAttribute('fill', printing ? '#fff' : '#0E1019');
+    svg.appendChild(bg);
 
     var wc = printing ? '#000' : '#2E3554';
-    ctx.strokeStyle = wc;
-    ctx.lineWidth = printing ? 1 : 1.5;
+    var lw = printing ? 1 : 1.5;
     for (var y = 0; y < mazeH; y++) {
         for (var x = 0; x < mazeW; x++) {
             var c = mazeGrid[y][x];
-            var px = x * mazeCell;
-            var py = y * mazeCell;
-            if (c.walls.t) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px + mazeCell, py); ctx.stroke(); }
-            if (c.walls.b) { ctx.beginPath(); ctx.moveTo(px, py + mazeCell); ctx.lineTo(px + mazeCell, py + mazeCell); ctx.stroke(); }
-            if (c.walls.l) { ctx.beginPath(); ctx.moveTo(px, py); ctx.lineTo(px, py + mazeCell); ctx.stroke(); }
-            if (c.walls.r) { ctx.beginPath(); ctx.moveTo(px + mazeCell, py); ctx.lineTo(px + mazeCell, py + mazeCell); ctx.stroke(); }
+            var px = x * mazeCell, py = y * mazeCell;
+            if (c.walls.t) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
+            if (c.walls.b) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py+mazeCell); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
+            if (c.walls.l) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py); l.setAttribute('x2',px); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
+            if (c.walls.r) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px+mazeCell); l.setAttribute('y1',py); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
         }
     }
 
-    drawMazeMarker(ctx, 0, 0, 'S', printing ? '#000' : '#10B981', printing ? '#fff' : '#fff');
-    drawMazeMarker(ctx, mazeW - 1, mazeH - 1, 'Z', printing ? '#000' : '#FBBF24', printing ? '#fff' : '#0B0D14');
+    drawMazeMarkerSvg(svg, ns, 0, 0, 'S', printing?'#000':'#10B981', printing?'#fff':'#fff');
+    drawMazeMarkerSvg(svg, ns, mazeW-1, mazeH-1, 'Z', printing?'#000':'#FBBF24', printing?'#fff':'#0B0D14');
 
     if (!printing) {
         mazeTrail.forEach(function(t) {
-            ctx.fillStyle = 'rgba(176,38,255,.22)';
-            ctx.beginPath();
-            ctx.arc(t.x * mazeCell + mazeCell / 2, t.y * mazeCell + mazeCell / 2, mazeCell / 6, 0, Math.PI * 2);
-            ctx.fill();
+            var ci = document.createElementNS(ns,'circle');
+            ci.setAttribute('cx', t.x*mazeCell+mazeCell/2);
+            ci.setAttribute('cy', t.y*mazeCell+mazeCell/2);
+            ci.setAttribute('r', mazeCell/6);
+            ci.setAttribute('fill','rgba(176,38,255,.22)');
+            svg.appendChild(ci);
         });
 
-        ctx.strokeStyle = '#fff'; ctx.lineWidth = 2.5;
-        ctx.beginPath();
-        ctx.arc(playerX * mazeCell + mazeCell / 2, playerY * mazeCell + mazeCell / 2, mazeCell / 3.1, 0, Math.PI * 2);
-        ctx.stroke();
-        ctx.fillStyle = '#6366F1';
-        ctx.beginPath();
-        ctx.arc(playerX * mazeCell + mazeCell / 2, playerY * mazeCell + mazeCell / 2, mazeCell / 3.7, 0, Math.PI * 2);
-        ctx.fill();
+        var po = document.createElementNS(ns,'circle');
+        po.setAttribute('cx', playerX*mazeCell+mazeCell/2);
+        po.setAttribute('cy', playerY*mazeCell+mazeCell/2);
+        po.setAttribute('r', mazeCell/3.1);
+        po.setAttribute('fill','none'); po.setAttribute('stroke','#fff'); po.setAttribute('stroke-width',2.5);
+        svg.appendChild(po);
+        var pi = document.createElementNS(ns,'circle');
+        pi.setAttribute('cx', playerX*mazeCell+mazeCell/2);
+        pi.setAttribute('cy', playerY*mazeCell+mazeCell/2);
+        pi.setAttribute('r', mazeCell/3.7);
+        pi.setAttribute('fill','#6366F1');
+        svg.appendChild(pi);
     }
 }
-function drawMazeMarker(ctx, gx, gy, ch, fill, txtFill) {
-    var px = gx * mazeCell;
-    var py = gy * mazeCell;
-    var cx = px + mazeCell / 2, cy = py + mazeCell / 2;
+function drawMazeMarkerSvg(svg, ns, gx, gy, ch, fill, txtFill) {
+    var px = gx*mazeCell, py = gy*mazeCell;
+    var cx = px+mazeCell/2, cy = py+mazeCell/2;
     if (printing) {
-        ctx.fillStyle = fill;
-        ctx.fillRect(px + 2, py + 2, mazeCell - 4, mazeCell - 4);
-        ctx.fillStyle = txtFill;
-        ctx.font = 'bold ' + Math.round(mazeCell * .56) + 'px Arial';
+        var r = document.createElementNS(ns,'rect');
+        r.setAttribute('x',px+2); r.setAttribute('y',py+2);
+        r.setAttribute('width',mazeCell-4); r.setAttribute('height',mazeCell-4);
+        r.setAttribute('fill',fill);
+        svg.appendChild(r);
     } else {
-        ctx.fillStyle = fill;
-        ctx.beginPath();
-        ctx.arc(cx, cy, mazeCell / 2.9, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.fillStyle = txtFill;
-        ctx.font = 'bold 12px Arial';
+        var ci = document.createElementNS(ns,'circle');
+        ci.setAttribute('cx',cx); ci.setAttribute('cy',cy);
+        ci.setAttribute('r',mazeCell/2.9); ci.setAttribute('fill',fill);
+        svg.appendChild(ci);
     }
-    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillText(ch, cx, cy + 1);
+    var t = document.createElementNS(ns,'text');
+    t.setAttribute('x',cx); t.setAttribute('y',cy+1);
+    t.setAttribute('text-anchor','middle'); t.setAttribute('dominant-baseline','central');
+    t.setAttribute('fill',txtFill);
+    t.setAttribute('font','bold '+(printing?Math.round(mazeCell*.56):12)+'px Arial');
+    t.textContent = ch;
+    svg.appendChild(t);
 }
 
 // ============================================================
@@ -2648,7 +2655,7 @@ function mazeReset() {
     res.textContent = ''; res.className = 'result';
     document.getElementById('mazeSteps').textContent = 0;
     drawMaze();
-    document.getElementById('mazeCanvas').focus();
+    document.getElementById('mazeSvg').focus();
 }
 
 // ============================================================
@@ -2784,7 +2791,7 @@ document.getElementById('mathInput2').addEventListener('keydown', function(e) { 
 document.getElementById('wordInput2').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord2(); });
 document.getElementById('wordInput3').addEventListener('keydown', function(e) { if (e.key === 'Enter') checkWord3(); });
 
-var cvs = document.getElementById('mazeCanvas');
+var cvs = document.getElementById('mazeSvg');
 cvs.addEventListener('keydown', function(e) {
     var map = { ArrowUp: [0, -1], ArrowRight: [1, 0], ArrowDown: [0, 1], ArrowLeft: [-1, 0] };
     if (map[e.key]) { e.preventDefault(); mazeMove(map[e.key][0], map[e.key][1]); }
@@ -2839,7 +2846,7 @@ function bumpVisitCounter() {
         n = Math.max(36, Math.min(coarse ? 80 : 130, n));
         var i;
         dots = [];
-        for (i = 0; i < n; i++) dots.push({x:r()*W,y:r()*H,s:0.6+r()*1.7,vx:(r()-0.5)*7,vy:-2-r()*8,tw:r()*6.283,ts:0.6+r()*1.8,a:0.10+r()*0.24,g:r()<0.72});
+        for (i = 0; i < n; i++) dots.push({x:r()*W,y:r()*H,s:1+r()*2.2,vx:(r()-0.5)*12,vy:-4-r()*12,tw:r()*6.283,ts:0.6+r()*1.8,a:0.22+r()*0.30,g:r()<0.72});
         marks = [];
         var m = coarse ? 4 : 7;
         for (i = 0; i < m; i++) { var s = 90 + r()*150; marks.push({x:r()*W,y:r()*H,s:s,f:'900 '+Math.round(s)+'px Arial Black, Impact, sans-serif',vx:4+r()*9,ph:r()*6.283,ps:0.10+r()*0.22,a:0.045+r()*0.075,c:i%2===0}); }
