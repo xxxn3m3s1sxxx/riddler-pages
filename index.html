@@ -1367,12 +1367,12 @@ function checkMath() {
     var v = parseInt(document.getElementById('mathInput').value, 10);
     var res = document.getElementById('mathResult');
     if (v === mathSolution) {
-        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        res.textContent = T('correctMsg'); res.className = 'result ok'; res.dataset.rk = 'ok';
         flash(document.getElementById('p-math'), 'pop');
         SFX.tick();
         markSolved(curSeed, curDiff, 'math');
     } else {
-        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        res.textContent = T('wrongMsg'); res.className = 'result err'; res.dataset.rk = 'err';
         flash(document.getElementById('p-math'), 'shake');
         SFX.buzz();
     }
@@ -1454,12 +1454,12 @@ function checkWord2() {
     var v = document.getElementById('wordInput2').value.trim().toUpperCase();
     var res = document.getElementById('wordResult2');
     if (v === wordSolution2) {
-        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        res.textContent = T('correctMsg'); res.className = 'result ok'; res.dataset.rk = 'ok';
         flash(document.getElementById('p-word2'), 'pop');
         SFX.tick();
         markSolved(curSeed, curDiff, 'word2');
     } else {
-        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        res.textContent = T('wrongMsg'); res.className = 'result err'; res.dataset.rk = 'err';
         flash(document.getElementById('p-word2'), 'shake');
         SFX.buzz();
     }
@@ -1468,12 +1468,12 @@ function checkWord() {
     var v = document.getElementById('wordInput').value.trim().toUpperCase();
     var res = document.getElementById('wordResult');
     if (v === wordSolution) {
-        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        res.textContent = T('correctMsg'); res.className = 'result ok'; res.dataset.rk = 'ok';
         flash(document.getElementById('p-word'), 'pop');
         SFX.tick();
         markSolved(curSeed, curDiff, 'word');
     } else {
-        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        res.textContent = T('wrongMsg'); res.className = 'result err'; res.dataset.rk = 'err';
         flash(document.getElementById('p-word'), 'shake');
         SFX.buzz();
     }
@@ -1507,12 +1507,12 @@ function checkWord3() {
     var v = document.getElementById('wordInput3').value.trim().toUpperCase();
     var res = document.getElementById('wordResult3');
     if (v === wordSolution3) {
-        res.textContent = 'Richtig! 🎉'; res.className = 'result ok';
+        res.textContent = T('correctMsg'); res.className = 'result ok'; res.dataset.rk = 'ok';
         flash(document.getElementById('p-word3'), 'pop');
         SFX.tick();
         markSolved(curSeed, curDiff, 'word3');
     } else {
-        res.textContent = 'Falsch — versuch es nochmal.'; res.className = 'result err';
+        res.textContent = T('wrongMsg'); res.className = 'result err'; res.dataset.rk = 'err';
         flash(document.getElementById('p-word3'), 'shake');
         SFX.buzz();
     }
@@ -1616,6 +1616,7 @@ var RIDDLER_I18N = {
     'visitPrefix': 'Aufruf',
     'visitLocal': 'lokal',
     'copyOk': 'Link mit Seed {seed} kopiert ✓',
+    'docTitle': 'Riddler — Seed-basierte Rätselbox',
     'tMath': 'Symbol-Arithmetik',
     'tMath2': 'Symbol-Arithmetik 2',
     'tWord': 'Buchstabensalat',
@@ -1694,6 +1695,7 @@ var RIDDLER_I18N = {
     'visitPrefix': 'Visit',
     'visitLocal': 'local',
     'copyOk': 'Link with seed {seed} copied ✓',
+    'docTitle': 'Riddler — Seed-based puzzle box',
     'tMath': 'Symbol Arithmetic',
     'tMath2': 'Symbol Arithmetic 2',
     'tWord': 'Word Salad',
@@ -1798,7 +1800,8 @@ function rlApplyLang(l) {
   }
   rlSyncLangUI();
   cwSyncLangUI();
-  try { if (typeof curSeed !== 'undefined') { unmarkSolved(curSeed, curDiff, 'crossword'); genCrossword(curSeed); } } catch (e) {}
+  try { document.title = T('docTitle'); document.documentElement.lang = (rlLang === 'EN') ? 'en' : 'de'; } catch (e) {}
+  try { if (typeof curSeed !== 'undefined') { unmarkSolved(curSeed, curDiff, 'crossword'); genCrossword(curSeed); if (typeof restoreDraft === 'function') restoreDraft(); } } catch (e) {}
   try { if (typeof renderSolutions === 'function') renderSolutions(); } catch (e) {}
   rlRefreshDynamic();
 }
@@ -2133,9 +2136,9 @@ function cwRender(plan, dom) {
   var groups = cwGroupRuns(plan);
   var lang = groups.lang;
   var h2a = dom.createElement('DIV'); h2a.className = 'group-heading a';
-  h2a.textContent = lang === 'EN' ? 'Across' : 'Waagerecht';
+  h2a.textContent = T('across');
   var h2d = dom.createElement('DIV'); h2d.className = 'group-heading d';
-  h2d.textContent = lang === 'EN' ? 'Down' : 'Senkrecht';
+  h2d.textContent = T('down');
   dom.body.appendChild(h2a);
   appendPills(dom, h2a, groups.across, lang);
   dom.body.appendChild(h2d);
@@ -2233,7 +2236,7 @@ function renderCrossword(plan) {
             var numHere = numAt[cwKey(y, x)];
             inp.setAttribute('role', 'gridcell');
             inp.setAttribute('aria-label', numHere !== undefined ?
-                'Zeile ' + (y + 1) + ', Spalte ' + (x + 1) + ', Nummer ' + numHere : 'Zeile ' + (y + 1) + ', Spalte ' + (x + 1));
+                T('cellPosNum', { r: y + 1, c: x + 1, n: numHere }) : T('cellPos', { r: y + 1, c: x + 1 }));
             inp.tabIndex = -1;
             inp.addEventListener('focus', function() { cwFocus(this); });
             inp.addEventListener('click', function() { cwClick(this); });
@@ -2255,7 +2258,7 @@ function renderCrossword(plan) {
 function cwAppendClueGroup(cluesEl, runs, dir) {
     var head = document.createElement('div');
     head.className = 'group-heading ' + dir;
-    head.textContent = cwLang === 'EN' ? (dir === 'a' ? 'Across' : 'Down') : (dir === 'a' ? 'Waagerecht' : 'Senkrecht');
+    head.textContent = (dir === 'a') ? T('across') : T('down');
     cluesEl.appendChild(head);
     runs.forEach(function(ru, ri) {
         if (ru.dir !== dir) return;
@@ -2348,7 +2351,7 @@ function updateActiveChip() {
     var el = document.getElementById('cwActive');
     if (!el) return;
     var a = cwState.active;
-    if (a.r < 0) { el.textContent = 'Tippe eine Zelle an, um zu starten'; return; }
+    if (a.r < 0) { el.textContent = T('cwStart'); return; }
     var ridx = cwCellEntry(a.r, a.c, a.dir);
     if (ridx < 0) { el.textContent = '—'; return; }
     var ru = cwState.runs[ridx];
@@ -2573,6 +2576,7 @@ function drawMaze() {
     svg.setAttribute('viewBox', '0 0 ' + w + ' ' + h);
     svg.setAttribute('width', w);
     svg.setAttribute('height', h);
+    svg.setAttribute('stroke-linecap', 'square');
     var ns = 'http://www.w3.org/2000/svg';
     svg.innerHTML = '';
 
@@ -2588,9 +2592,9 @@ function drawMaze() {
             var c = mazeGrid[y][x];
             var px = x * mazeCell, py = y * mazeCell;
             if (c.walls.t) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
-            if (c.walls.b) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py+mazeCell); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
             if (c.walls.l) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py); l.setAttribute('x2',px); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
-            if (c.walls.r) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px+mazeCell); l.setAttribute('y1',py); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
+            if (y === mazeH-1 && c.walls.b) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px); l.setAttribute('y1',py+mazeCell); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
+            if (x === mazeW-1 && c.walls.r) { var l = document.createElementNS(ns,'line'); l.setAttribute('x1',px+mazeCell); l.setAttribute('y1',py); l.setAttribute('x2',px+mazeCell); l.setAttribute('y2',py+mazeCell); l.setAttribute('stroke',wc); l.setAttribute('stroke-width',lw); svg.appendChild(l); }
         }
     }
 
@@ -2698,14 +2702,14 @@ function renderSolutions() {
     }
     // #01 Symbol (links oben)
     if (mathPuzzle) {
-        h.push('<div class="sol-card" data-sol="01"><h4>01 · Symbol</h4>' +
+        h.push('<div class="sol-card" data-sol="01"><h4>' + T('sol01') + '</h4>' +
             '<div class="sol-math"><span class="sym">' + mathPuzzle.s1 + '</span><span class="eq">=</span><b>' + mathPuzzle.v1 + '</b></div>' +
             '<div class="sol-math"><span class="sym">' + mathPuzzle.s2 + '</span><span class="eq">=</span><b>' + mathPuzzle.v2 + '</b></div>' +
             '<div class="sol-math"><span class="sym">' + mathPuzzle.s1 + '</span><span class="op">+</span><span class="sym">' + mathPuzzle.s2 + '</span><span class="eq">=</span><b>' + mathSolution + '</b></div></div>');
     }
     // #07 Symbol 2 (mitte oben)
     if (mathPuzzle2) {
-        h.push('<div class="sol-card" data-sol="07"><h4>07 · Symbol 2</h4>' +
+        h.push('<div class="sol-card" data-sol="07"><h4>' + T('sol07') + '</h4>' +
             '<div class="sol-math"><span class="sym">' + mathPuzzle2.s1 + '</span><span class="eq">=</span><b>' + mathPuzzle2.v1 + '</b></div>' +
             '<div class="sol-math"><span class="sym">' + mathPuzzle2.s2 + '</span><span class="eq">=</span><b>' + mathPuzzle2.v2 + '</b></div>' +
             '<div class="sol-math"><span class="sym">' + mathPuzzle2.s1 + '</span><span class="op">+</span><span class="sym">' + mathPuzzle2.s2 + '</span><span class="eq">=</span><b>' + mathSolution2 + '</b></div></div>');
@@ -2715,11 +2719,11 @@ function renderSolutions() {
         var verbs = wordScramble || wordSolution;
         var verbs2 = wordScramble2 || wordSolution2;
         var verbs3 = wordScramble3 || wordSolution3;
-        var wCard = '<div class="sol-card" data-sol="02"><h4>02 · Wort</h4>';
+        var wCard = '<div class="sol-card" data-sol="02"><h4>' + T('sol02') + '</h4>';
         if (wordSolution) wCard += wordRow(verbs, wordSolution);
-        wCard += '<div class="sol-h4b">03 · Wort 2</div>';
+        wCard += '<div class="sol-h4b">' + T('sol03') + '</div>';
         if (wordSolution2) wCard += wordRow(verbs2, wordSolution2);
-        wCard += '<div class="sol-h4b">08 · Wort 3</div>';
+        wCard += '<div class="sol-h4b">' + T('sol08') + '</div>';
         if (wordSolution3) wCard += wordRow(verbs3, wordSolution3);
         wCard += '</div>';
         h.push(wCard);
@@ -2729,7 +2733,7 @@ function renderSolutions() {
     var pSet = {};
     for (var pi = 0; pi < path.length; pi++) pSet[path[pi][0] + ',' + path[pi][1]] = true;
     var sw = mazeW * 16, sh = mazeH * 16;
-    var mazeSvg = '<svg class="sol-maze-svg" viewBox="0 0 ' + sw + ' ' + sh + '" width="' + sw + '" height="' + sh + '">';
+    var mazeSvg = '<svg class="sol-maze-svg" viewBox="0 0 ' + sw + ' ' + sh + '" width="' + sw + '" height="' + sh + '" stroke-linecap="square">';
     mazeSvg += '<rect width="' + sw + '" height="' + sh + '" fill="#fff"/>';
     // Wände zeichnen (nur wo mazeGrid Wände hat)
     for (var my = 0; my < mazeH; my++) {
@@ -2737,9 +2741,9 @@ function renderSolutions() {
             var c = mazeGrid[my][mx];
             var px = mx * 16, py = my * 16;
             if (c.walls.t) mazeSvg += '<line x1="'+px+'" y1="'+py+'" x2="'+(px+16)+'" y2="'+py+'" stroke="#000" stroke-width="1"/>';
-            if (c.walls.b) mazeSvg += '<line x1="'+px+'" y1="'+(py+16)+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
             if (c.walls.l) mazeSvg += '<line x1="'+px+'" y1="'+py+'" x2="'+px+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
-            if (c.walls.r) mazeSvg += '<line x1="'+(px+16)+'" y1="'+py+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
+            if (my === mazeH-1 && c.walls.b) mazeSvg += '<line x1="'+px+'" y1="'+(py+16)+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
+            if (mx === mazeW-1 && c.walls.r) mazeSvg += '<line x1="'+(px+16)+'" y1="'+py+'" x2="'+(px+16)+'" y2="'+(py+16)+'" stroke="#000" stroke-width="1"/>';
         }
     }
     // Pfad-Füllung
@@ -2751,7 +2755,7 @@ function renderSolutions() {
     mazeSvg += '<rect x="1" y="1" width="14" height="14" fill="#000"/><text x="8" y="9" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">S</text>';
     mazeSvg += '<rect x="'+((mazeW-1)*16+1)+'" y="'+((mazeH-1)*16+1)+'" width="14" height="14" fill="#000"/><text x="'+((mazeW-1)*16+8)+'" y="'+((mazeH-1)*16+9)+'" text-anchor="middle" dominant-baseline="central" fill="#fff" font="bold 8px Arial">Z</text>';
     mazeSvg += '</svg>';
-    h.push('<div class="sol-card" data-sol="05"><h4>05 · Labyrinth</h4>' + mazeSvg + '</div>');
+    h.push('<div class="sol-card" data-sol="05"><h4>' + T('sol05') + '</h4>' + mazeSvg + '</div>');
     // #06 Sudoku (mitte, zweite Reihe)
     var sdkEl = document.getElementById('sudokuGrid');
     var sdkHtml = '<div class="sol-sdk">';
@@ -2763,7 +2767,7 @@ function renderSolutions() {
         }
     }
     sdkHtml += '</div>';
-    h.push('<div class="sol-card" data-sol="06"><h4>06 · Sudoku</h4>' + sdkHtml + '</div>');
+    h.push('<div class="sol-card" data-sol="06"><h4>' + T('sol06') + '</h4>' + sdkHtml + '</div>');
     // #04 Kreuzwort (ganz rechts, zweite Reihe)
     if (lastCwPlan && lastCwPlan.grid) {
         var g = lastCwPlan.grid;
@@ -2778,7 +2782,7 @@ function renderSolutions() {
             }
         }
         cwHtml += '</div>';
-        h.push('<div class="sol-card" data-sol="04"><h4>04 · Kreuzwort (' + cwLang + ')</h4>' + cwHtml + '</div>');
+        h.push('<div class="sol-card" data-sol="04"><h4>' + T('sol04', { lang: cwLang }) + '</h4>' + cwHtml + '</div>');
     }
     wrap.innerHTML = h.join('');
 }
@@ -2795,7 +2799,7 @@ function mazeMove(dx, dy) {
     drawMaze();
     if (playerX === mazeW - 1 && playerY === mazeH - 1) {
         var res = document.getElementById('mazeResult');
-        res.textContent = 'Ziel erreicht in ' + mazeSteps + ' Schritten! 🎉'; res.className = 'result ok';
+        res.textContent = T('mazeDone', { n: mazeSteps }); res.className = 'result ok'; res.dataset.rk = 'maze'; res.dataset.steps = mazeSteps;
         flash(document.getElementById('p-maze'), 'pop');
         markSolved(curSeed, curDiff, 'maze');
     }
@@ -2903,7 +2907,7 @@ document.getElementById('shareBtn').addEventListener('click', function() {
     var seed = readSeed();
     var u = location.origin + location.pathname + '?seed=' + seed;
     var txt = 'Riddler Seed ' + seed;
-    var done = function() { hint('Link mit Seed ' + seed + ' kopiert ✓'); };
+    var done = function() { hint(T('copyOk', { seed: seed })); };
     if (navigator.share) {
         navigator.share({ title: txt, text: txt, url: u }).catch(function() {
             if (navigator.clipboard && navigator.clipboard.writeText) {
@@ -3058,7 +3062,7 @@ function bumpVisitCounter() {
     var motionOn = true;
     try { motionOn = localStorage.getItem('riddler-bgfx') !== 'off'; } catch (e) {}
     var motionBtn = document.getElementById('motionBtn');
-    function paintMotionBtn() { if (!motionBtn) return; motionBtn.setAttribute('aria-pressed', motionOn ? 'true' : 'false'); motionBtn.textContent = motionOn ? '✨ Motion: An' : 'Motion: Aus'; }
+    function paintMotionBtn() { if (!motionBtn) return; motionBtn.setAttribute('aria-pressed', motionOn ? 'true' : 'false'); motionBtn.textContent = motionOn ? T('motionOn') : T('motionOff'); }
     if (motionBtn) motionBtn.addEventListener('click', function() {
         motionOn = !motionOn;
         try { localStorage.setItem('riddler-bgfx', motionOn ? 'on' : 'off'); } catch (e) {}
@@ -3083,8 +3087,11 @@ window.addEventListener('DOMContentLoaded', function() {
     bumpVisitCounter();
     cwBindLangButtons();
     cwSyncLangUI();
+    rlBindLangButtons();
     generate();
     restoreDraft();
+    // Global DE/EN: gespeicherte Sprache nach dem Erst-Render anwenden (DE = No-Op).
+    try { if (localStorage.getItem('riddler-lang') === 'EN') rlApplyLang('EN'); } catch (e) {}
     // SEO/Print-SEED: ?seed=NNN&print=1  — Grid abwarten, dann drucken
     if (location.search.indexOf('print=1') !== -1) {
         setTimeout(function() { window.print(); }, 600);
@@ -3138,7 +3145,8 @@ window.addEventListener('DOMContentLoaded', function() {
             b.type = 'button';
             b.className = 'tkb-key';
             b.textContent = ch;
-            b.setAttribute('aria-label', 'Buchstabe ' + ch);
+            b.setAttribute('data-ch', ch);
+            b.setAttribute('aria-label', T('letterIs', { ch: ch }));
             b.addEventListener('click', function() { pressLetter(ch); });
             rowEl.appendChild(b);
         })(LETTERS[li]);
