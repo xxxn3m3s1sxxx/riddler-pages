@@ -74,8 +74,7 @@
         body.mode-math [data-zone="ark"] { opacity: 0; }
         body.mode-ark [data-zone="math"] { opacity: 0; }
         @media print {
-            body.mode-math [data-zone="ark"],
-            body.mode-ark [data-zone="math"] { opacity: 1 !important; }
+            [data-zone] { opacity: 1 !important; }
             .wrap { display: block !important; max-width: 100%; padding: 0; }
             .puzzle-col { display: block !important; }
         }
