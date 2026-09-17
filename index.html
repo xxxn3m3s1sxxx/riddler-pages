@@ -9,6 +9,7 @@
     <title>Riddler — Seed-basierte Rätselbox</title>
     <meta name="description" content="Seed-basierte Rätselbox: Symbol-Arithmetik, Buchstabensalat, Kreuzworträtsel, Labyrinth und ein tägliches Rätsel. Deterministisch, offline, ein Seed = ein Zustand.">
     <meta name="robots" content="index, follow, max-image-preview:large">
+    <link rel="manifest" href="manifest.json">
     <link rel="canonical" href="https://xxxn3m3s1sxxx.github.io/riddler-pages/">
     <meta property="og:type" content="website">
     <meta property="og:site_name" content="Riddler">
@@ -3162,5 +3163,11 @@ window.addEventListener('DOMContentLoaded', function() {
 })();
 </script>
 <!-- UmlkZGxlciB2Mi4xIHwgQ3Jvc3N3b3JkIFhMIEVuZ2luZQ== -->
+<script>
+// PWA: Service-Worker nur über http(s) registrieren (nicht file://), still bei Fehlern.
+if ('serviceWorker' in navigator && location.protocol.indexOf('http') === 0) {
+  window.addEventListener('load', function() { navigator.serviceWorker.register('sw.js').catch(function() {}); });
+}
+</script>
 </body>
 </html>
