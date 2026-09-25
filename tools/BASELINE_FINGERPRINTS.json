@@ -7,6 +7,7 @@
     "math2": "\ud83c\udf35\n+\n\ud83c\udf35\n=\n6\n\ud83c\udf35\n\u00d7\n\ud83d\udef0\ufe0f\n=\n39\n\ud83c\udf35\n+\n\ud83d\udef0\ufe0f\n=\n?",
     "word": "A\nP\nL\nA\nM\nR",
     "word2": "G\nC\nS\nA\nH\nT",
+    "word3": "U\nF\nA\nD\nR",
     "cw": {
       "cellCount": 83,
       "pattern": [
@@ -186,6 +187,7 @@
     "mathSolution": 27,
     "mathSolution2": 16,
     "wordSolution": "PALMAR",
-    "wordSolution2": "GATSCH"
+    "wordSolution2": "GATSCH",
+    "wordSolution3": "FRAUD"
   }
 }
