@@ -1,0 +1,51 @@
+name: "Smoke + syntax only (not offline/service-worker or complete eight-puzzle coverage)"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke-syntax:
+    name: "Smoke + syntax only (not offline/service-worker or complete eight-puzzle coverage)"
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - name: Set up Python 3.13.5
+        uses: actions/setup-python@5fda3b95a4ea91299a34e894583c3862153e4b97 # v7.0.0
+        with:
+          python-version: "3.13.5"
+      - name: Set up Node.js 22.14.0
+        uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: "22.14.0"
+      - name: Install pinned Playwright
+        shell: bash
+        run: python -m pip install --disable-pip-version-check "playwright==1.59.0"
+      - name: Install Chromium and OS dependencies
+        shell: bash
+        run: python -m playwright install --with-deps chromium
+      - name: "Python syntax: smoke harness"
+        shell: bash
+        run: python -m py_compile tools/riddler_smoke.py
+      - name: "JavaScript syntax: data/cw-layouts.js"
+        shell: bash
+        run: node --check data/cw-layouts.js
+      - name: "JavaScript syntax: data/cw-lex-de.js"
+        shell: bash
+        run: node --check data/cw-lex-de.js
+      - name: "JavaScript syntax: data/cw-lex-en.js"
+        shell: bash
+        run: node --check data/cw-lex-en.js
+      - name: "JavaScript syntax: sw.js (syntax only, not service-worker runtime coverage)"
+        shell: bash
+        run: node --check sw.js
+      - name: "Base smoke: 39 assertions (not offline/service-worker or complete eight-puzzle coverage)"
+        shell: bash
+        run: set -e; seed="$(python -c 'import json; print(json.load(open("tools/BASELINE_FINGERPRINTS.json", encoding="utf-8"))["seed"])')"; python tools/riddler_smoke.py index.html --baseline tools/BASELINE_FINGERPRINTS.json --seed "$seed"
