@@ -10,7 +10,7 @@ BASELINE-FIRST design:
 
 Checks:
   1. page loads, no console errors, no page errors
-  2. all 7 puzzle sections populated after generate()
+  2. all 8 puzzle sections populated after generate()
   3. determinism: same seed twice -> identical fingerprint (intra-run)
   4. cross-version determinism: fingerprint == baseline (when --baseline given)
   5. solved-pill mechanics (math puzzle: enter solution -> pill visible)
@@ -19,8 +19,10 @@ Checks:
   8. @media print block present (static, via inline CSS scan)
 
 Usage:
-  python riddler_smoke.py <index.html> [--baseline fingerprints.json] [--seed 12345]
-Exit: 0 = all checks passed, 1 = any check failed.
+  python riddler_smoke.py <index.html> [--baseline fingerprints.json] [--seed N]
+                           [--emit-baseline out.json [--force]]
+Seed rule: explicit --seed wins; else the seed recorded in --baseline; else 12345.
+Exit: 0 = all checks passed, 1 = any check failed, 2 = refused (emit target exists).
 
 NOTE (redesign adaptivity):
   The redesign hides puzzles behind a mode toggle (math mode / puzzle ark).
@@ -30,7 +32,7 @@ NOTE (redesign adaptivity):
     - '.mode-btn' / '.ark' / '.puzzle-ark' class
   If found, it switches modes before asserting each puzzle group ("math" vs "ark")
   so the content checks cover BOTH modes. Absent such a control (baseline),
-  all 7 sections are expected visible at once.
+  all 8 sections are expected visible at once.
 """
 import argparse
 import json
@@ -46,6 +48,8 @@ except Exception:
 from playwright.sync_api import sync_playwright
 
 P = pathlib.Path(__file__).resolve().parent
+
+DEFAULT_SEED = 12345
 
 # Static CSS invariants that must survive the redesign
 CSS_INVARIANTS = [
@@ -101,6 +105,7 @@ def collect_fingerprint(page) -> dict:
                 math2: txt('mathDisplay2'),
                 word: txt('wordTiles'),
                 word2: txt('wordTiles2'),
+                word3: txt('wordTiles3'),
                 cw: cw,
                 sdk: sdk,
                 sdkSol: sdkSol,
@@ -109,6 +114,7 @@ def collect_fingerprint(page) -> dict:
                 mathSolution2: (typeof mathSolution2 !== 'undefined') ? mathSolution2 : null,
                 wordSolution: (typeof wordSolution !== 'undefined') ? wordSolution : null,
                 wordSolution2: (typeof wordSolution2 !== 'undefined') ? wordSolution2 : null,
+                wordSolution3: (typeof wordSolution3 !== 'undefined') ? wordSolution3 : null,
             };
         }"""
     )
@@ -215,7 +221,7 @@ def run_checks(args) -> int:
         # --- 2. puzzle sections populated (mode-aware) ---
         mode_ctrl = has_mode_control(page)
         print(f"  info  mode-control detected: {mode_ctrl}")
-        groups = {"math": ["p-math", "p-math2"], "ark": ["p-word", "p-word2", "p-crossword", "p-maze", "p-sudoku"]}
+        groups = {"math": ["p-math", "p-math2"], "ark": ["p-word", "p-word2", "p-word3", "p-crossword", "p-maze", "p-sudoku"]}
         if mode_ctrl:
             for m in ("math", "ark"):
                 switch_mode(page, m)
@@ -254,6 +260,7 @@ def run_checks(args) -> int:
             "sudokuGrid .sdk-cell cells": "#sudokuGrid .sdk-cell",
             "wordTiles .tile tiles": "#wordTiles .tile",
             "wordTiles2 .tile tiles": "#wordTiles2 .tile",
+            "wordTiles3 .tile tiles": "#wordTiles3 .tile",
             "mazeSvg exists": "#mazeSvg",
             "mazeSvg walls": "#mazeSvg line",
         }
@@ -286,7 +293,7 @@ def run_checks(args) -> int:
                     print(f"    baseline {k}: {json.dumps(base_fp[k], ensure_ascii=True)[:200]}")
                     print(f"    current  {k}: {json.dumps(cur.get(k), ensure_ascii=True)[:200]}")
 
-        # --- 4b. emulated print: all 7 puzzles + solutions must be printable ---
+        # --- 4b. emulated print: all 8 puzzles + solutions must be printable ---
         page.emulate_media(media="print")
         page.wait_for_timeout(120)
         if mode_ctrl:
@@ -297,7 +304,7 @@ def run_checks(args) -> int:
             # leave ark active, then assert all cards visible in print regardless
         print_state = page.evaluate(
             """() => {
-                const ids = ['p-math','p-word','p-word2','p-crossword','p-maze','p-sudoku','p-math2','solutions'];
+                const ids = ['p-math','p-word','p-word2','p-word3','p-crossword','p-maze','p-sudoku','p-math2','solutions'];
                 const out = {};
                 for (const id of ids) {
                     const el = document.getElementById(id);
@@ -388,13 +395,35 @@ def run_checks(args) -> int:
     return 1 if failures else 0
 
 
+def resolve_seed(args) -> int:
+    """--seed wins; else the seed recorded in the baseline file; else DEFAULT_SEED."""
+    if args.seed is not None:
+        return args.seed
+    if args.baseline:
+        raw = json.loads(pathlib.Path(args.baseline).read_text(encoding="utf-8"))
+        base_seed = raw.get("seed")
+        if base_seed is not None:
+            return int(base_seed)
+    return DEFAULT_SEED
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("file", help="path to index.html")
     ap.add_argument("--baseline", help="path to BASELINE_FINGERPRINTS.json for cross-version determinism")
-    ap.add_argument("--seed", type=int, default=12345)
+    ap.add_argument("--seed", type=int, default=None,
+                    help=f"puzzle seed (default: seed recorded in --baseline, else {DEFAULT_SEED})")
     ap.add_argument("--emit-baseline", help="also write current fingerprints to this json file")
+    ap.add_argument("--force", action="store_true",
+                    help="allow --emit-baseline to overwrite an existing file")
     args = ap.parse_args()
+
+    if args.emit_baseline and pathlib.Path(args.emit_baseline).exists() and not args.force:
+        print(f"refusing to overwrite existing {args.emit_baseline}; pass --force to replace it")
+        sys.exit(2)
+
+    args.seed = resolve_seed(args)
+    print(f"== seed {args.seed} ==")
 
     rc = run_checks(args)
     if args.emit_baseline:

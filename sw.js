@@ -1,6 +1,6 @@
 /* Riddler PWA Service Worker — App-Shell offline. Versioniert, kein Tracking. */
-var CACHE = 'riddler-v1';
-var CORE = ['./', './index.html', './data/cw-layouts.js', './manifest.json', './favicon.svg'];
+var CACHE = 'riddler-v2';
+var CORE = ['./', './index.html', './data/cw-layouts.js', './data/cw-lex-de.js', './data/cw-lex-en.js', './manifest.json', './favicon.svg'];
 
 self.addEventListener('install', function(e) {
   e.waitUntil(
